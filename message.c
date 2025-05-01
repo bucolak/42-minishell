@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   message.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/29 13:36:35 by bucolak           #+#    #+#             */
-/*   Updated: 2024/11/03 15:41:44 by bucolak          ###   ########.fr       */
+/*   Created: 2025/05/01 17:56:22 by bucolak           #+#    #+#             */
+/*   Updated: 2025/05/01 17:56:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "minishell.h"
 
-# include <stdarg.h>
-# include <unistd.h>
-
-int	ft_printf(const char *str, ...);
-int	ft_putchr_pt(char c);
-int	ft_base(int basenum, long num, int s);
-int	ft_putstr_pt(char *str);
-int	ft_putptr_pt(void *ptr);
-
-#endif
+int message(int i)
+{
+    if(i==0)
+    {
+        printf("%s","Çift tırnak kapanmadı.");
+        return 0;
+    }
+    else if (i==1)
+    {
+        printf("%s","Tek tırnak kapanmadı.");
+        return 0;
+    }
+    
+}

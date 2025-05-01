@@ -1,29 +1,30 @@
-SRC = main.c
+SRC = main.c execute.c cmd_built_in.c environment.c count_quote.c message.c
 
-CC = cc 
+CC = gcc 
 
-PRINTF= ft_printf/libftprintf.a
-
-LIN
+LIBFT = libft/libft.a
 
 MINISHELL = minishell 
 
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g
+
+LDFLAGS = -lreadline
 
 all: $(MINISHELL)
 
 $(MINISHELL): $(OBJ)
-	make -C ./ft_printf
-	$(CC) $(CFLAGS) $(OBJ) $(PRINTF) -o $(MINISHELL)
+	make -C ./libft
+	make bonus -C ./libft
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LDFLAGS) -o $(MINISHELL)
 
 clean: 
-	make clean -C ./ft_printf
+	make clean -C ./libft
 	rm -f $(OBJ)
 
 fclean: clean
-	make fclean -C ./ft_printf
+	make fclean -C ./libft
 	rm -f $(MINISHELL)
 
 re: fclean all

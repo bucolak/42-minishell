@@ -1,18 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchr_pt.c                                     :+:      :+:    :+:   */
+/*   count_quote.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/29 14:10:34 by bucolak           #+#    #+#             */
-/*   Updated: 2024/11/03 12:34:02 by bucolak          ###   ########.fr       */
+/*   Created: 2025/04/30 17:14:07 by bucolak           #+#    #+#             */
+/*   Updated: 2025/04/30 17:18:37 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "minishell.h"
 
-int	ft_putchr_pt(char c)
+int count_dquote(char *str)
 {
-	return (write(1, &c, 1));
+    int i = 0;
+    int c = 0;
+    while(str[i])
+    {
+        if(str[i] == '"')
+            c++;
+        i++;
+    }
+    return c;
+}
+
+int count_squote(char *str)
+{
+    int i = 0;
+    int c = 0;
+    while(str[i])
+    {
+        if(str[i] == '\'')
+            c++;
+        i++;
+    }
+    return c;
 }
