@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/05/01 17:34:15 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/01 19:58:03 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,18 +89,18 @@ void	ft_envadd_back(t_env **lst, char *key, char *data)
     if(key)
     {
         new_node->key = ft_strdup(key);
-    new_node->data = ft_strdup(data);
-	if (*lst == NULL)
-	{
-        *lst = new_node;
-	}
-	else
-	{
-        last = *lst;
-        while(last->next)
-            last = last->next;
-        last->next = new_node;
-	}
+        new_node->data = ft_strdup(data);
+	    if (*lst == NULL)
+	    {
+            *lst = new_node;
+	    }
+	    else
+	    {
+            last = *lst;
+            while(last->next)
+                last = last->next;
+            last->next = new_node;
+	    }
     }
 }
 

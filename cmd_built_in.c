@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/01 17:48:38 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/01 21:23:39 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp)
                 else
                     print_export_env(node);
             }
+            else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "unset", 5) == 0)
+                unset_cmd(pipe_blocs, node);
             else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "env", 3) == 0)
                 print_env(pipe_blocs ,node, envp, i);
             i++;
@@ -39,12 +41,50 @@ void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp)
     }
 }
 
-
-
+void unset_cmd(t_general *list, t_env **env)
+{
+    int i = 1;
+    t_env *node;
+    t_env *pre_node;
+    node = *env;
+    char *s;
+    pre_node =NULL;
+    if(ft_strcmp(node->key, list->acces_args->args[i]->str) == 0)
+    {
+        *env = node->next;
+        return ;
+    }
+    if(list->acces_args->args[i])
+    {
+        s = list->acces_args->args[i]->str;
+        while(node)
+        {
+            if(ft_strcmp(node->key, s) == 0)
+            {
+                pre_node->next = node->next;
+                free(node->key);
+                free(node->data);
+                free(node);
+                return;
+            }
+            pre_node = node;
+            node = node->next;
+        }
+    }
+}
+t_env	*ft_lsttlast(t_env *lst)
+{
+	if (!lst)
+		return (NULL);
+	while (lst->next != NULL)
+	{
+		lst = lst->next;
+	}
+	return (lst);
+}
 void print_export_env(t_env **env)
 {
     t_env ** new_env;
-    t_env *tmp;
     t_env *node;
     new_env = export_cmd(env);
     int i = 0;
@@ -53,17 +93,13 @@ void print_export_env(t_env **env)
     {
         node = new_env[i];
         if(node->key)
-            printf("declare -x %s\"%s\"\n", node->key, node->data);
+        {
+            if (node->key && node->data && node->data[0] != '\0')
+                printf("declare -x %s\"%s\"\n", node->key, node->data);
+            else if(node->key)
+                printf("declare -x %s%s\n", node->key, node->data);
+        }
         i++;
-    }
-    tmp = *env;
-    while(tmp)
-    {
-        if (tmp->key && tmp->data && tmp->data[0] != '\0')
-                printf("declare -x %s\"%s\"\n", tmp->key, tmp->data);
-        else if(tmp->key)
-            printf("declare -x %s%s\n", tmp->key, tmp->data);
-        tmp = tmp->next;
     }
 }
 

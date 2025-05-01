@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/01 17:57:27 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/01 21:20:45 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void cd_cmd(t_arg **args);
 void pwd_cmd(char **ar);
 t_env **export_cmd( t_env **env);
 void print_export_env(t_env **env);
+void unset_cmd(t_general *list, t_env **env);
 
 // environment.c
 int get_format(char *argv);
