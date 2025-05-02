@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/01 21:23:39 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/02 15:31:41 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,51 @@ void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp)
                 unset_cmd(pipe_blocs, node);
             else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "env", 3) == 0)
                 print_env(pipe_blocs ,node, envp, i);
+            else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "exit", 4) == 0)
+                exit_cmd(pipe_blocs);
             i++;
         }
         pipe_blocs = pipe_blocs->next;
+    }
+}
+
+void exit_cmd(t_general *list)
+{
+    int a;
+    if(list->acces_args->args[2])
+    {
+        printf("exit\n");
+        printf("bash: exit: too many arguments\n");
+        return ;
+    }
+    if(list->acces_args->args[1])
+    {
+        if(is_numeric(list->acces_args->args[1]->str))
+        {
+            a = ft_atoi(list->acces_args->args[1]->str);
+            if(a>=256)
+            {
+                a-=256;
+                while((a - 256)>=0)
+                    a-=256;
+            }
+            list->$qm = a;
+            printf("exit\n");
+            exit(list->$qm);
+        }
+        else
+        {
+            printf("exit\n");
+            printf("bash: exit: %s: numeric argument required\n", list->acces_args->args[1]->str);
+            list->$qm = 2;
+            exit(list->$qm);
+        }
+    }
+    else
+    {
+        printf("exit\n");
+        list->$qm = 0;
+        exit(list->$qm);
     }
 }
 
@@ -72,16 +114,7 @@ void unset_cmd(t_general *list, t_env **env)
         }
     }
 }
-t_env	*ft_lsttlast(t_env *lst)
-{
-	if (!lst)
-		return (NULL);
-	while (lst->next != NULL)
-	{
-		lst = lst->next;
-	}
-	return (lst);
-}
+
 void print_export_env(t_env **env)
 {
     t_env ** new_env;

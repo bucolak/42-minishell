@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/01 21:20:45 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/02 15:49:18 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+
 typedef struct s_env
 {
     char *data;
@@ -64,42 +65,44 @@ typedef struct s_pipeafter
 
 typedef struct s_general
 {
+    int $qm;
     char *blocs;
     t_pipeafter *acces_args;
     struct s_general *next;
 } t_general;
 
 
-// main.c
+// apply_malloc.c
 t_arg *create_arg(const char *str, int flag);
 t_pipeafter *create_pipeafter(void);
 t_general *create_general_node(void);
 t_env *create_env_node(void);
+
+// main.c
 void dolar_control(t_general *a);
 void pipe_parse(t_general **pipe_block, char *line);
 void parse_input( t_general *a);
-int	ft_lsttsize(t_env *lst);
-int	ft_strcmp(const char *s1, const char *s2);
 
 // execute.c
 void check_cmd_sys_call(t_general *pipe_blocs);
 
 // cmd_built_in.c
 void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp);
-void get_env(t_env **node, char **envp);
-void print_env(t_general *list, t_env **node, char **envp, int i);
+void exit_cmd(t_general *list);
+void unset_cmd(t_general *list, t_env **env);
+void print_export_env(t_env **env);
+t_env **export_cmd( t_env **env);
 void cd_cmd(t_arg **args);
 void pwd_cmd(char **ar);
-t_env **export_cmd( t_env **env);
-void print_export_env(t_env **env);
-void unset_cmd(t_general *list, t_env **env);
 
 // environment.c
-int get_format(char *argv);
+void get_env(t_env **node, char **envp);
+void print_env(t_general *list, t_env **node, char **envp, int i);
 void	ft_envadd_back(t_env **lst, char *key, char *data);
-void create_env(t_general *list, t_env **env);
-char *get_data(char *str);
 char *get_key(char *str);
+char *get_data(char *str);
+void create_env(t_general *list, t_env **env);
+
 
 //count_quote.c
 int count_squote(char *str);
@@ -107,5 +110,12 @@ int count_dquote(char *str);
 
 // message.c
 int message(int i);
+
+// etc.c
+int	ft_lsttsize(t_env *lst);
+int	ft_strcmp(const char *s1, const char *s2);
+t_env	*ft_lsttlast(t_env *lst);
+int is_numeric(char *str);
+int is_repeated(t_env **node, char *ky, char *dt);
 
 #endif

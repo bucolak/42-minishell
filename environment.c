@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/05/01 19:58:03 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/02 16:11:14 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,6 @@ void get_env(t_env **node, char **envp)
     }
 }
 
-int is_repeated(t_env **node, char *str)
-{
-    t_env *tmp = *node;
-    int c = 0;
-    while(tmp)
-    {
-        if(ft_strncmp(str, tmp->data, sizeof(tmp->data)) == 0)
-        {
-            c++;
-        }
-        tmp = tmp->next;
-    }
-    if(c == 2)
-        return 1;
-    return 0;
-}
-
 void print_env(t_general *list, t_env **node, char **envp, int i)
 {
     t_env *tmp;
@@ -88,12 +71,10 @@ void	ft_envadd_back(t_env **lst, char *key, char *data)
     new_node = create_env_node();
     if(key)
     {
-        new_node->key = ft_strdup(key);
-        new_node->data = ft_strdup(data);
+            new_node->key = ft_strdup(key);
+            new_node->data = ft_strdup(data);
 	    if (*lst == NULL)
-	    {
             *lst = new_node;
-	    }
 	    else
 	    {
             last = *lst;
@@ -127,6 +108,7 @@ char *get_key(char *str)
     key = ft_substr(str, start, end - start);
     return ft_strtrim(key,"'\"");
 }
+
 char *get_data(char *str)
 {
     int i = 0;
@@ -145,6 +127,7 @@ char *get_data(char *str)
         i--;
     return ft_substr(str, k, i-k);
 }
+
 void create_env(t_general *list, t_env **env)
 {
     int i;
@@ -160,7 +143,8 @@ void create_env(t_general *list, t_env **env)
                 char *new = list->acces_args->args[i]->str;
                 if(list->acces_args->args[i] && new)
                 {
-                    if(count_dquote(new) %2==0 || count_squote(new)%2==0)
+                    if((count_dquote(new) %2==0 || count_squote(new)%2==0) 
+                    && is_repeated(env, get_key(new), get_data(new)) == 0)
                         ft_envadd_back(env, get_key(new), get_data(new));
                 }
                     
