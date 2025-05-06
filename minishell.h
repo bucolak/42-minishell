@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/02 15:49:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/06 02:08:59 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ typedef struct s_env
 {
     char *data;
     char *key;
-    int is_exported;
     struct s_env *next;
 }   t_env;
 
@@ -84,7 +83,7 @@ void pipe_parse(t_general **pipe_block, char *line);
 void parse_input( t_general *a);
 
 // execute.c
-void check_cmd_sys_call(t_general *pipe_blocs);
+void check_cmd_sys_call(t_general *pipe_blocs, t_env **env);
 
 // cmd_built_in.c
 void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp);

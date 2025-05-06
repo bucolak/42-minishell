@@ -6,41 +6,53 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/04/26 22:35:32 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/06 16:58:18 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void check_cmd_sys_call(t_general *pipe_blocs)
-// {
-//     char *args = getenv("PATH");
-//     char **paths = ft_split(args, ':');
-//     int i;
-//     int j;
-//     while(pipe_blocs)
-//     {
-//         i = 0;
-//         while(pipe_blocs->acces_args->args[i])
-//         {
-//             j = 0;
-//             while(paths[j])
-//             {
-//                 while(paths[j])
-//                     j++;
-//                 paths[j] = '/';
-//                 j = 0;
-//                 char *p = ft_strjoin(paths[j], pipe_blocs->acces_args->args[i]->str);
-//                 if(access(p, X_OK))
-//                 {
-//                     execve(p, pipe_blocs->acces_args->args[i]->str, args);
-//                     break;
-//                 }
-//                 j++;
-//             }
-//             i++;
-//         }
-//         pipe_blocs = pipe_blocs->next;
-//     }
-    
-// }
+void check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
+{
+    char *args = getenv("PATH");
+    char **paths = ft_split(args, ':');
+    pid_t pid;
+    int i = 0;
+    pid = fork();
+    char **ar = ft_split(pipe_blocs->blocs, ' ');
+    t_env *tmp;
+    tmp = *env;
+    char **envp;
+    envp = malloc(sizeof(char *) * ft_lsttsize(*env));
+    int j = 0;
+    while(tmp)
+    {
+        size_t len = strlen(tmp->key) + strlen(tmp->data) + 1;
+        envp[j] = malloc(len);
+        ft_strlcpy(envp[j],tmp->key, ft_strlen(tmp->key));
+        ft_strlcpy(envp[j] + ft_strlen(tmp->key), tmp->data,ft_strlen(tmp->data));
+        if (!envp[j])
+            return ;
+        tmp = tmp->next;
+        j++;
+    }
+    envp[j] = NULL;
+    if(pid == 0)
+    {
+        while(paths[i])
+        {
+            char *str = ft_strjoin(paths[i], "/");
+            char *end = ft_strjoin(str, ar[0]);
+            if(access(end, X_OK) == 0)
+            {
+                execve(end, ar, envp);
+                free(str);
+                free(end);
+                return ;
+            }
+            i++;
+        }
+    }
+    else
+        waitpid(pid,NULL, 0);
+}

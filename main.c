@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/02 15:37:58 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/06 17:20:27 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,9 +217,10 @@ int main(int argc, char *argv[], char **envp)
         add_history(line);
         pipe_parse(&pipe_blocs, line);
         parse_input(pipe_blocs);
-        //print_pipes(pipe_blocs);
+        print_pipes(pipe_blocs);
         dolar_control(pipe_blocs);
-        check_cmd_built_in(pipe_blocs, &env, envp);
+        //check_cmd_built_in(pipe_blocs, &env, envp);
+        //check_cmd_sys_call(pipe_blocs, &env); 
         pipe_blocs = create_general_node();
         free(line);
     }
