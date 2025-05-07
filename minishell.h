@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/07 16:47:18 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/08 01:56:06 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ typedef struct s_pipeafter
 
 typedef struct s_general
 {
-    int $qm;
+    int dqm;
     char *blocs;
     t_pipeafter *acces_args;
     struct s_general *next;

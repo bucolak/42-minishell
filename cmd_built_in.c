@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/07 20:09:13 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/08 02:19:00 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void echo_cmd(t_general *list)
         {
             str = tmp->acces_args->args[i]->str;
             j = 0;
+            k = 0;
             if(tmp->acces_args->args[i]->flag == 4)
             {
                 printf("burda2\n");
@@ -74,13 +75,21 @@ void echo_cmd(t_general *list)
                         j++;          
                         while(str[j] && str[j] != '"')
                         {
-                            if(str[j] == '$')
+                            if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?')
                             {
-                                env = ft_strchr(str,'$');
-                                env++;
-                                while(env[k] != '"')
+                                j++;
+                                k = j;
+                                while (str[k] && str[k] != ' ' && str[k] != '"' && str[k] != '\'' && str[k] != '$')
                                     k++;
-                                printf("%s",getenv(ft_substr(env, 0, k )));
+                                char *new = ft_substr(str, j,k-j);
+                                env = getenv(new);
+                                printf("%s", env);
+                                j = k;
+                            }
+                            else if(str[j] == '$' && str[j+1] == '?')
+                            {
+                                printf("%d", tmp->dqm);
+                                j+=2;
                             }
                             j++;
                         }
@@ -106,12 +115,21 @@ void echo_cmd(t_general *list)
                 {
                     while(str[j])
                     {
-                        if(str[j] == '$')
+                        if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?')
                         {
-                            env = ft_strchr(str, '$');
-                            env++;
-                            printf("%s",getenv(env));
-                            break;
+                            j++;
+                            k = j;
+                            while (str[k] && str[k] != ' ' && str[k] != '"' && str[k] != '\'' && str[k] != '$')
+                                k++;
+                            char *new = ft_substr(str, j,k-j);
+                            env = getenv(new);
+                            printf("%s", env);
+                            j = k; //neden
+                        }
+                        else if(str[j] == '$' && str[j+1] == '?')
+                        {
+                            printf("%d", tmp->dqm);
+                            j+=2;
                         }
                         if(str[j] != '\'' && str[j] != '"')
                             printf("%c", str[j]);
@@ -120,7 +138,6 @@ void echo_cmd(t_general *list)
                     if(tmp->acces_args->args[i+1])
                         printf(" ");
                 }
-                //printf("%s", ft_strtrim(str, "\""));
             }
             i++;
         }
@@ -148,23 +165,23 @@ void exit_cmd(t_general *list)
                 while((a - 256)>=0)
                     a-=256;
             }
-            list->$qm = a;
+            list->dqm = a;
             printf("exit\n");
-            exit(list->$qm);
+            exit(list->dqm);
         }
         else
         {
             printf("exit\n");
             printf("bash: exit: %s: numeric argument required\n", list->acces_args->args[1]->str);
-            list->$qm = 2;
-            exit(list->$qm);
+            list->dqm = 2;
+            exit(list->dqm);
         }
     }
     else
     {
         printf("exit\n");
-        list->$qm = 0;
-        exit(list->$qm);
+        list->dqm = 0;
+        exit(list->dqm);
     }
 }
 

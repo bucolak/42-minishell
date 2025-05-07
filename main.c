@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/07 20:34:32 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/08 01:49:05 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,27 +90,37 @@ char *dolar_control(char *str)
 
 void pipe_parse(t_general **pipe_block, char *line)
 {
-    int i;
-    char **pipe_str = ft_split(line, '|');
-    
-    i = 0;
-    t_general *tmp = *pipe_block;
-
-    while (pipe_str[i])
-    {
-        if (pipe_str[i][0] != '\0')
-        {
-            tmp->blocs = ft_strtrim(pipe_str[i], " ");
-
-            if (pipe_str[i + 1])
-            {
-                tmp->next = create_general_node();
-                tmp = tmp->next;
-            }
-        }
+    int i = 0;
+    t_general *tmp;
+    tmp = *pipe_block;
+    while(line[i] != '"' && line[i] != '\'')
         i++;
+    if(line[i] && line[i] != '"' && line[i] != '\'')
+    {
+        printf("%c\n",line[0]);
+        char **pipe_str = ft_split(line, '|');
+        
+        i = 0;
+    
+        while (pipe_str[i])
+        {
+            if (pipe_str[i][0] != '\0')
+            {
+                tmp->blocs = ft_strtrim(pipe_str[i], " ");
+    
+                if (pipe_str[i + 1])
+                {
+                    tmp->next = create_general_node();
+                    tmp = tmp->next;
+                }
+            }
+            i++;
+        }
     }
-    free(pipe_str); // optional: split free ediliyorsa burada
+    else
+    {
+        tmp->blocs = ft_strdup(line);
+    }
 }
 
 
@@ -245,9 +255,9 @@ int main(int argc, char *argv[], char **envp)
         add_history(line);
         pipe_parse(&pipe_blocs, line);
         parse_input(pipe_blocs);
-        print_pipes(pipe_blocs);
+        //print_pipes(pipe_blocs);
         //dolar_control(pipe_blocs);
-        //check_cmd_built_in(pipe_blocs, &env, envp);
+        check_cmd_built_in(pipe_blocs, &env, envp);
         //check_cmd_sys_call(pipe_blocs, &env); 
         pipe_blocs = create_general_node();
         free(line);
