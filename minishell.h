@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/06 02:08:59 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/07 16:47:18 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ t_general *create_general_node(void);
 t_env *create_env_node(void);
 
 // main.c
-void dolar_control(t_general *a);
+char *dolar_control(char *str);
 void pipe_parse(t_general **pipe_block, char *line);
 void parse_input( t_general *a);
 
@@ -93,6 +93,7 @@ void print_export_env(t_env **env);
 t_env **export_cmd( t_env **env);
 void cd_cmd(t_arg **args);
 void pwd_cmd(char **ar);
+void echo_cmd(t_general *list);
 
 // environment.c
 void get_env(t_env **node, char **envp);

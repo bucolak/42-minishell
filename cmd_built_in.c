@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_built_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/02 15:31:41 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/07 20:09:13 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,94 @@ void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp)
                 print_env(pipe_blocs ,node, envp, i);
             else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "exit", 4) == 0)
                 exit_cmd(pipe_blocs);
+            else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "echo", 4) == 0)
+                echo_cmd(pipe_blocs);
             i++;
         }
         pipe_blocs = pipe_blocs->next;
+    }
+}
+
+void echo_cmd(t_general *list)
+{
+    int i = 1;
+    int j = 0;
+    int k = 0;
+    int l;
+    char *env;
+    t_general *tmp;
+    tmp = list;
+    char *str;
+    
+    if(!tmp->acces_args->args[1])
+        printf("\n");
+    else
+    {
+        while(tmp->acces_args->args[i])
+        {
+            str = tmp->acces_args->args[i]->str;
+            j = 0;
+            if(tmp->acces_args->args[i]->flag == 4)
+            {
+                printf("burda2\n");
+                while(str[j])
+                {
+                    if(str[j] == '"')
+                    {              
+                        j++;          
+                        while(str[j] && str[j] != '"')
+                        {
+                            if(str[j] == '$')
+                            {
+                                env = ft_strchr(str,'$');
+                                env++;
+                                while(env[k] != '"')
+                                    k++;
+                                printf("%s",getenv(ft_substr(env, 0, k )));
+                            }
+                            j++;
+                        }
+                    }
+                    if(str[j]!='"' && str[j]!='\'')
+                        printf("%c",str[j]);
+                    j++;
+                }
+            }
+            else if (ft_strchr(str, '\''))
+            {
+                env = ft_strtrim(str, "'");
+                while(env[j])
+                {
+                    if(env[j] != '\'')
+                        printf("%c", env[j]);
+                    j++;
+                }
+            }
+            else
+            {
+                if(tmp->acces_args->args[i]->flag == 0 || tmp->acces_args->args[i]->flag == 2)
+                {
+                    while(str[j])
+                    {
+                        if(str[j] == '$')
+                        {
+                            env = ft_strchr(str, '$');
+                            env++;
+                            printf("%s",getenv(env));
+                            break;
+                        }
+                        if(str[j] != '\'' && str[j] != '"')
+                            printf("%c", str[j]);
+                        j++;
+                    }
+                    if(tmp->acces_args->args[i+1])
+                        printf(" ");
+                }
+                //printf("%s", ft_strtrim(str, "\""));
+            }
+            i++;
+        }
+        printf("\n");
     }
 }
 
