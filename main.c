@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/08 01:49:05 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/08 17:35:30 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ void pipe_parse(t_general **pipe_block, char *line)
         i++;
     if(line[i] && line[i] != '"' && line[i] != '\'')
     {
-        printf("%c\n",line[0]);
         char **pipe_str = ft_split(line, '|');
         
         i = 0;
