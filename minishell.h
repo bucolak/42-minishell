@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/08 01:56:06 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/09 12:09:22 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ t_general *create_general_node(void);
 t_env *create_env_node(void);
 
 // main.c
-char *dolar_control(char *str);
 void pipe_parse(t_general **pipe_block, char *line);
 void parse_input( t_general *a);
 

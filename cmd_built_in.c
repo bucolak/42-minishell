@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_built_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/08 17:34:19 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/09 12:32:52 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ void echo_cmd(t_general *list)
                                 printf("%d", tmp->dqm);
                                 j+=2;
                             }
+                            else if(str[j] == '$' && !str[j+1])
+                                printf("%c", str[j]);
                             j++;
                         }
                     }
@@ -99,9 +101,10 @@ void echo_cmd(t_general *list)
                     j++;
                 }
             }
-            else if (ft_strchr(str, '\''))
+            else if (tmp->acces_args->args[i]->flag == 1)
             {
-                env = ft_strtrim(str, "'");
+                printf("burda333\n");
+                env = tmp->acces_args->args[i]->str;
                 while(env[j])
                 {
                     if(env[j] != '\'')
@@ -113,9 +116,10 @@ void echo_cmd(t_general *list)
             {
                 if(tmp->acces_args->args[i]->flag == 0 || tmp->acces_args->args[i]->flag == 2)
                 {
+                    printf("burda222\n");
                     while(str[j])
                     {
-                        if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?')
+                        if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?' && str[j+1]!='"' && str[j+1])
                         {
                             j++;
                             k = j;
@@ -131,7 +135,7 @@ void echo_cmd(t_general *list)
                             printf("%d", tmp->dqm);
                             j+=2;
                         }
-                        if(str[j] != '\'' && str[j] != '"')
+                        if(str[j] != '"')
                             printf("%c", str[j]);
                         j++;
                     }

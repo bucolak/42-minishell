@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/08 17:35:30 by buket            ###   ########.fr       */
+/*   Updated: 2025/05/09 12:10:38 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,41 +59,12 @@
 //     }
 // }
 
-char *dolar_control(char *str)
-{
-        int i = 0;
-        int k;
-        char *control;
-        while (str[i])
-        {
-            if (ft_strchr(str, '$'))
-            {
-                control = ft_strchr(str, '$');
-                // control = ft_strtrim(control, "\"'");
-                if (control && control[1] != ' ' && control[1] != '\0')
-                {
-                    k = i;
-                    while(control[i] != '"' || control[i] != '\'')
-                        i++;
-                    i--;
-                    control++;
-                    char *b = getenv(ft_substr(control, k, i-k));
-                    if (b)
-                        printf("%s\n", b);
-                }
-                //free(control);
-            }
-            i++;
-        }
-        return control;
-}
-
 void pipe_parse(t_general **pipe_block, char *line)
 {
     int i = 0;
     t_general *tmp;
     tmp = *pipe_block;
-    while(line[i] != '"' && line[i] != '\'')
+    while (line[i] && line[i] != '"' && line[i] != '\'')
         i++;
     if(line[i] && line[i] != '"' && line[i] != '\'')
     {
