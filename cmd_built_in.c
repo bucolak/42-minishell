@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/09 12:32:52 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/09 17:59:52 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp)
 {
     int i = 0;
+    heredoc(&pipe_blocs);
     while(pipe_blocs)
     {
         i = 0;
@@ -50,7 +51,6 @@ void echo_cmd(t_general *list)
     int i = 1;
     int j = 0;
     int k = 0;
-    int l;
     char *env;
     t_general *tmp;
     tmp = list;

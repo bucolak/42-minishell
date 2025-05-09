@@ -1,4 +1,4 @@
-SRC = main.c execute.c cmd_built_in.c environment.c count_quote.c message.c etc.c apply_malloc.c
+SRC = main.c execute.c cmd_built_in.c environment.c count_quote.c message.c etc.c apply_malloc.c redirection.c
 
 CC = gcc 
 
@@ -8,7 +8,7 @@ MINISHELL = minishell
 
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -g
+CFLAGS = -Wall -Wextra -Werror -g
 
 LDFLAGS = -lreadline
 

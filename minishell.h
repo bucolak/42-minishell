@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/09 12:09:22 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/09 20:09:18 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,5 +116,9 @@ int	ft_strcmp(const char *s1, const char *s2);
 t_env	*ft_lsttlast(t_env *lst);
 int is_numeric(char *str);
 int is_repeated(t_env **node, char *ky, char *dt);
+
+// redirection.c
+void heredoc(t_general **list);
+void renew_block(char ***args);
 
 #endif

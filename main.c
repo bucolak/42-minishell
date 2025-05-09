@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/09 12:10:38 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/09 17:58:54 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,39 +24,6 @@
 //         i++;
 //     }
 //     free(str);
-// }
-
-// void dolar_control(t_general *dolar)
-// {
-//     while (dolar)
-//     {
-//         int i = 0;
-//         while (dolar->acces_args->args[i])
-//         {
-           
-//             if ((dolar->acces_args->args[i]->flag == 0 || dolar->acces_args->args[i]->flag == 2)
-//                 && ft_strchr(dolar->acces_args->args[i]->str, '$'))
-//             {
-//                 char *control = ft_strchr(dolar->acces_args->args[i]->str, '$');
-//                 control = ft_strtrim(control, "\" ");
-//                 if (control && control[1] != ' ' && control[1] != '\0')
-//                 {
-//                     control++;
-//                     char *b = getenv(control);
-//                     if (b)
-//                         printf("%s\n", b);
-//                 }
-//                 //free(control);
-//             }
-//             else if((dolar->acces_args->args[i]->flag == 1) && ft_strchr(dolar->acces_args->args[i]->str, '$'))
-//             {
-//                 char *control = ft_strtrim(control, "'");
-//                 printf("%s\n", control);
-//             }
-//             i++;
-//         }
-//         dolar = dolar->next;
-//     }
 // }
 
 void pipe_parse(t_general **pipe_block, char *line)
@@ -139,24 +106,52 @@ void parse_input(t_general *a)
         k = 0;
         while (a->blocs[i])
         {
+            // Boşlukları atla
             while (a->blocs[i] == ' ')
                 i++;
             if (a->blocs[i] == '\0')
                 break;
+
+            // Redirection operatorleri kontrolü
+            if (a->blocs[i] == '<' || a->blocs[i] == '>')
+            {
+                int len = 1;
+                if (a->blocs[i] == a->blocs[i + 1]) // << veya >>
+                    len = 2;
+                a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, i, len), 5); // flag 5: redirection
+                i += len;
+                continue;
+            }
+
+            // Pipe operatorü kontrolü
+            if (a->blocs[i] == '|')
+            {
+                a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, i, 1), 6); // flag 6: pipe
+                i++;
+                continue;
+            }
+
+            // Argüman başı
             s = i;
             int in_quotes = 0;
             char current_quote = 0;
-            int flag = 2; // Normal durum, tırnak yok
-            
-            // İlk karakterin tırnak olup olmadığını kontrol et
             char starting_quote = 0;
+            int flag = 2; // normal argüman
+
+            // İlk tırnak karakterini kontrol et
             if (a->blocs[i] == '"' || a->blocs[i] == '\'')
-                starting_quote = a->blocs[i];
-            
-            // Argümanın sınırlarını bul
-            while (a->blocs[i] && (in_quotes || a->blocs[i] != ' '))
             {
-                // Eğer tırnak içindeysek, tüm karakterleri normal karakter olarak ele al
+                starting_quote = a->blocs[i];
+                in_quotes = 1;
+                current_quote = a->blocs[i];
+                i++;
+            }
+
+            while (a->blocs[i])
+            {
+                if (!in_quotes && (a->blocs[i] == ' ' || a->blocs[i] == '<' || a->blocs[i] == '>' || a->blocs[i] == '|'))
+                    break;
+
                 if (a->blocs[i] == '"' || a->blocs[i] == '\'')
                 {
                     if (in_quotes && a->blocs[i] == current_quote)
@@ -172,39 +167,48 @@ void parse_input(t_general *a)
                 }
                 i++;
             }
-            
-            // Tırnak kapanmadı kontrolü ve flag belirleme
-            if (in_quotes)
-            {
-                // Asıl sorun burada olabilir. Tırnak kapanmadı hatası vermek yerine
-                // varsayılan olarak kapanmış gibi devam edelim
-                in_quotes = 0;
-            }
-            
-            // Flag türünü belirle
+
             int length = i - s;
-            if (length >= 2 && a->blocs[s] == starting_quote && a->blocs[i-1] == starting_quote && starting_quote != 0)
+
+            // Argüman içinde tırnaklı ifade varsa flag = 4
+            int quote_count = 0;
+            for (int j = s; j < i; j++)
             {
-                // Tamamen tırnak içinde
-                flag = (starting_quote == '"') ? 0 : 1; // Çift tırnak için 0, tek tırnak için 1
+                if (a->blocs[j] == '"' || a->blocs[j] == '\'')
+                    quote_count++;
             }
-            else if (starting_quote != 0 || (length > 0 && (a->blocs[s] == '"' || a->blocs[s] == '\'' || 
-                                            a->blocs[i-1] == '"' || a->blocs[i-1] == '\'')))
+
+            if (length >= 2 &&
+                a->blocs[s] == starting_quote &&
+                a->blocs[i - 1] == starting_quote &&
+                starting_quote != 0 &&
+                quote_count == 2)
             {
-                // Karışık içerik (tırnak ile başlıyor/bitiyor ama tam kapanmıyor veya başka tırnaklar da var)
-                flag = 4;
+                // düzgün çift tırnaklı ifade
+                flag = (starting_quote == '"') ? 0 : 1;
+                s++;            // tırnak dahil etme
+                length -= 2;
             }
-            
-            // Eğer pipe işaretini bir argüman içinde görüyorsak ve tırnak içindeysek, normal karakter olarak ele al
+            else if (quote_count > 0)
+            {
+                flag = 4; // içinde tırnak geçen ama düzgün kapatılmamış ya da karışık tırnaklı
+            }
+
             a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, s, length), flag);
         }
+
         a->acces_args->args[k] = NULL;
         a = a->next;
     }
 }
+
+
 int main(int argc, char *argv[], char **envp)
 {
+    (void)argc;
+    (void)argv;
     char *line;
+    int i;
     t_general *pipe_blocs = create_general_node();
     t_env *env;
     static int first_run = 1;
@@ -225,10 +229,30 @@ int main(int argc, char *argv[], char **envp)
         add_history(line);
         pipe_parse(&pipe_blocs, line);
         parse_input(pipe_blocs);
+        // heredoc(&pipe_blocs);
         //print_pipes(pipe_blocs);
-        //dolar_control(pipe_blocs);
-        check_cmd_built_in(pipe_blocs, &env, envp);
-        //check_cmd_sys_call(pipe_blocs, &env); 
+        while(pipe_blocs)
+        {
+            i = 0;
+            while(pipe_blocs->acces_args->args[i])
+            {
+                if(ft_strcmp(pipe_blocs->acces_args->args[i]->str,"echo") == 0
+                    || ft_strcmp(pipe_blocs->acces_args->args[i]->str,"cd") == 0
+                    || ft_strcmp(pipe_blocs->acces_args->args[i]->str,"pwd") == 0
+                    || ft_strcmp(pipe_blocs->acces_args->args[i]->str,"export") == 0
+                    || ft_strcmp(pipe_blocs->acces_args->args[i]->str,"env") == 0
+                    || ft_strcmp(pipe_blocs->acces_args->args[i]->str,"unset") == 0
+                    || ft_strcmp(pipe_blocs->acces_args->args[i]->str,"exit") == 0)
+                    {
+                        check_cmd_built_in(pipe_blocs, &env, envp);
+                        break;
+                    }
+                else
+                    check_cmd_sys_call(pipe_blocs, &env);  
+                i++;
+            }
+            pipe_blocs = pipe_blocs->next;
+        }
         pipe_blocs = create_general_node();
         free(line);
     }
