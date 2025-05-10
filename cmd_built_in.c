@@ -6,13 +6,13 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/09 17:59:52 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/10 14:23:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp)
+void check_cmd_built_in(t_general *pipe_blocs, t_env **node)
 {
     int i = 0;
     heredoc(&pipe_blocs);
@@ -35,7 +35,7 @@ void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp)
             else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "unset", 5) == 0)
                 unset_cmd(pipe_blocs, node);
             else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "env", 3) == 0)
-                print_env(pipe_blocs ,node, envp, i);
+                print_env(pipe_blocs ,node, i);
             else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "exit", 4) == 0)
                 exit_cmd(pipe_blocs);
             else if(ft_strncmp(pipe_blocs->acces_args->args[i]->str, "echo", 4) == 0)

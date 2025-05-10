@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/05/02 16:11:14 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/10 14:20:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void get_env(t_env **node, char **envp)
     }
 }
 
-void print_env(t_general *list, t_env **node, char **envp, int i)
+void print_env(t_general *list, t_env **node, int i)
 {
     t_env *tmp;
     
@@ -131,7 +131,6 @@ char *get_data(char *str)
 void create_env(t_general *list, t_env **env)
 {
     int i;
-    int j;
     while(list)
     {
         i = 0;

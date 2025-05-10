@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/09 20:09:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/10 14:24:04 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void parse_input( t_general *a);
 void check_cmd_sys_call(t_general *pipe_blocs, t_env **env);
 
 // cmd_built_in.c
-void check_cmd_built_in(t_general *pipe_blocs, t_env **node, char **envp);
+void check_cmd_built_in(t_general *pipe_blocs, t_env **node);
 void exit_cmd(t_general *list);
 void unset_cmd(t_general *list, t_env **env);
 void print_export_env(t_env **env);
@@ -96,7 +96,7 @@ void echo_cmd(t_general *list);
 
 // environment.c
 void get_env(t_env **node, char **envp);
-void print_env(t_general *list, t_env **node, char **envp, int i);
+void print_env(t_general *list, t_env **node, int i);
 void	ft_envadd_back(t_env **lst, char *key, char *data);
 char *get_key(char *str);
 char *get_data(char *str);
