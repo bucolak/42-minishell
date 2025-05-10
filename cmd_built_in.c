@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/10 14:23:46 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/10 19:07:58 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,63 @@ void echo_cmd(t_general *list)
     {
         while(tmp->acces_args->args[i])
         {
+             if (ft_strcmp(tmp->acces_args->args[i]->str, ">>") == 0)
+                break;
             str = tmp->acces_args->args[i]->str;
             j = 0;
             k = 0;
-            if(tmp->acces_args->args[i]->flag == 4)
-            {
-                printf("burda2\n");
-                while(str[j])
+                if(tmp->acces_args->args[i]->flag == 4)
                 {
-                    if(str[j] == '"')
-                    {              
-                        j++;          
-                        while(str[j] && str[j] != '"')
+                    while(str[j])
+                    {
+                        if(str[j] == '"')
+                        {              
+                            j++;          
+                            while(str[j] && str[j] != '"')
+                            {
+                                if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?')
+                                {
+                                    j++;
+                                    k = j;
+                                    while (str[k] && str[k] != ' ' && str[k] != '"' && str[k] != '\'' && str[k] != '$')
+                                        k++;
+                                    char *new = ft_substr(str, j,k-j);
+                                    env = getenv(new);
+                                    ft_putstr_fd(env, 1);
+                                    j = k;
+                                }
+                                else if(str[j] == '$' && str[j+1] == '?')
+                                {
+                                    ft_putstr_fd(ft_itoa(tmp->dqm), 1);
+                                    j+=2;
+                                }
+                                else if(str[j] == '$' && !str[j+1])
+                                    ft_putchar_fd(str[j], 1);
+                                j++;
+                            }
+                        }
+                        if(str[j]!='"' && str[j]!='\'')
+                            ft_putchar_fd(str[j], 1);
+                        j++;
+                    }
+                }
+                else if (tmp->acces_args->args[i]->flag == 1)
+                {
+                    env = tmp->acces_args->args[i]->str;
+                    while(env[j])
+                    {
+                        if(env[j] != '\'')
+                            ft_putchar_fd(env[j], 1);
+                        j++;
+                    }
+                }
+                else
+                {
+                    if(tmp->acces_args->args[i]->flag == 0 || tmp->acces_args->args[i]->flag == 2)
+                    {
+                        while(str[j])
                         {
-                            if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?')
+                            if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?' && str[j+1]!='"' && str[j+1])
                             {
                                 j++;
                                 k = j;
@@ -83,71 +126,127 @@ void echo_cmd(t_general *list)
                                     k++;
                                 char *new = ft_substr(str, j,k-j);
                                 env = getenv(new);
-                                printf("%s", env);
-                                j = k;
+                                ft_putstr_fd(env, 1);
+                                j = k; //neden
                             }
                             else if(str[j] == '$' && str[j+1] == '?')
                             {
-                                printf("%d", tmp->dqm);
+                                ft_putstr_fd(ft_itoa(tmp->dqm), 1);
                                 j+=2;
                             }
-                            else if(str[j] == '$' && !str[j+1])
-                                printf("%c", str[j]);
+                            if(str[j] != '"')
+                                ft_putchar_fd(str[j], 1);
                             j++;
                         }
+                        if(tmp->acces_args->args[i+1])
+                            ft_putchar_fd(' ', 1);
                     }
-                    if(str[j]!='"' && str[j]!='\'')
-                        printf("%c",str[j]);
-                    j++;
                 }
-            }
-            else if (tmp->acces_args->args[i]->flag == 1)
-            {
-                printf("burda333\n");
-                env = tmp->acces_args->args[i]->str;
-                while(env[j])
-                {
-                    if(env[j] != '\'')
-                        printf("%c", env[j]);
-                    j++;
-                }
-            }
-            else
-            {
-                if(tmp->acces_args->args[i]->flag == 0 || tmp->acces_args->args[i]->flag == 2)
-                {
-                    printf("burda222\n");
-                    while(str[j])
-                    {
-                        if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?' && str[j+1]!='"' && str[j+1])
-                        {
-                            j++;
-                            k = j;
-                            while (str[k] && str[k] != ' ' && str[k] != '"' && str[k] != '\'' && str[k] != '$')
-                                k++;
-                            char *new = ft_substr(str, j,k-j);
-                            env = getenv(new);
-                            printf("%s", env);
-                            j = k; //neden
-                        }
-                        else if(str[j] == '$' && str[j+1] == '?')
-                        {
-                            printf("%d", tmp->dqm);
-                            j+=2;
-                        }
-                        if(str[j] != '"')
-                            printf("%c", str[j]);
-                        j++;
-                    }
-                    if(tmp->acces_args->args[i+1])
-                        printf(" ");
-                }
-            }
             i++;
+            }
         }
-        printf("\n");
-    }
+        ft_putchar_fd('\n', 1);
 }
+
+// void echo_cmd(t_general *list)
+// {
+//     int i = 1;
+//     int j = 0;
+//     int k = 0;
+//     char *env;
+//     t_general *tmp;
+//     tmp = list;
+//     char *str;
+    
+//     if(!tmp->acces_args->args[1])
+//         printf("\n");
+//     else
+//     {
+//         while(tmp->acces_args->args[i])
+//         {
+//             str = tmp->acces_args->args[i]->str;
+//             j = 0;
+//             k = 0;
+//             if(tmp->acces_args->args[i]->flag == 4)
+//             {
+//                 while(str[j])
+//                 {
+//                     if(str[j] == '"')
+//                     {              
+//                         j++;          
+//                         while(str[j] && str[j] != '"')
+//                         {
+//                             if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?')
+//                             {
+//                                 j++;
+//                                 k = j;
+//                                 while (str[k] && str[k] != ' ' && str[k] != '"' && str[k] != '\'' && str[k] != '$')
+//                                     k++;
+//                                 char *new = ft_substr(str, j,k-j);
+//                                 env = getenv(new);
+//                                 printf("%s", env);
+//                                 j = k;
+//                             }
+//                             else if(str[j] == '$' && str[j+1] == '?')
+//                             {
+//                                 printf("%d", tmp->dqm);
+//                                 j+=2;
+//                             }
+//                             else if(str[j] == '$' && !str[j+1])
+//                                 printf("%c", str[j]);
+//                             j++;
+//                         }
+//                     }
+//                     if(str[j]!='"' && str[j]!='\'')
+//                         printf("%c",str[j]);
+//                     j++;
+//                 }
+//             }
+//             else if (tmp->acces_args->args[i]->flag == 1)
+//             {
+//                 env = tmp->acces_args->args[i]->str;
+//                 while(env[j])
+//                 {
+//                     if(env[j] != '\'')
+//                         printf("%c", env[j]);
+//                     j++;
+//                 }
+//             }
+//             else
+//             {
+//                 if(tmp->acces_args->args[i]->flag == 0 || tmp->acces_args->args[i]->flag == 2)
+//                 {
+//                     while(str[j])
+//                     {
+//                         if(str[j] == '$' && str[j+1] != ' ' && str[j+1] != '?' && str[j+1]!='"' && str[j+1])
+//                         {
+//                             j++;
+//                             k = j;
+//                             while (str[k] && str[k] != ' ' && str[k] != '"' && str[k] != '\'' && str[k] != '$')
+//                                 k++;
+//                             char *new = ft_substr(str, j,k-j);
+//                             env = getenv(new);
+//                             printf("%s", env);
+//                             j = k; //neden
+//                         }
+//                         else if(str[j] == '$' && str[j+1] == '?')
+//                         {
+//                             printf("%d", tmp->dqm);
+//                             j+=2;
+//                         }
+//                         if(str[j] != '"')
+//                             printf("%c", str[j]);
+//                         j++;
+//                     }
+//                     if(tmp->acces_args->args[i+1])
+//                         printf(" ");
+//                 }
+//             }
+//             i++;
+//         }
+//         printf("\n");
+//     }
+// }
 
 void exit_cmd(t_general *list)
 {

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/10 15:19:38 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/10 19:08:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@ int main(int argc, char *argv[], char **envp)
                     || ft_strcmp(pipe_blocs->acces_args->args[i]->str,"exit") == 0)
                     {
                         check_cmd_built_in(pipe_blocs, &env);
-                        break;
+                        //break;
                     }
                 else
                     check_cmd_sys_call(pipe_blocs, &env);  

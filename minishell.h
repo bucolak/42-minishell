@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/10 14:24:04 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/10 19:08:56 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,12 @@ typedef struct s_general
     struct s_general *next;
 } t_general;
 
+typedef struct s_now
+{
+    char **ar;
+    char **envp;
+}   t_now;
+
 
 // apply_malloc.c
 t_arg *create_arg(const char *str, int flag);
@@ -83,6 +89,7 @@ void parse_input( t_general *a);
 
 // execute.c
 void check_cmd_sys_call(t_general *pipe_blocs, t_env **env);
+;
 
 // cmd_built_in.c
 void check_cmd_built_in(t_general *pipe_blocs, t_env **node);
@@ -93,6 +100,7 @@ t_env **export_cmd( t_env **env);
 void cd_cmd(t_arg **args);
 void pwd_cmd(char **ar);
 void echo_cmd(t_general *list);
+void handle_append(t_now *get, t_general *list);
 
 // environment.c
 void get_env(t_env **node, char **envp);
@@ -120,5 +128,6 @@ int is_repeated(t_env **node, char *ky, char *dt);
 // redirection.c
 void heredoc(t_general **list);
 void renew_block(char ***args);
+void renew_block2(t_general *list);
 
 #endif

@@ -6,51 +6,73 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/09 20:10:19 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/10 18:24:06 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void renew_block2(t_general *list)
+{
+    int i = 0, j = 0;
+    t_arg **new;
+    t_general *tmp = list;
+
+    while (tmp->acces_args->args[i])
+        i++;
+    new = malloc(sizeof(t_arg *) * (i + 1));
+
+    i = 0;
+    while (tmp->acces_args->args[i])
+    {
+        if (ft_strcmp(tmp->acces_args->args[i]->str, "<") == 0 ||
+            ft_strcmp(tmp->acces_args->args[i]->str, "<<") == 0 ||
+            ft_strcmp(tmp->acces_args->args[i]->str, ">") == 0 ||
+            ft_strcmp(tmp->acces_args->args[i]->str, ">>") == 0)
+        {
+            i += 2;
+        }
+        else
+        {
+            new[j] = malloc(sizeof(t_arg));
+            new[j]->str = ft_strdup(tmp->acces_args->args[i]->str);
+            new[j]->flag = tmp->acces_args->args[i]->flag;
+            j++;
+            i++;
+        }
+    }
+    new[j] = NULL;
+    tmp->acces_args->args = new;
+}
+
 
 void renew_block(char ***args)
 {
     int i = 0;
     int j = 0;
     char **new;
-    while ((*args)[i])
+    char **old;
+    old = *args;
+    while (old[i])
         i++;
     new = malloc(sizeof(char *)*(i+1));
     i = 0;
-    while(args[i])
+    while(old[i])
     {
-        if(ft_strcmp((*args)[i], "<") == 0
-            || ft_strcmp((*args)[i], "<<") == 0
-            || ft_strcmp((*args)[i], ">") == 0
-            || ft_strcmp((*args)[i], ">>") == 0)
+        if(ft_strcmp(old[i], "<") == 0
+            || ft_strcmp(old[i], "<<") == 0
+            || ft_strcmp(old[i], ">") == 0
+            || ft_strcmp(old[i], ">>") == 0)
             i+=2;
         else
         {
-            new[j] = ft_strdup((*args)[i]);
+            new[j] = ft_strdup(old[i]);
             j++;
         }
         i++;   
     }
     new[j] = NULL;
-    
-    *args = malloc (sizeof(t_arg *) * j+1);
-    j = 0;
-    i = 0;
-    while(new[j])
-    {
-        (*args)[i] = ft_strdup(new[j]);
-        j++;
-        i++;
-    }
-    for (int k = 0; k < j; k++)
-        free(new[k]);
-    free(new);
-    (*args)[i] = malloc(sizeof(t_arg));
-    (*args)[i]= NULL;
+    *args = new;
 }
 
 void heredoc(t_general **list)
