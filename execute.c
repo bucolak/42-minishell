@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/10 19:07:30 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/11 15:27:57 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
 
         if(ft_strcmp(get->ar[0], "echo") == 0)
         {
-            echo_cmd(pipe_blocs);
+            initalized_echo(pipe_blocs);
             exit(0) ;
         }
         else

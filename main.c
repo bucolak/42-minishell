@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/10 19:08:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/11 15:54:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,9 @@ void parse_input(t_general *a)
             int in_quotes = 0;
             char current_quote = 0;
             char starting_quote = 0;
-            int flag = 2; // normal argüman
+            int flag = 2; // varsayılan: normal argüman
 
-            // İlk tırnak karakterini kontrol et
+            // İlk karakter tırnak mı?
             if (a->blocs[i] == '"' || a->blocs[i] == '\'')
             {
                 starting_quote = a->blocs[i];
@@ -147,6 +147,7 @@ void parse_input(t_general *a)
                 i++;
             }
 
+            // Argüman uzunluğu belirleme
             while (a->blocs[i])
             {
                 if (!in_quotes && (a->blocs[i] == ' ' || a->blocs[i] == '<' || a->blocs[i] == '>' || a->blocs[i] == '|'))
@@ -170,28 +171,30 @@ void parse_input(t_general *a)
 
             int length = i - s;
 
-            // Argüman içinde tırnaklı ifade varsa flag = 4
-            int quote_count = 0;
-            for (int j = s; j < i; j++)
+            // Flag belirleme
+            if (starting_quote != 0 && a->blocs[i - 1] == starting_quote)
             {
-                if (a->blocs[j] == '"' || a->blocs[j] == '\'')
-                    quote_count++;
-            }
-
-            if (length >= 2 &&
-                a->blocs[s] == starting_quote &&
-                a->blocs[i - 1] == starting_quote &&
-                starting_quote != 0 &&
-                quote_count == 2)
-            {
-                // düzgün çift tırnaklı ifade
+                // düzgün kapatılmış tırnak
                 flag = (starting_quote == '"') ? 0 : 1;
-                s++;            // tırnak dahil etme
+                s++;
                 length -= 2;
             }
-            else if (quote_count > 0)
+            else if (starting_quote != 0)
             {
-                flag = 4; // içinde tırnak geçen ama düzgün kapatılmamış ya da karışık tırnaklı
+                // kapatılmamış tırnak
+                flag = 4;
+            }
+            else
+            {
+                // dış tırnak yok ama içeride tırnak varsa -> karmaşık
+                for (int j = s; j < s + length; j++)
+                {
+                    if (a->blocs[j] == '"' || a->blocs[j] == '\'')
+                    {
+                        flag = 4;
+                        break;
+                    }
+                }
             }
 
             a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, s, length), flag);
@@ -244,7 +247,7 @@ int main(int argc, char *argv[], char **envp)
                     || ft_strcmp(pipe_blocs->acces_args->args[i]->str,"exit") == 0)
                     {
                         check_cmd_built_in(pipe_blocs, &env);
-                        //break;
+                        break;
                     }
                 else
                     check_cmd_sys_call(pipe_blocs, &env);  
