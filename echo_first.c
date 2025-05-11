@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 15:39:04 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/11 18:01:18 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,22 @@
 
 void	echo_flag_4_second(char *str, char *env, t_general *tmp, int *j)
 {
-	int	k;
+	int		k;
+	char	*var_name;
 
 	while (str[*j])
 	{
 		if (str[*j] == '$' && str[*j + 1] != ' ' && str[*j + 1] != '?')
 		{
-			j++;
+			(*j)++;
 			k = *j;
 			while (str[k] && str[k] != ' ' && str[k] != '"' && str[k] != '\''
 				&& str[k] != '$')
 				k++;
-			env = getenv(ft_substr(str,*j, k - *j));
-			ft_putstr_fd(env, 1);
+			var_name = ft_substr(str, *j, k - *j);
+			env = getenv(var_name);
+			if (env)
+				ft_putstr_fd(env, 1);
 			*j = k;
 		}
 		else if (str[*j] == '$' && str[*j + 1] == '?')
@@ -51,8 +54,8 @@ void	echo_flag_4(char *str, char *env, t_general *tmp)
 		{
 			j++;
 			echo_flag_4_second(str, env, tmp, &j);
-			if(!str[j])
-				break;
+			if (!str[j])
+				break ;
 		}
 		if (str[j] != '"' && str[j] != '\'')
 			ft_putchar_fd(str[j], 1);
@@ -64,7 +67,12 @@ void	echo_cmd(t_general *tmp, char *str, char *env, int i)
 {
 	while (tmp->acces_args->args[i])
 	{
-		if (ft_strcmp(tmp->acces_args->args[i]->str, ">>") == 0)
+		if (ft_strcmp(tmp->acces_args->args[1]->str, "-n") == 0)
+			i++;
+		if (ft_strcmp(tmp->acces_args->args[i]->str, ">>") == 0
+			|| ft_strcmp(tmp->acces_args->args[i]->str, ">") == 0
+			|| ft_strcmp(tmp->acces_args->args[i]->str, "<") == 0
+			|| ft_strcmp(tmp->acces_args->args[i]->str, "<<") == 0)
 			break ;
 		str = tmp->acces_args->args[i]->str;
 		if (tmp->acces_args->args[i]->flag == 4)
@@ -79,15 +87,16 @@ void	echo_cmd(t_general *tmp, char *str, char *env, int i)
 		}
 		i++;
 	}
-	ft_putchar_fd('\n', 1);
+	if (ft_strcmp(tmp->acces_args->args[1]->str, "-n") != 0)
+		ft_putchar_fd('\n', 1);
 }
 
 void	initalized_echo(t_general *list)
 {
-	int i;
-	char *env;
-	char *str;
-	t_general *tmp;
+	int			i;
+	char		*env;
+	char		*str;
+	t_general	*tmp;
 
 	i = 1;
 	tmp = list;

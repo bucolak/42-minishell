@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 15:41:26 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/11 17:55:38 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 
 void	echo_flag_0_and_2_second(char *str, char *env, t_general *tmp, int *j)
 {
-	int	k;
+	int		k;
+	char	*var_name;
 
 	if (str[*j] == '$' && str[*j + 1] != ' ' && str[*j + 1] != '?' && str[*j
 		+ 1] != '"' && str[*j + 1])
 	{
 		(*j)++;
 		k = *j;
-		while (str[k] && str[k] != ' ' && str[k] != '"' && str[k] != '\''
-			&& str[k] != '$')
+		while (str[k] && ((str[k] >= 'A' && str[k] <= 'Z') || (str[k] >= 'a'
+					&& str[k] <= 'z') || (str[k] >= '0' && str[k] <= '9')
+				|| str[k] == '_'))
 			k++;
-		env = getenv(ft_substr(str, *j, k - *j));
-		ft_putstr_fd(env, 1);
+		var_name = ft_substr(str, *j, k - *j);
+		env = getenv(var_name);
+		if (env)
+			ft_putstr_fd(env, 1);
 		*j = k; //neden
 	}
 	else if (str[*j] == '$' && str[*j + 1] == '?')

@@ -1,4 +1,4 @@
-SRC = main.c execute.c cmd_built_in.c environment_first.c environment_second.c count_quote.c message.c etc.c apply_malloc.c redirection.c echo_first.c echo_second.c exit.c
+SRC = main.c execute.c cmd_built_in.c environment_first.c environment_second.c count_quote.c message.c etc.c apply_malloc.c redirection.c echo_first.c echo_second.c exit.c unset.c
 
 CC = gcc 
 
