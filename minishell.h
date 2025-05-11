@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 18:06:04 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/11 20:55:32 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,14 @@ typedef struct s_general
 
 typedef struct s_now
 {
-	char				**ar;
 	char				**envp;
 }						t_now;
+
+typedef struct s_heredoc
+{
+	char *content;
+	struct s_heredoc *next;
+}	t_heredoc;
 
 // apply_malloc.c
 t_arg					*create_arg(const char *str, int flag);
@@ -88,7 +93,7 @@ void					parse_input(t_general *a);
 
 // execute.c
 void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env);
-;
+int is_built_in(char *str);
 
 // cmd_built_in.c
 void					check_cmd_built_in(t_general *pipe_blocs, t_env **node);

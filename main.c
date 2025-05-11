@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 19:37:57 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/11 20:20:35 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,27 +203,26 @@ void	parse_input(t_general *a)
 	}
 }
 
-int has_redireciton(t_general *pipe_blocks)
+int	has_redireciton(t_general *pipe_blocks)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while(pipe_blocks->acces_args->args[i])
-    {
-        if(ft_strcmp(pipe_blocks->acces_args->args[i]->str, "<") == 0
-            || ft_strcmp(pipe_blocks->acces_args->args[i]->str, "<<") == 0
-            || ft_strcmp(pipe_blocks->acces_args->args[i]->str, ">") == 0
-            || ft_strcmp(pipe_blocks->acces_args->args[i]->str, ">>") == 0)
-            return 1;
-        i++;
-    }
-    return 0;
+	i = 0;
+	while (pipe_blocks->acces_args->args[i])
+	{
+		if (ft_strcmp(pipe_blocks->acces_args->args[i]->str, "<") == 0
+			|| ft_strcmp(pipe_blocks->acces_args->args[i]->str, "<<") == 0
+			|| ft_strcmp(pipe_blocks->acces_args->args[i]->str, ">") == 0
+			|| ft_strcmp(pipe_blocks->acces_args->args[i]->str, ">>") == 0)
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 int	main(int argc, char *argv[], char **envp)
 {
 	char		*line;
-	int			i;
 	t_general	*pipe_blocs;
 	t_env		*env;
 	static int	first_run;
@@ -252,29 +251,17 @@ int	main(int argc, char *argv[], char **envp)
 		//print_pipes(pipe_blocs);
 		while (pipe_blocs)
 		{
-			i = 0;
-			while (pipe_blocs->acces_args->args[i])
+			if (pipe_blocs->acces_args->args[0])
 			{
-				if ((ft_strcmp(pipe_blocs->acces_args->args[i]->str, "echo") == 0
-					|| ft_strcmp(pipe_blocs->acces_args->args[i]->str,
-						"cd") == 0
-					|| ft_strcmp(pipe_blocs->acces_args->args[i]->str,
-						"pwd") == 0
-					|| ft_strcmp(pipe_blocs->acces_args->args[i]->str,
-						"export") == 0
-					|| ft_strcmp(pipe_blocs->acces_args->args[i]->str,
-						"env") == 0
-					|| ft_strcmp(pipe_blocs->acces_args->args[i]->str,
-						"unset") == 0
-					|| ft_strcmp(pipe_blocs->acces_args->args[i]->str,
-						"exit") == 0) && has_redireciton(pipe_blocs) == 0)
+				if ((!has_redireciton(pipe_blocs)
+						&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 				{
 					check_cmd_built_in(pipe_blocs, &env);
-					break ;
 				}
 				else
+				{
 					check_cmd_sys_call(pipe_blocs, &env);
-				i++;
+				}
 			}
 			pipe_blocs = pipe_blocs->next;
 		}
