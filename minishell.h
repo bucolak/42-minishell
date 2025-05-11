@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 16:48:00 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/11 18:06:04 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,6 @@ int						is_numeric(char *str);
 int						is_repeated(t_env **node, char *ky, char *dt);
 
 // redirection.c
-void					heredoc(t_general **list);
 void					renew_block(char ***args);
 void					renew_block2(t_general *list);
 
