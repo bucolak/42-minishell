@@ -1,0 +1,2 @@
+cat < a.txt yazınca dosya yoksa yok diye hata mesjaaı veriyo ama dosyayı da oluşturuyo
+diğer operatörlerde de geçerli

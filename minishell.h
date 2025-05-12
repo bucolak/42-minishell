@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 20:55:32 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/12 15:24:54 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@ typedef struct s_now
 
 typedef struct s_heredoc
 {
-	char *content;
-	struct s_heredoc *next;
-}	t_heredoc;
+	char				*content;
+	struct s_heredoc	*next;
+}						t_heredoc;
 
 // apply_malloc.c
 t_arg					*create_arg(const char *str, int flag);
@@ -93,12 +93,13 @@ void					parse_input(t_general *a);
 
 // execute.c
 void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env);
-int is_built_in(char *str);
+int						is_built_in(char *str);
 
 // cmd_built_in.c
 void					check_cmd_built_in(t_general *pipe_blocs, t_env **node);
-void					built_in_helper_func(t_general *pipe_blocs,
-							t_env **node, int *i);
+void	built_in_helper_func(t_general *pipe_blocs,
+							t_env **node,
+							int *i);
 void					cd_cmd(t_arg **args);
 void					pwd_cmd(char **ar);
 
@@ -132,9 +133,19 @@ t_env					*ft_lsttlast(t_env *lst);
 int						is_numeric(char *str);
 int						is_repeated(t_env **node, char *ky, char *dt);
 
-// redirection.c
-void					renew_block(char ***args);
+// redirection_first.c
+int						is_redireciton(char *str);
 void					renew_block2(t_general *list);
+void					renew_else_block(t_arg ***new, t_general *tmp, int *i,
+							int *j);
+void					renew_block2(t_general *list);
+void					handle_output(t_general *list);
+void					handle_input(t_general *list);
+
+// redirection_second.c
+void					heredoc_actions(t_general *list, t_heredoc *tmp,
+							t_heredoc *heredoc);
+void					handle_heredoc(t_general *list);
 
 // echo_first.c
 void					echo_flag_4_second(char *str, char *env, t_general *tmp,

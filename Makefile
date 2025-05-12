@@ -1,4 +1,18 @@
-SRC = main.c execute.c cmd_built_in.c environment_first.c environment_second.c count_quote.c message.c etc.c apply_malloc.c redirection.c echo_first.c echo_second.c exit.c unset.c
+SRC = main.c \
+	  execute.c \
+	  cmd_built_in.c \
+	  environment_first.c \
+	  environment_second.c \
+	  count_quote.c \
+	  message.c \
+	  etc.c \
+	  apply_malloc.c \
+	  redirection_first.c \
+	  redirection_second.c \
+	  echo_first.c \
+	  echo_second.c \
+	  exit.c \
+	  unset.c
 
 CC = gcc 
 
@@ -12,21 +26,26 @@ CFLAGS = -Wall -Wextra -Werror -g
 
 LDFLAGS = -lreadline
 
-all: $(MINISHELL)
+%.o: %.c
+	@$(CC) $(CFLAGS) -c $< -o $@
 
+all: $(MINISHELL)
+	@echo "Compiled!"
+	
 $(MINISHELL): $(OBJ)
-	make -C ./libft
-	make bonus -C ./libft
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LDFLAGS) -o $(MINISHELL)
+	@make -C ./libft --silent
+	@make bonus -C ./libft --silent
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LDFLAGS) -o $(MINISHELL)
 
 clean: 
-	make clean -C ./libft
-	rm -f $(OBJ)
+	@make clean -C ./libft --silent
+	@rm -f $(OBJ)
 
 fclean: clean
-	make fclean -C ./libft
-	rm -f $(MINISHELL)
+	@make fclean -C ./libft --silent
+	@rm -f $(MINISHELL)
 
 re: fclean all
+	@echo "Compiled!"
 
 .PHONY: all clean fclean re

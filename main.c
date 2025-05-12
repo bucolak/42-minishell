@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 20:20:35 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/12 17:10:55 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,6 +256,7 @@ int	main(int argc, char *argv[], char **envp)
 				if ((!has_redireciton(pipe_blocs)
 						&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 				{
+					
 					check_cmd_built_in(pipe_blocs, &env);
 				}
 				else
