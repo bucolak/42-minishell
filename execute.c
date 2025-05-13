@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/13 15:01:41 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/13 20:28:05 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,11 +118,90 @@ int	is_built_in(char *str)
 	return (0);
 }
 
+void check_redirection_args2(t_general *pipe_blocs,int *i)
+{
+	(*i)++;
+	if (!pipe_blocs->acces_args->args[*i])
+	{
+		error_msg(2, NULL, 3);
+		exit(1);
+	}
+	if (access(pipe_blocs->acces_args->args[*i]->str,
+				F_OK) != 0)
+	{
+		error_msg(2, pipe_blocs->acces_args->args[*i]->str, 0);
+		exit(1);
+	}
+}
+
+void check_redirection_args(t_general *pipe_blocs)
+{
+	int i;
+	i = 0;
+	while (pipe_blocs->acces_args->args[i])
+	{
+		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<<") == 0)
+		{
+			if (!pipe_blocs->acces_args->args[i + 1])
+			{
+				error_msg(2, NULL, 3);
+				exit(1);
+			}
+		}
+		else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0)
+			check_redirection_args2(pipe_blocs, &i);
+		else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0)
+		{
+			i++;
+			if (!pipe_blocs->acces_args->args[i])
+			{
+				error_msg(2, NULL, 3);
+				exit(1);
+			}
+		}
+		i++;
+	}
+}
+
+void handle_redirections(t_general *pipe_blocs)
+{
+	handle_output(pipe_blocs);
+	handle_input(pipe_blocs);
+	handle_append(pipe_blocs);
+	handle_heredoc(pipe_blocs);
+}
+
+void handle_pipe(t_general *list, t_now *get, t_env **env)
+{
+	int fd[2];
+	pid_t *pids;
+	t_general *tmp;
+	tmp = list;
+	char *msg;
+	int cmd_count;
+	int i;
+
+	i = 0;
+	cmd_count = 0;
+	while(tmp)
+	{
+		cmd_count++;
+		tmp = tmp->next;
+	}
+	while(i<cmd_count)
+	{
+		pids[i] = fork();
+		if(pids[i] == 0)
+		{
+			
+		}
+	}
+}
+
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
 {
 	pid_t	pid;
 	t_now	*get;
-	int		i;
 
 	get = malloc(sizeof(t_now));
 	get->envp = malloc(sizeof(t_now) * ft_lsttsize(*env));
@@ -130,47 +209,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
 	pid = fork();
 	if (pid == 0)
 	{
-		i = 0;
-		while (pipe_blocs->acces_args->args[i])
-		{
-			if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<<") == 0)
-			{
-				if (!pipe_blocs->acces_args->args[i + 1])
-				{
-					error_msg(2, NULL, 3);
-					exit(1);
-				}
-			}
-			else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0)
-			{
-				i++;
-				if (!pipe_blocs->acces_args->args[i])
-				{
-					error_msg(2, NULL, 3);
-					exit(1);
-				}
-				if (access(pipe_blocs->acces_args->args[i]->str,
-							F_OK) != 0)
-				{
-					error_msg(2, pipe_blocs->acces_args->args[i]->str, 0);
-					exit(1);
-				}
-			}
-			else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0)
-			{
-				i++;
-				if (!pipe_blocs->acces_args->args[i])
-				{
-					error_msg(2, NULL, 3);
-					exit(1);
-				}
-			}
-			i++;
-		}
-		handle_output(pipe_blocs);
-		handle_input(pipe_blocs);
-		handle_append(pipe_blocs);
-		handle_heredoc(pipe_blocs);
+		handle_redirections(pipe_blocs);
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
 			check_cmd_built_in(pipe_blocs, env);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/12 17:10:55 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/13 18:12:12 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,39 +26,67 @@
 //     free(str);
 // }
 
+int	is_in_quotes(const char *line, int pos)
+{
+	int		i;
+	int		in_quotes;
+	char	quote_type;
+
+	i = 0;
+	in_quotes = 0;
+	quote_type = 0;
+	
+	while (i < pos)
+	{
+		if ((line[i] == '"' || line[i] == '\'') && !in_quotes)
+		{
+			in_quotes = 1;
+			quote_type = line[i];
+		}
+		else if (line[i] == quote_type)
+		{
+			in_quotes = 0;
+			quote_type = 0;
+		}
+		i++;
+	}
+	return (in_quotes);
+}
 void	pipe_parse(t_general **pipe_block, char *line)
 {
 	int			i;
+	int			start;
 	t_general	*tmp;
-	char		**pipe_str;
+	char		*trimmed;
 
 	i = 0;
+	start = 0;
 	tmp = *pipe_block;
-	while (line[i] && line[i] != '"' && line[i] != '\'')
-		i++;
-	if (line[i] && line[i] != '"' && line[i] != '\'')
+
+	while (line[i])
 	{
-		pipe_str = ft_split(line, '|');
-		i = 0;
-		while (pipe_str[i])
+		// Tırnak içinde değilsek ve pipe karakteri bulduysak böl
+		if (line[i] == '|' && !is_in_quotes(line, i))
 		{
-			if (pipe_str[i][0] != '\0')
-			{
-				tmp->blocs = ft_strtrim(pipe_str[i], " ");
-				if (pipe_str[i + 1])
-				{
-					tmp->next = create_general_node();
-					tmp = tmp->next;
-				}
-			}
-			i++;
+			trimmed = ft_substr(line, start, i - start);
+			tmp->blocs = ft_strtrim(trimmed, " ");
+			free(trimmed);
+
+			// Yeni node oluştur
+			tmp->next = create_general_node();
+			tmp = tmp->next;
+			start = i + 1;
 		}
+		i++;
 	}
-	else
-	{
-		tmp->blocs = ft_strdup(line);
-	}
+
+	// Son kısmı ekle
+	trimmed = ft_substr(line, start, i - start);
+	tmp->blocs = ft_strtrim(trimmed, " ");
+	free(trimmed);
 }
+
+// Tırnak kontrolü için yardımcı fonksiyon
 
 void	print_pipes(t_general *pipe_block)
 {
