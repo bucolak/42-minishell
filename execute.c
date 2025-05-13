@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/12 17:32:31 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/13 15:01:41 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 	}
 	if (!command_found)
 	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(pipe_blocs->acces_args->args[0]->str, 2);
-		ft_putstr_fd(": command not found\n", 2);
+		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1);
 		exit(pipe_blocs->dqm);
 	}
 	exit(pipe_blocs->dqm);
@@ -133,42 +131,38 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
 	if (pid == 0)
 	{
 		i = 0;
-		if (pipe_blocs->acces_args->args[0] &&
-			ft_strcmp(pipe_blocs->acces_args->args[0]->str, "<") == 0)
-		{
-			ft_putstr_fd("bash: syntax error near unexpected token `<'\n", 2);
-			exit(1);
-		}
-		i = 0;
 		while (pipe_blocs->acces_args->args[i])
 		{
 			if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<<") == 0)
 			{
 				if (!pipe_blocs->acces_args->args[i + 1])
 				{
-					ft_putstr_fd("bash: syntax error near unexpected token `newline'\n",
-							2);
+					error_msg(2, NULL, 3);
 					exit(1);
 				}
 			}
 			else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0)
 			{
-				if (!pipe_blocs->acces_args->args[i + 1])
+				i++;
+				if (!pipe_blocs->acces_args->args[i])
 				{
-					ft_putstr_fd("bash: syntax error near unexpected token `newline'\n",
-							2);
+					error_msg(2, NULL, 3);
 					exit(1);
 				}
-				else
-				{
-					if (access(pipe_blocs->acces_args->args[i + 1]->str,
+				if (access(pipe_blocs->acces_args->args[i]->str,
 							F_OK) != 0)
-					{
-						ft_putstr_fd("bash: ", 2);
-						ft_putstr_fd(pipe_blocs->acces_args->args[i + 1]->str,
-								2);
-						ft_putstr_fd(": No such file or directory\n", 2);
-					}
+				{
+					error_msg(2, pipe_blocs->acces_args->args[i]->str, 0);
+					exit(1);
+				}
+			}
+			else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0)
+			{
+				i++;
+				if (!pipe_blocs->acces_args->args[i])
+				{
+					error_msg(2, NULL, 3);
+					exit(1);
 				}
 			}
 			i++;
