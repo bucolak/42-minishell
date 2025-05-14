@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/13 20:28:05 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/14 16:52:38 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,29 +173,81 @@ void handle_redirections(t_general *pipe_blocs)
 
 void handle_pipe(t_general *list, t_now *get, t_env **env)
 {
-	int fd[2];
-	pid_t *pids;
 	t_general *tmp;
-	tmp = list;
-	char *msg;
-	int cmd_count;
+	int **fd;
+	pid_t *pid;
+	int count;
 	int i;
 
+	
 	i = 0;
-	cmd_count = 0;
+	count = 0;
+	tmp = list;
 	while(tmp)
 	{
-		cmd_count++;
+		count++;
 		tmp = tmp->next;
 	}
-	while(i<cmd_count)
+	fd = malloc(sizeof(int *)*(count-1));
+	pid = malloc(sizeof(pid_t)*count);
+	tmp = list;
+	while(i < count)
 	{
-		pids[i] = fork();
-		if(pids[i] == 0)
+		if(i < count-1)
+        {
+            fd[i] = malloc(sizeof(int)* 2); 
+            if(pipe(fd[i]) == -1)
+            {
+                perror("pipe");
+                exit(1);
+            }
+        }
+		pid[i] = fork();
+		if(pid[i] == 0)
 		{
-			
+			if(i == 0)
+			{
+				dup2(fd[i][1], 1);
+				close(fd[i][1]);
+				close(fd[i][0]);
+			}
+			else if(i == count-1)
+			{
+				dup2(fd[i-1][0], 0);
+				close(fd[i-1][1]);
+				close(fd[i-1][0]);
+			}
+			else
+			{
+				dup2(fd[i-1][0], 0);
+				dup2(fd[i][1], 1);
+				close(fd[i-1][0]);
+                close(fd[i-1][1]);
+                close(fd[i][0]);
+                close(fd[i][1]);
+			}
+			handle_redirections(tmp);
+			if (is_built_in(tmp->acces_args->args[0]->str) == 1)
+				check_cmd_built_in(tmp, env);
+			else
+				execute_command(tmp, get);
+			exit(0);
 		}
+		i++;
+		if(tmp)
+			tmp = tmp->next;
+	}	
+	i = 0;
+	while(i < count)
+	{
+		waitpid(pid[i], NULL, 0);
+		i++;
 	}
+    for (i = 0; i < count - 1; i++)
+    {
+        close(fd[i][0]);
+        close(fd[i][1]);
+    }
 }
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
@@ -206,6 +258,11 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
 	get = malloc(sizeof(t_now));
 	get->envp = malloc(sizeof(t_now) * ft_lsttsize(*env));
 	fill_env(env, get);
+	if(pipe_blocs->next)
+	{
+		handle_pipe(pipe_blocs, get, env);
+		return ;
+	}
 	pid = fork();
 	if (pid == 0)
 	{
@@ -223,4 +280,5 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
 	}
 	else
 		waitpid(pid, NULL, 0);
+	
 }
