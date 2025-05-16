@@ -12,7 +12,8 @@ SRC = main.c \
 	  echo_first.c \
 	  echo_second.c \
 	  exit.c \
-	  unset.c
+	  unset.c \
+	  pipe.c
 
 CC = gcc 
 

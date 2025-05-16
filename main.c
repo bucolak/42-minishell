@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/13 18:12:12 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/16 15:23:38 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,6 +253,7 @@ int	main(int argc, char *argv[], char **envp)
 	char		*line;
 	t_general	*pipe_blocs;
 	t_env		*env;
+	t_now *get;
 	static int	first_run;
 
 	(void)argc;
@@ -265,6 +266,9 @@ int	main(int argc, char *argv[], char **envp)
 		get_env(&env, envp);
 		first_run = 0;
 	}
+	get = malloc(sizeof(t_now));
+	get->envp = malloc(sizeof(t_now) * ft_lsttsize(env));
+	fill_env(&env, get);
 	while (1)
 	{
 		line = readline("Our_shell% ");
@@ -277,22 +281,20 @@ int	main(int argc, char *argv[], char **envp)
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
 		//print_pipes(pipe_blocs);
-		while (pipe_blocs)
+		if(pipe_blocs->next)
+			handle_pipe(pipe_blocs, get, &env);
+		else if (pipe_blocs->acces_args->args[0])
 		{
-			if (pipe_blocs->acces_args->args[0])
+			if ((!has_redireciton(pipe_blocs)
+					&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 			{
-				if ((!has_redireciton(pipe_blocs)
-						&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
-				{
-					
-					check_cmd_built_in(pipe_blocs, &env);
-				}
-				else
-				{
-					check_cmd_sys_call(pipe_blocs, &env);
-				}
+				
+				check_cmd_built_in(pipe_blocs, &env);
 			}
-			pipe_blocs = pipe_blocs->next;
+			else
+			{
+				check_cmd_sys_call(pipe_blocs, &env, get);
+			}
 		}
 		pipe_blocs = create_general_node();
 		free(line);

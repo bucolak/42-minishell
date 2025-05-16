@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 16:32:57 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/16 14:39:26 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void	export_cmd_helper_func(t_env **env, t_env **new_env, t_env *swap,
 				new_env[*j] = new_env[*j + 1];
 				new_env[*j + 1] = swap;
 			}
-			j++;
+			(*j)++;
 		}
 		i++;
 	}

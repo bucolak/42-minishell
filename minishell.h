@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/13 14:54:33 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/16 16:18:24 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,12 @@ void					pipe_parse(t_general **pipe_block, char *line);
 void					parse_input(t_general *a);
 
 // execute.c
-void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env);
+void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get);
 int						is_built_in(char *str);
-
+void	fill_env(t_env **env, t_now *get);
+void	handle_pipe(t_general *list, t_now *get, t_env **env);
+void	handle_redirections(t_general *pipe_blocs);
+void	execute_command(t_general *pipe_blocs, t_now *get);
 // cmd_built_in.c
 void					check_cmd_built_in(t_general *pipe_blocs, t_env **node);
 void	built_in_helper_func(t_general *pipe_blocs,

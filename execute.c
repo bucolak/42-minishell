@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/14 17:27:16 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/16 16:17:00 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,20 @@ void	handle_append(t_general *list)
 		i++;
 	}
 }
+char	**make_argv(t_pipeafter *acces_args)
+{
+	int		count;
+	char	**argv;
 
+	count = 0;
+	while (acces_args->args[count])
+		count++;
+	argv = malloc(sizeof(char *) * (count + 1));
+	for (int i = 0; i < count; i++)
+		argv[i] = acces_args->args[i]->str;
+	argv[count] = NULL;
+	return (argv);
+}
 void	execute_command(t_general *pipe_blocs, t_now *get)
 {
 	int		i;
@@ -48,6 +61,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 	char	*str;
 	char	*end;
 	int		command_found;
+	char	**argv;
 
 	i = 0;
 	command_found = 0;
@@ -60,11 +74,20 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 		if (access(end, X_OK) == 0)
 		{
 			command_found = 1;
-			if (execve(end, (char **)pipe_blocs->acces_args->args,
-					get->envp) != 0)
-				perror("execve\n");
-			return ;
+			argv = make_argv(pipe_blocs->acces_args);
+			execve(end, argv, get->envp);
+			perror("execve\n");
+			free(argv);
+            free(str);
+            free(end);
+            // paths'i temizle
+            for (int j = 0; paths[j]; j++)
+                free(paths[j]);
+            free(paths);
+            exit(1);
 		}
+		free(str);
+        free(end);
 		i++;
 	}
 	if (!command_found)
@@ -72,7 +95,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1);
 		exit(pipe_blocs->dqm);
 	}
-	exit(pipe_blocs->dqm);
 }
 
 void	fill_env(t_env **env, t_now *get)
@@ -118,7 +140,7 @@ int	is_built_in(char *str)
 	return (0);
 }
 
-void check_redirection_args2(t_general *pipe_blocs,int *i)
+void	check_redirection_args2(t_general *pipe_blocs, int *i)
 {
 	(*i)++;
 	if (!pipe_blocs->acces_args->args[*i])
@@ -134,9 +156,10 @@ void check_redirection_args2(t_general *pipe_blocs,int *i)
 	}
 }
 
-void check_redirection_args(t_general *pipe_blocs)
+void	check_redirection_args(t_general *pipe_blocs)
 {
-	int i;
+	int	i;
+
 	i = 0;
 	while (pipe_blocs->acces_args->args[i])
 	{
@@ -163,7 +186,7 @@ void check_redirection_args(t_general *pipe_blocs)
 	}
 }
 
-void handle_redirections(t_general *pipe_blocs)
+void	handle_redirections(t_general *pipe_blocs)
 {
 	handle_output(pipe_blocs);
 	handle_input(pipe_blocs);
@@ -171,94 +194,12 @@ void handle_redirections(t_general *pipe_blocs)
 	handle_heredoc(pipe_blocs);
 }
 
-void handle_pipe(t_general *list, t_now *get, t_env **env)
-{
-	t_general *tmp;
-	int **fd;
-	pid_t *pid;
-	int count;
-	int i;
 
-	
-	i = 0;
-	count = 0;
-	tmp = list;
-	while(tmp)
-	{
-		count++;
-		tmp = tmp->next;
-	}
-	fd = malloc(sizeof(int *)*(count-1));
-	pid = malloc(sizeof(pid_t)*count);
-	tmp = list;
-	while(i < count)
-	{
-		if(i < count-1)
-        {
-            fd[i] = malloc(sizeof(int)* 2); 
-            if(pipe(fd[i]) == -1)
-            {
-                perror("pipe");
-                exit(1);
-            }
-        }
-		pid[i] = fork();
-		if(pid[i] == 0)
-		{
-			if(i == 0)
-			{
-				dup2(fd[i][1], 1);
-				close(fd[i][1]);
-				close(fd[i][0]);
-			}
-			else if(i == count-1)
-			{
-				dup2(fd[i-1][0], 0);
-				close(fd[i-1][1]);
-				close(fd[i-1][0]);
-			}
-			else
-			{
-				dup2(fd[i-1][0], 0);
-				dup2(fd[i][1], 1);
-				close(fd[i-1][0]);
-                close(fd[i-1][1]);
-                close(fd[i][0]);
-                close(fd[i][1]);
-			}
-			handle_redirections(tmp);
-			if (is_built_in(tmp->acces_args->args[0]->str) == 1)
-				check_cmd_built_in(tmp, env);
-			else
-				execute_command(tmp, get);
-			exit(0);
-		}
-		i++;
-		if(tmp)
-			tmp = tmp->next;
-	}	
-	i = 0;
-	while(i < count)
-	{
-		waitpid(pid[i], NULL, 0);
-		i++;
-	}
-    for (i = 0; i < count - 1; i++)
-    {
-        close(fd[i][0]);
-        close(fd[i][1]);
-    }
-}
-
-void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
+void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 {
 	pid_t	pid;
-	t_now	*get;
 
-	get = malloc(sizeof(t_now));
-	get->envp = malloc(sizeof(t_now) * ft_lsttsize(*env));
-	fill_env(env, get);
-	if(pipe_blocs->next)
+	if (pipe_blocs->next)
 	{
 		handle_pipe(pipe_blocs, get, env);
 		return ;
@@ -279,6 +220,9 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env)
 		}
 	}
 	else
+	{
 		waitpid(pid, NULL, 0);
-	
+		free(get->envp);
+        free(get);
+	}
 }
