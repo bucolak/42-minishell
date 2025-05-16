@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/16 16:18:24 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/16 17:27:00 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,14 @@ typedef struct s_heredoc
 	struct s_heredoc	*next;
 }						t_heredoc;
 
+typedef struct s_pipe
+{
+	int					**fd;
+	pid_t				*pid;
+	int					count;
+	t_general			*tmp;
+}						t_pipe;
+
 // apply_malloc.c
 t_arg					*create_arg(const char *str, int flag);
 t_pipeafter				*create_pipeafter(void);
@@ -92,18 +100,19 @@ void					pipe_parse(t_general **pipe_block, char *line);
 void					parse_input(t_general *a);
 
 // execute.c
-void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get);
+void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env,
+							t_now *get);
 int						is_built_in(char *str);
-void	fill_env(t_env **env, t_now *get);
-void	handle_pipe(t_general *list, t_now *get, t_env **env);
-void	handle_redirections(t_general *pipe_blocs);
-void	execute_command(t_general *pipe_blocs, t_now *get);
+void					fill_env(t_env **env, t_now *get);
+void					handle_pipe(t_general *list, t_now *get, t_env **env);
+void					handle_redirections(t_general *pipe_blocs);
+void					execute_command(t_general *pipe_blocs, t_now *get);
 // cmd_built_in.c
 void					check_cmd_built_in(t_general *pipe_blocs, t_env **node);
 void	built_in_helper_func(t_general *pipe_blocs,
 							t_env **node,
 							int *i);
-void					cd_cmd(t_arg **args);
+void					cd_cmd(t_arg **args, t_env *env);
 void					pwd_cmd(char **ar);
 
 // environment_first.c

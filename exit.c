@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 16:16:44 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/16 17:43:35 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	exit_cmd(t_general *list)
 		printf("bash: exit: too many arguments\n");
 		return ;
 	}
-	if (ft_strcmp(list->acces_args->args[0]->str, "exit"))
+	if (ft_strcmp(list->acces_args->args[0]->str, "exit") == 0)
 	{
 		if (list->acces_args->args[1])
 		{

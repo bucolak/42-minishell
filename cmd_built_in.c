@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/11 16:45:44 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/16 17:27:20 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
 		{
 			if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "cd") == 0)
 			{
-				cd_cmd(pipe_blocs->acces_args->args);
+				cd_cmd(pipe_blocs->acces_args->args, *node);
 				break ;
 			}
 			built_in_helper_func(pipe_blocs, node, &i);
@@ -63,7 +63,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
 	}
 }
 
-void	cd_cmd(t_arg **args)
+void	cd_cmd(t_arg **args, t_env *env)
 {
 	char	*line;
 
@@ -74,7 +74,15 @@ void	cd_cmd(t_arg **args)
 			chdir(line);
 	}
 	else
+	{
+		while(env)
+		{
+			if(ft_strcmp(env->key, "OLDPWD=") == 0)
+				env->data = getcwd(env->data, ft_strlen(env->data));
+			env = env->next;
+		}
 		chdir(args[1]->str);
+	}
 }
 
 void	pwd_cmd(char **ar)
