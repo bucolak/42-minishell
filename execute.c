@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/16 16:17:00 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/17 15:51:02 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,21 +78,21 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 			execve(end, argv, get->envp);
 			perror("execve\n");
 			free(argv);
-            free(str);
-            free(end);
-            // paths'i temizle
-            for (int j = 0; paths[j]; j++)
-                free(paths[j]);
-            free(paths);
-            exit(1);
+			free(str);
+			free(end);
+			// paths'i temizle
+			for (int j = 0; paths[j]; j++)
+				free(paths[j]);
+			free(paths);
+			exit(1);
 		}
 		free(str);
-        free(end);
+		free(end);
 		i++;
 	}
 	if (!command_found)
 	{
-		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1);
+		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
 		exit(pipe_blocs->dqm);
 	}
 }
@@ -145,13 +145,13 @@ void	check_redirection_args2(t_general *pipe_blocs, int *i)
 	(*i)++;
 	if (!pipe_blocs->acces_args->args[*i])
 	{
-		error_msg(2, NULL, 3);
+		error_msg(2, NULL, 3, pipe_blocs);
 		exit(1);
 	}
 	if (access(pipe_blocs->acces_args->args[*i]->str,
 				F_OK) != 0)
 	{
-		error_msg(2, pipe_blocs->acces_args->args[*i]->str, 0);
+		error_msg(2, pipe_blocs->acces_args->args[*i]->str, 0, pipe_blocs);
 		exit(1);
 	}
 }
@@ -167,7 +167,7 @@ void	check_redirection_args(t_general *pipe_blocs)
 		{
 			if (!pipe_blocs->acces_args->args[i + 1])
 			{
-				error_msg(2, NULL, 3);
+				error_msg(2, NULL, 3, pipe_blocs);
 				exit(1);
 			}
 		}
@@ -178,7 +178,7 @@ void	check_redirection_args(t_general *pipe_blocs)
 			i++;
 			if (!pipe_blocs->acces_args->args[i])
 			{
-				error_msg(2, NULL, 3);
+				error_msg(2, NULL, 3, pipe_blocs);
 				exit(1);
 			}
 		}
@@ -194,17 +194,18 @@ void	handle_redirections(t_general *pipe_blocs)
 	handle_heredoc(pipe_blocs);
 }
 
-
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 {
+	int		status;
 	pid_t	pid;
 
+	status = 0;
+	pid = fork();
 	if (pipe_blocs->next)
 	{
 		handle_pipe(pipe_blocs, get, env);
 		return ;
 	}
-	pid = fork();
 	if (pid == 0)
 	{
 		handle_redirections(pipe_blocs);
@@ -221,8 +222,21 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 	}
 	else
 	{
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			pipe_blocs->dqm = WEXITSTATUS(status);
 		free(get->envp);
-        free(get);
+		free(get);
 	}
 }
+
+// INFO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+//Child process bittiğinde, çıkış statüsü (exit code ve sinyal bilgisi) status değişkenine yazılır.
+//Yani: Bu satırdan sonra, child’ın nasıl bittiği bilgisi status’tedir.      ---------->  waitpid(pid,&status, 0);
+
+//WIFEXITED(status) makrosu,child process’in normal şekilde (ör. exit(5);) sonlanıp sonlanmadığını kontrol eder.
+//Eğer true ise,child normal şekilde (örneğin bir exit koduyla) bitti demektir.  --------->   if(WIFEXITED(status))
+
+//WEXITSTATUS(status) ile,child process’in exit() veya return ile döndürdüğü exit kodunu alırsın.
+//Bunu pipe_blocs->dqm'ye atayarak,shell’in içinde $? ile gösterilecek olan exit status’u güncellersin. --->  pipe_blocs->dqm = WEXITSTATUS(status);

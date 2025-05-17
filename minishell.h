@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/16 17:27:00 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/17 16:43:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ typedef struct s_now
 
 typedef struct s_heredoc
 {
+	
 	char				*content;
 	struct s_heredoc	*next;
 }						t_heredoc;
@@ -92,7 +93,7 @@ typedef struct s_pipe
 // apply_malloc.c
 t_arg					*create_arg(const char *str, int flag);
 t_pipeafter				*create_pipeafter(void);
-t_general				*create_general_node(void);
+t_general				*create_general_node(int dqm);
 t_env					*create_env_node(void);
 
 // main.c
@@ -137,7 +138,7 @@ int						count_dquote(char *str);
 
 // message.c
 int						message(int i);
-void					error_msg(int i, char *str, int type);
+void					error_msg(int i, char *str, int type, t_general *list);
 
 // etc.c
 int						ft_lsttsize(t_env *lst);
@@ -182,5 +183,9 @@ void					exit_cmd(t_general *list);
 void					unset_cmd_helper_func(t_env *node, t_env *pre_node,
 							char *s);
 void					unset_cmd(t_general *list, t_env **env);
+
+
+
+void	handle_SIGINT(int signo);
 
 #endif

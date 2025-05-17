@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/12 17:21:28 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/17 13:58:41 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	is_redireciton(char *str)
 
 void	renew_else_block(t_arg ***new, t_general *tmp, int *i, int *j)
 {
-	*new[*j] = malloc(sizeof(t_arg));
+	(*new)[*j] = malloc(sizeof(t_arg)); // burayı değiştirdim 13.51
 	(*new)[*j]->str = ft_strdup(tmp->acces_args->args[*i]->str);
 	(*new)[*j]->flag = tmp->acces_args->args[*i]->flag;
 }
@@ -101,6 +101,11 @@ void	handle_output(t_general *list)
 				close(fd);
                 renew_block2(list);
 				break ;
+			}
+			else
+			{
+				error_msg(2, NULL, 3, list);
+				exit(list->dqm) ;
 			}
 		}
 		i++;

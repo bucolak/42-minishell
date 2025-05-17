@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/16 15:23:38 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/17 17:05:20 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int	is_in_quotes(const char *line, int pos)
 	i = 0;
 	in_quotes = 0;
 	quote_type = 0;
-	
 	while (i < pos)
 	{
 		if ((line[i] == '"' || line[i] == '\'') && !in_quotes)
@@ -62,7 +61,6 @@ void	pipe_parse(t_general **pipe_block, char *line)
 	i = 0;
 	start = 0;
 	tmp = *pipe_block;
-
 	while (line[i])
 	{
 		// Tırnak içinde değilsek ve pipe karakteri bulduysak böl
@@ -71,15 +69,13 @@ void	pipe_parse(t_general **pipe_block, char *line)
 			trimmed = ft_substr(line, start, i - start);
 			tmp->blocs = ft_strtrim(trimmed, " ");
 			free(trimmed);
-
 			// Yeni node oluştur
-			tmp->next = create_general_node();
+			tmp->next = create_general_node(tmp->dqm);
 			tmp = tmp->next;
 			start = i + 1;
 		}
 		i++;
 	}
-
 	// Son kısmı ekle
 	trimmed = ft_substr(line, start, i - start);
 	tmp->blocs = ft_strtrim(trimmed, " ");
@@ -248,17 +244,27 @@ int	has_redireciton(t_general *pipe_blocks)
 	return (0);
 }
 
+void signal_handler()
+{
+	struct sigaction sa;
+	sa.sa_flags = SA_SIGINFO;
+	sa.sa_handler = handle_SIGINT;
+	sigaction(SIGINT, &sa, NULL);
+	
+}
+
 int	main(int argc, char *argv[], char **envp)
 {
 	char		*line;
 	t_general	*pipe_blocs;
 	t_env		*env;
-	t_now *get;
+	t_now		*get;
 	static int	first_run;
 
+	pipe_blocs = NULL;
 	(void)argc;
 	(void)argv;
-	pipe_blocs = create_general_node();
+	pipe_blocs = create_general_node(0);
 	first_run = 1;
 	env = create_env_node();
 	if (first_run)
@@ -269,34 +275,32 @@ int	main(int argc, char *argv[], char **envp)
 	get = malloc(sizeof(t_now));
 	get->envp = malloc(sizeof(t_now) * ft_lsttsize(env));
 	fill_env(&env, get);
+	signal_handler();
 	while (1)
 	{
 		line = readline("Our_shell% ");
 		if (!line)
 		{
-			printf("Error\n");
+			write(1, "exit\n", 5);
 			exit(1);
 		}
 		add_history(line);
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
 		//print_pipes(pipe_blocs);
-		if(pipe_blocs->next)
-			handle_pipe(pipe_blocs, get, &env);
+		if (pipe_blocs->next)
+		handle_pipe(pipe_blocs, get, &env);
 		else if (pipe_blocs->acces_args->args[0])
 		{
 			if ((!has_redireciton(pipe_blocs)
-					&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
+			&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 			{
-				
 				check_cmd_built_in(pipe_blocs, &env);
 			}
 			else
-			{
-				check_cmd_sys_call(pipe_blocs, &env, get);
-			}
+			check_cmd_sys_call(pipe_blocs, &env, get);
 		}
-		pipe_blocs = create_general_node();
+		pipe_blocs = create_general_node(pipe_blocs->dqm);
 		free(line);
 	}
 }

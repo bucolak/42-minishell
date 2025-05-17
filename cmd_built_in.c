@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/16 17:27:20 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/17 12:39:40 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	cd_cmd(t_arg **args, t_env *env)
 {
 	char	*line;
 
-	if (!args[1])
+	if (!args[1] || ft_strcmp(args[1]->str, "-") == 0)
 	{
 		line = getenv("HOME");
 		if (line)
@@ -75,10 +75,22 @@ void	cd_cmd(t_arg **args, t_env *env)
 	}
 	else
 	{
-		while(env)
+		if (args[1]->str[0] == '$' && (args[1]->flag == 0
+				|| args[1]->flag == 2))
 		{
-			if(ft_strcmp(env->key, "OLDPWD=") == 0)
-				env->data = getcwd(env->data, ft_strlen(env->data));
+			args[1]->str++;
+			chdir(getenv(args[1]->str));
+			return ;
+		}
+		while (env)
+		{
+			if (ft_strcmp(env->key, "OLDPWD=") == 0)
+			{
+				free(env->data);
+				env->data = getcwd(NULL, 0);
+					//BAK!! Fonksiyon otomatik olarak yeterli boyutta bellek allocate eder (malloc ile)
+				break ;
+			}
 			env = env->next;
 		}
 		chdir(args[1]->str);

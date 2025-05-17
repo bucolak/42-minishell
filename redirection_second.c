@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/13 17:53:37 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/17 16:12:04 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void	append_heredoc_node(t_heredoc **head, t_heredoc **tail,
 		(*tail)->next = new_node;
 		*tail = new_node;
 	}
-
 }
 
 void	handle_heredoc(t_general *list)

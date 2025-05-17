@@ -13,7 +13,8 @@ SRC = main.c \
 	  echo_second.c \
 	  exit.c \
 	  unset.c \
-	  pipe.c
+	  pipe.c \
+	  signals.c
 
 CC = gcc 
 

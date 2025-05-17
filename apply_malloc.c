@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 14:21:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/17 13:07:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,14 @@ t_pipeafter *create_pipeafter(void)
     return pa;
 }
 
-t_general *create_general_node(void)
+t_general *create_general_node(int dqm)
 {
+    static int last_dqm = 0;
     t_general *node = malloc(sizeof(t_general));
     if (!node)
         return NULL;
+    last_dqm = dqm;
+    node->dqm = last_dqm;
     node->acces_args = create_pipeafter();
     node->blocs = NULL;
     node->next = NULL;
