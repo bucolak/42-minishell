@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/17 16:43:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/20 17:16:54 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ typedef struct s_now
 
 typedef struct s_heredoc
 {
-	
 	char				*content;
 	struct s_heredoc	*next;
 }						t_heredoc;
@@ -90,6 +89,7 @@ typedef struct s_pipe
 	t_general			*tmp;
 }						t_pipe;
 
+void free_split(char **str);
 // apply_malloc.c
 t_arg					*create_arg(const char *str, int flag);
 t_pipeafter				*create_pipeafter(void);
@@ -184,8 +184,6 @@ void					unset_cmd_helper_func(t_env *node, t_env *pre_node,
 							char *s);
 void					unset_cmd(t_general *list, t_env **env);
 
-
-
-void	handle_SIGINT(int signo);
+void					handle_signal(int signo);
 
 #endif

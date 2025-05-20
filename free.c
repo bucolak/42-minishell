@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/17 16:16:35 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/20 14:59:49 by bucolak          ###   ########.fr       */
+/*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
+/*   Updated: 2025/05/20 16:12:43 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_signal(int signo)
+void free_split(char **str)
 {
-    if(signo == SIGINT)
+    int i;
+    if(!str)
+        return ;
+    i = 0;
+    while(str[i])
     {
-        write(1, "\n", 1); 
-        rl_on_new_line();
-        //rl_replace_line("", 0);
-	    rl_redisplay();
+        free(str[i]);
+        i++;
     }
+    free(str);
 }

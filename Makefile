@@ -14,7 +14,9 @@ SRC = main.c \
 	  exit.c \
 	  unset.c \
 	  pipe.c \
-	  signals.c
+	  signals.c \
+	  parser.c	\
+	  free.c
 
 CC = gcc 
 
@@ -49,5 +51,16 @@ fclean: clean
 
 re: fclean all
 	@echo "Compiled!"
+
+leaks:
+	@echo "Running walgrind..."
+	@valgrind --leak-check=full			\
+			--show-leak-kinds=all 		\
+			--track-origins=yes			\
+			--track-fds=yes				\
+			--verbose 					\
+			--suppressions=valgrind.supp	\
+			./$(MINISHELL)
+
 
 .PHONY: all clean fclean re

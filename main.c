@@ -6,25 +6,11 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/17 17:05:20 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/20 18:03:45 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// void free_split(char **str)
-// {
-//     int i;
-//     if(!str)
-//         return ;
-//     i = 0;
-//     while(str[i])
-//     {
-//         free(str[i]);
-//         i++;
-//     }
-//     free(str);
-// }
 
 int	is_in_quotes(const char *line, int pos)
 {
@@ -119,113 +105,113 @@ void	print_pipes(t_general *pipe_block)
 	}
 	printf("-------------------\n");
 }
-void	parse_input(t_general *a)
-{
-	int		len;
-	int		in_quotes;
-	char	current_quote;
-	char	starting_quote;
-	int		length;
+// void	parse_input1(t_general *a)
+// {
+// 	int		len;
+// 	int		in_quotes;
+// 	char	current_quote;
+// 	char	starting_quote;
+// 	int		length;
 
-	int i, s, k;
-	while (a)
-	{
-		i = 0;
-		k = 0;
-		while (a->blocs[i])
-		{
-			// Boşlukları atla
-			while (a->blocs[i] == ' ')
-				i++;
-			if (a->blocs[i] == '\0')
-				break ;
-			// Redirection operatorleri kontrolü
-			if (a->blocs[i] == '<' || a->blocs[i] == '>')
-			{
-				len = 1;
-				if (a->blocs[i] == a->blocs[i + 1]) // << veya >>
-					len = 2;
-				a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, i,
-							len), 5); // flag 5: redirection
-				i += len;
-				continue ;
-			}
-			// Pipe operatorü kontrolü
-			if (a->blocs[i] == '|')
-			{
-				a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, i, 1),
-														6); // flag 6: pipe
-				i++;
-				continue ;
-			}
-			// Argüman başı
-			s = i;
-			in_quotes = 0;
-			current_quote = 0;
-			starting_quote = 0;
-			int flag = 2; // varsayılan: normal argüman
-			// İlk karakter tırnak mı?
-			if (a->blocs[i] == '"' || a->blocs[i] == '\'')
-			{
-				starting_quote = a->blocs[i];
-				in_quotes = 1;
-				current_quote = a->blocs[i];
-				i++;
-			}
-			// Argüman uzunluğu belirleme
-			while (a->blocs[i])
-			{
-				if (!in_quotes && (a->blocs[i] == ' ' || a->blocs[i] == '<'
-						|| a->blocs[i] == '>' || a->blocs[i] == '|'))
-					break ;
-				if (a->blocs[i] == '"' || a->blocs[i] == '\'')
-				{
-					if (in_quotes && a->blocs[i] == current_quote)
-					{
-						in_quotes = 0;
-						current_quote = 0;
-					}
-					else if (!in_quotes)
-					{
-						in_quotes = 1;
-						current_quote = a->blocs[i];
-					}
-				}
-				i++;
-			}
-			length = i - s;
-			// Flag belirleme
-			if (starting_quote != 0 && a->blocs[i - 1] == starting_quote)
-			{
-				// düzgün kapatılmış tırnak
-				flag = (starting_quote == '"') ? 0 : 1;
-				s++;
-				length -= 2;
-			}
-			else if (starting_quote != 0)
-			{
-				// kapatılmamış tırnak
-				flag = 4;
-			}
-			else
-			{
-				// dış tırnak yok ama içeride tırnak varsa -> karmaşık
-				for (int j = s; j < s + length; j++)
-				{
-					if (a->blocs[j] == '"' || a->blocs[j] == '\'')
-					{
-						flag = 4;
-						break ;
-					}
-				}
-			}
-			a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, s,
-						length), flag);
-		}
-		a->acces_args->args[k] = NULL;
-		a = a->next;
-	}
-}
+// 	int i, s, k;
+// 	while (a)
+// 	{
+// 		i = 0;
+// 		k = 0;
+// 		while (a->blocs[i])
+// 		{
+// 			// Boşlukları atla
+// 			while (a->blocs[i] == ' ')
+// 				i++;
+// 			if (a->blocs[i] == '\0')
+// 				break ;
+// 			// Redirection operatorleri kontrolü
+// 			if (a->blocs[i] == '<' || a->blocs[i] == '>')
+// 			{
+// 				len = 1;
+// 				if (a->blocs[i] == a->blocs[i + 1]) // << veya >>
+// 					len = 2;
+// 				a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, i,
+// 							len), 5); // flag 5: redirection
+// 				i += len;
+// 				continue ;
+// 			}
+// 			// Pipe operatorü kontrolü
+// 			if (a->blocs[i] == '|')
+// 			{
+// 				a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, i, 1),
+// 														6); // flag 6: pipe
+// 				i++;
+// 				continue ;
+// 			}
+// 			// Argüman başı
+// 			s = i;
+// 			in_quotes = 0;
+// 			current_quote = 0;
+// 			starting_quote = 0;
+// 			int flag = 2; // varsayılan: normal argüman
+// 			// İlk karakter tırnak mı?
+// 			if (a->blocs[i] == '"' || a->blocs[i] == '\'')
+// 			{
+// 				starting_quote = a->blocs[i];
+// 				in_quotes = 1;
+// 				current_quote = a->blocs[i];
+// 				i++;
+// 			}
+// 			// Argüman uzunluğu belirleme
+// 			while (a->blocs[i])
+// 			{
+// 				if (!in_quotes && (a->blocs[i] == ' ' || a->blocs[i] == '<'
+// 						|| a->blocs[i] == '>' || a->blocs[i] == '|'))
+// 					break ;
+// 				if (a->blocs[i] == '"' || a->blocs[i] == '\'')
+// 				{
+// 					if (in_quotes && a->blocs[i] == current_quote)
+// 					{
+// 						in_quotes = 0;
+// 						current_quote = 0;
+// 					}
+// 					else if (!in_quotes)
+// 					{
+// 						in_quotes = 1;
+// 						current_quote = a->blocs[i];
+// 					}
+// 				}
+// 				i++;
+// 			}
+// 			length = i - s;
+// 			// Flag belirleme
+// 			if (starting_quote != 0 && a->blocs[i - 1] == starting_quote)
+// 			{
+// 				// düzgün kapatılmış tırnak
+// 				flag = (starting_quote == '"') ? 0 : 1;
+// 				s++;
+// 				length -= 2;
+// 			}
+// 			else if (starting_quote != 0)
+// 			{
+// 				// kapatılmamış tırnak
+// 				flag = 4;
+// 			}
+// 			else
+// 			{
+// 				// dış tırnak yok ama içeride tırnak varsa -> karmaşık
+// 				for (int j = s; j < s + length; j++)
+// 				{
+// 					if (a->blocs[j] == '"' || a->blocs[j] == '\'')
+// 					{
+// 						flag = 4;
+// 						break ;
+// 					}
+// 				}
+// 			}
+// 			a->acces_args->args[k++] = create_arg(ft_substr(a->blocs, s,
+// 						length), flag);
+// 		}
+// 		a->acces_args->args[k] = NULL;
+// 		a = a->next;
+// 	}
+// }
 
 int	has_redireciton(t_general *pipe_blocks)
 {
@@ -244,13 +230,14 @@ int	has_redireciton(t_general *pipe_blocks)
 	return (0);
 }
 
-void signal_handler()
+void	signal_handler(void)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
+
 	sa.sa_flags = SA_SIGINFO;
-	sa.sa_handler = handle_SIGINT;
+	sa.sa_handler = handle_signal;
 	sigaction(SIGINT, &sa, NULL);
-	
+	signal(SIGQUIT, SIG_IGN);
 }
 
 int	main(int argc, char *argv[], char **envp)
@@ -287,18 +274,18 @@ int	main(int argc, char *argv[], char **envp)
 		add_history(line);
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
-		//print_pipes(pipe_blocs);
+		print_pipes(pipe_blocs);
 		if (pipe_blocs->next)
-		handle_pipe(pipe_blocs, get, &env);
+			handle_pipe(pipe_blocs, get, &env);
 		else if (pipe_blocs->acces_args->args[0])
 		{
 			if ((!has_redireciton(pipe_blocs)
-			&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
+					&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 			{
-				check_cmd_built_in(pipe_blocs, &env);
+				//check_cmd_built_in(pipe_blocs, &env);
 			}
-			else
-			check_cmd_sys_call(pipe_blocs, &env, get);
+			//else
+				//check_cmd_sys_call(pipe_blocs, &env, get);
 		}
 		pipe_blocs = create_general_node(pipe_blocs->dqm);
 		free(line);
