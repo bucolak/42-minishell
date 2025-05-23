@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 17:55:38 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/23 19:40:49 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ void	echo_flag_0_and_2(char *env, char *str, t_general *tmp, int i)
 	{
 		echo_flag_0_and_2_second(str, env, tmp, &j);
 		if (str[j] != '"')
+		{
 			ft_putchar_fd(str[j], 1);
+			tmp->dqm = 0;
+		}
 		j++;
 	}
 	if (tmp->acces_args->args[i + 1])
@@ -64,7 +67,10 @@ void	echo_flag_1(char *env, t_general *tmp, int i)
 	while (env[j])
 	{
 		if (env[j] != '\'')
+		{
 			ft_putchar_fd(env[j], 1);
+			tmp->dqm = 0;
+		}
 		j++;
 	}
 }

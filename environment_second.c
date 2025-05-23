@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/16 14:39:26 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/23 19:57:58 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*get_data(char *str)
 	return (ft_substr(str, k, i - k));
 }
 
-void	print_export_env(t_env **env)
+void	print_export_env(t_env **env, t_general *list)
 {
 	t_env	**new_env;
 	t_env	*node;
@@ -83,6 +83,7 @@ void	print_export_env(t_env **env)
 		}
 		i++;
 	}
+	list->dqm = 0;
 }
 
 void	export_cmd_helper_func(t_env **env, t_env **new_env, t_env *swap,

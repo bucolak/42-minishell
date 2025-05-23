@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/20 17:16:54 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/23 19:58:14 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,10 @@ typedef struct s_pipe
 	t_general			*tmp;
 }						t_pipe;
 
-void free_split(char **str);
+void					free_split(char **str);
 // apply_malloc.c
-t_arg					*create_arg(const char *str, int flag);
+//t_arg *create_arg(const char *str, int flag);
+t_arg					*create_arg(const char *str, int flag, int type);
 t_pipeafter				*create_pipeafter(void);
 t_general				*create_general_node(int dqm);
 t_env					*create_env_node(void);
@@ -114,20 +115,21 @@ void	built_in_helper_func(t_general *pipe_blocs,
 							t_env **node,
 							int *i);
 void					cd_cmd(t_arg **args, t_env *env);
-void					pwd_cmd(char **ar);
+void	pwd_cmd(char **ar, t_general *list);
 
 // environment_first.c
 void					get_env_helper_func(int *i, int *j, t_env *tmp,
 							char **envp);
 void					get_env(t_env **node, char **envp);
 void					print_env(t_general *list, t_env **node, int i);
-void					ft_envadd_back(t_env **lst, char *key, char *data);
+void					ft_envadd_back(t_env **lst, char *key, char *data,
+							t_general *list);
 void					create_env(t_general *list, t_env **env);
 
 // environment_second.c
 char					*get_key(char *str);
 char					*get_data(char *str);
-void					print_export_env(t_env **env);
+void	print_export_env(t_env **env, t_general *list);
 void					export_cmd_helper_func(t_env **env, t_env **new_env,
 							t_env *swap, int *j);
 t_env					**export_cmd(t_env **env);

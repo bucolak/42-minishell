@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/05/11 16:32:03 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/23 19:57:02 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,25 @@ void	print_env(t_general *list, t_env **node, int i)
 		}
 		tmp = tmp->next;
 	}
+	list->dqm = 0;
 }
 
-void	ft_envadd_back(t_env **lst, char *key, char *data)
+int	key_cont(char *key)
+{
+	int	i;
+
+	i = 0;
+	while (key[i])
+	{
+		if (!(key[i] >= 65 && key[i] <= 90) && !(key[i] >= 97 && key[i] <= 122)
+			&& key[i] != 61 && key[i] != 95)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 {
 	t_env	*last;
 	t_env	*new_node;
@@ -76,16 +92,28 @@ void	ft_envadd_back(t_env **lst, char *key, char *data)
 	new_node = create_env_node();
 	if (key)
 	{
-		new_node->key = ft_strdup(key);
-		new_node->data = ft_strdup(data);
-		if (*lst == NULL)
-			*lst = new_node;
+		if(key_cont(key) == 1)
+		{
+			new_node->key = ft_strdup(key);
+			new_node->data = ft_strdup(data);
+			if (*lst == NULL)
+				*lst = new_node;
+			else
+			{
+				last = *lst;
+				while (last->next)
+					last = last->next;
+				last->next = new_node;
+			}
+			list->dqm = 0;
+		}
 		else
 		{
-			last = *lst;
-			while (last->next)
-				last = last->next;
-			last->next = new_node;
+			ft_putstr_fd("bash: export: `", 2);
+			ft_putstr_fd(key, 2);
+			ft_putstr_fd(data, 2);
+			ft_putstr_fd("' : not a valid identifier\n", 2);
+			list->dqm = 1;
 		}
 	}
 }
@@ -106,10 +134,11 @@ void	create_env(t_general *list, t_env **env)
 				new = list->acces_args->args[i]->str;
 				if (list->acces_args->args[i] && new)
 				{
+					list->dqm = 0;
 					if ((count_dquote(new) % 2 == 0 || count_squote(new)
 							% 2 == 0) && is_repeated(env, get_key(new),
 							get_data(new)) == 0)
-						ft_envadd_back(env, get_key(new), get_data(new));
+						ft_envadd_back(env, get_key(new), get_data(new), list);
 				}
 			}
 			i++;

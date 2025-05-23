@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 18:42:55 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/23 19:40:11 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,10 @@ void	echo_flag_4(char *str, char *env, t_general *tmp)
 				break ;
 		}
 		if (str[j] != '"' && str[j] != '\'')
+		{
 			ft_putchar_fd(str[j], 1);
+			tmp->dqm = 0;
+		}
 		j++;
 	}
 }

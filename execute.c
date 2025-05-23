@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/17 15:51:02 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/23 19:44:03 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ int	is_built_in(char *str)
 						"export",
 						"unset",
 						"exit",
+						"$?",
 						NULL};
 	i = 0;
 	while (builtin[i])

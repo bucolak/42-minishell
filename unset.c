@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:45:34 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 16:48:10 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/23 19:54:16 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,6 @@ void	unset_cmd(t_general *list, t_env **env)
 	{
 		s = list->acces_args->args[i]->str;
 		unset_cmd_helper_func(node, pre_node, s);
+		list->dqm = 0;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/17 12:39:40 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/23 19:58:23 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 {
 	if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
 					"pwd") == 0)
-		pwd_cmd(&pipe_blocs->acces_args->args[*i]->str);
+		pwd_cmd(&pipe_blocs->acces_args->args[*i]->str, pipe_blocs);
 	else if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
 						"export") == 0)
 	{
@@ -25,7 +25,7 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 			&& !pipe_blocs->acces_args->args[*i + 2])
 			create_env(pipe_blocs, node);
 		else
-			print_export_env(node);
+			print_export_env(node, pipe_blocs);
 	}
 	else if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
 						"unset") == 0)
@@ -36,6 +36,12 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 	else if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
 						"exit") == 0)
 		exit_cmd(pipe_blocs);
+	else if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
+						"$?") == 0)
+	{
+		ft_putstr_fd(ft_itoa(pipe_blocs->dqm), 1);
+		ft_putstr_fd(" : command not found\n", 1);
+	}
 }
 
 void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
@@ -88,7 +94,7 @@ void	cd_cmd(t_arg **args, t_env *env)
 			{
 				free(env->data);
 				env->data = getcwd(NULL, 0);
-					//BAK!! Fonksiyon otomatik olarak yeterli boyutta bellek allocate eder (malloc ile)
+				//BAK!! Fonksiyon otomatik olarak yeterli boyutta bellek allocate eder (malloc ile)
 				break ;
 			}
 			env = env->next;
@@ -97,13 +103,14 @@ void	cd_cmd(t_arg **args, t_env *env)
 	}
 }
 
-void	pwd_cmd(char **ar)
+void	pwd_cmd(char **ar, t_general *list)
 {
 	char	*line;
 
 	if (ft_strncmp(ar[0], "pwd", 3) == 0)
 	{
 		line = getcwd(NULL, 0);
+		list->dqm = 0;
 		if (!line)
 		{
 			printf("Error\n");
