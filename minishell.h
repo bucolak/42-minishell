@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/24 14:20:30 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/31 05:16:19 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct s_general
 	char				*blocs;
 	t_pipeafter			*acces_args;
 	struct s_general	*next;
+	int heredoc_fd;
 }						t_general;
 
 typedef struct s_now

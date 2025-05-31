@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/23 19:44:03 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/31 06:12:27 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ void	handle_redirections(t_general *pipe_blocs)
 	handle_output(pipe_blocs);
 	handle_input(pipe_blocs);
 	handle_append(pipe_blocs);
-	handle_heredoc(pipe_blocs);
+	//handle_heredoc(pipe_blocs);
 }
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
@@ -201,6 +201,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 	pid_t	pid;
 
 	status = 0;
+	handle_heredoc(pipe_blocs);
 	pid = fork();
 	if (pipe_blocs->next)
 	{
@@ -209,6 +210,8 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 	}
 	if (pid == 0)
 	{
+		dup2(pipe_blocs->heredoc_fd, 0);
+		close(pipe_blocs->heredoc_fd);
 		handle_redirections(pipe_blocs);
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
@@ -223,6 +226,8 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 	}
 	else
 	{
+		if (pipe_blocs->heredoc_fd != -1)
+            close(pipe_blocs->heredoc_fd); 
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			pipe_blocs->dqm = WEXITSTATUS(status);
