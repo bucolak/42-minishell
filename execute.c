@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/05/31 06:12:27 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/31 08:03:28 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,9 +197,9 @@ void	handle_redirections(t_general *pipe_blocs)
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 {
+	printf("burxda\n");
 	int		status;
 	pid_t	pid;
-
 	status = 0;
 	handle_heredoc(pipe_blocs);
 	pid = fork();

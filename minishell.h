@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/31 05:16:19 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/31 07:53:02 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,5 +188,6 @@ void					unset_cmd_helper_func(t_env *node, t_env *pre_node,
 void					unset_cmd(t_general *list, t_env **env);
 
 void					handle_signal(int signo);
+void	remove_heredoc(t_general *list);
 
 #endif

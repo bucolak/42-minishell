@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/24 14:20:35 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/05/31 08:02:20 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,7 +276,10 @@ int	main(int argc, char *argv[], char **envp)
 		parse_input(pipe_blocs);
 		//print_pipes(pipe_blocs);
 		if (pipe_blocs->next)
+		{
+			handle_heredoc(pipe_blocs);
 			handle_pipe(pipe_blocs, get, &env);
+		}
 		else if (pipe_blocs->acces_args->args[0])
 		{
 			if ((!has_redireciton(pipe_blocs)
@@ -285,7 +288,9 @@ int	main(int argc, char *argv[], char **envp)
 				check_cmd_built_in(pipe_blocs, &env);
 			}
 			else
+			{
 				check_cmd_sys_call(pipe_blocs, &env, get);
+			}
 		}
 		pipe_blocs = create_general_node(pipe_blocs->dqm);
 		free(line);
