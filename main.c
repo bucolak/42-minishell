@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/31 08:02:20 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/01 15:52:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,11 +247,11 @@ int	main(int argc, char *argv[], char **envp)
 	t_env		*env;
 	t_now		*get;
 	static int	first_run;
-
 	pipe_blocs = NULL;
 	(void)argc;
 	(void)argv;
 	pipe_blocs = create_general_node(0);
+	pipe_blocs->heredoc_fd=-1;
 	first_run = 1;
 	env = create_env_node();
 	if (first_run)
@@ -274,12 +274,10 @@ int	main(int argc, char *argv[], char **envp)
 		add_history(line);
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
+		handle_heredoc(pipe_blocs);
 		//print_pipes(pipe_blocs);
 		if (pipe_blocs->next)
-		{
-			handle_heredoc(pipe_blocs);
 			handle_pipe(pipe_blocs, get, &env);
-		}
 		else if (pipe_blocs->acces_args->args[0])
 		{
 			if ((!has_redireciton(pipe_blocs)

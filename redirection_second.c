@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/31 08:43:33 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/01 16:07:37 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ void	handle_heredoc(t_general *list)
 						break ;
 				}
 				close(fd[1]);
+				if (list->heredoc_fd != -1)
+					close(list->heredoc_fd);
 				list->heredoc_fd = fd[0];
 			}
 			i++;
