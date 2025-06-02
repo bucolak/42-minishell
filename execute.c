@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/01 16:10:25 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/02 17:06:49 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,11 +197,10 @@ void	handle_redirections(t_general *pipe_blocs)
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 {
-	printf("burxda\n");
+	//printf("burxda\n");
 	int		status;
 	pid_t	pid;
 	status = 0;
-	//handle_heredoc(pipe_blocs);
 	pid = fork();
 	if (pipe_blocs->next)
 	{
@@ -210,11 +209,11 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 	}
 	if (pid == 0)
 	{
-		if (pipe_blocs->heredoc_fd != -1)
-		{
-			dup2(pipe_blocs->heredoc_fd, 0);
-			close(pipe_blocs->heredoc_fd);
-		}
+		// if (pipe_blocs->heredoc_fd != -1)
+		// {
+		// 	dup2(pipe_blocs->heredoc_fd, 0);
+		// 	close(pipe_blocs->heredoc_fd);
+		// }
 		handle_redirections(pipe_blocs);
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
@@ -229,11 +228,11 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 	}
 	else
 	{
-		if (pipe_blocs->heredoc_fd != -1)
-		{
-			close(pipe_blocs->heredoc_fd);
-			pipe_blocs->heredoc_fd = -1;
-		}
+		// if (pipe_blocs->heredoc_fd != -1)
+		// {
+		// 	close(pipe_blocs->heredoc_fd);
+		// 	pipe_blocs->heredoc_fd = -1;
+		// }
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			pipe_blocs->dqm = WEXITSTATUS(status);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/31 07:53:02 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/02 20:00:10 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,10 @@ typedef struct s_general
 {
 	int					dqm;
 	char				*blocs;
+	char				**limiter;
 	t_pipeafter			*acces_args;
 	struct s_general	*next;
-	int heredoc_fd;
+	int					heredoc_fd;
 }						t_general;
 
 typedef struct s_now
@@ -76,11 +77,11 @@ typedef struct s_now
 	char				**envp;
 }						t_now;
 
-typedef struct s_heredoc
-{
-	char				*content;
-	struct s_heredoc	*next;
-}						t_heredoc;
+// typedef struct s_heredoc
+// {
+// 	char				*content;
+// 	struct s_heredoc	*next;
+// }						t_heredoc;
 
 typedef struct s_pipe
 {
@@ -116,7 +117,7 @@ void	built_in_helper_func(t_general *pipe_blocs,
 							t_env **node,
 							int *i);
 void					cd_cmd(t_arg **args, t_env *env);
-void	pwd_cmd(char **ar, t_general *list);
+void					pwd_cmd(char **ar, t_general *list);
 
 // environment_first.c
 void					get_env_helper_func(int *i, int *j, t_env *tmp,
@@ -130,7 +131,7 @@ void					create_env(t_general *list, t_env **env);
 // environment_second.c
 char					*get_key(char *str);
 char					*get_data(char *str);
-void	print_export_env(t_env **env, t_general *list);
+void					print_export_env(t_env **env, t_general *list);
 void					export_cmd_helper_func(t_env **env, t_env **new_env,
 							t_env *swap, int *j);
 t_env					**export_cmd(t_env **env);
@@ -160,8 +161,6 @@ void					handle_output(t_general *list);
 void					handle_input(t_general *list);
 
 // redirection_second.c
-void					heredoc_actions(t_general *list, t_heredoc *tmp,
-							t_heredoc *heredoc);
 void					handle_heredoc(t_general *list);
 
 // echo_first.c
@@ -188,6 +187,6 @@ void					unset_cmd_helper_func(t_env *node, t_env *pre_node,
 void					unset_cmd(t_general *list, t_env **env);
 
 void					handle_signal(int signo);
-void	remove_heredoc(t_general *list);
+void					remove_heredoc(t_general *list);
 
 #endif

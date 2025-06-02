@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/01 16:13:55 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/02 17:07:10 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,11 @@ void	create_pipe(int count, int **fd)
 
 void	direct_cmd(t_general *tmp, t_now *get, t_env **env)
 {
-	if (tmp->heredoc_fd != -1)
-	{
-		dup2(tmp->heredoc_fd, 0);
-		close(tmp->heredoc_fd);
-	}
+	// if (tmp->heredoc_fd != -1)
+	// {
+	// 	dup2(tmp->heredoc_fd, 0);
+	// 	close(tmp->heredoc_fd);
+	// }
 	handle_redirections(tmp);
 	if (is_built_in(tmp->acces_args->args[0]->str) == 1)
 	{
