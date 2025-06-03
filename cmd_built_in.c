@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/01 16:21:26 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/03 19:14:31 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 				&& pipe_blocs->acces_args->args[*i + 1]->str)
 			&& !pipe_blocs->acces_args->args[*i + 2])
 			create_env(pipe_blocs, node);
+		else if(pipe_blocs->acces_args->args[*i + 2])
+			return ;
 		else
 			print_export_env(node, pipe_blocs);
 	}

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/02 17:07:10 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/03 17:40:02 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	end_block(int count, int i, int **fd)
 
 	j = 0;
 	close(fd[i - 1][1]);
-	close(fd[i][0]);
-	dup2(fd[i - 1][0], 0);
-	dup2(fd[i][1], 1);
+	close(fd[i][0]); //ortada olan girişini kullanmasına gerek yok.
+	dup2(fd[i - 1][0], 0); // bir önceki pipeın okuma ucunu stdine yönlendirdik.
+	dup2(fd[i][1], 1); // 2. pipeın yazmasını stdouta yönlendirdik.
 	close(fd[i - 1][0]);
 	close(fd[i][1]);
 	while (j < count - 1)
@@ -103,8 +103,8 @@ void	direct_and_close_fd(int count, int **fd, int i, int type)
 
 	if (type == 0)
 	{
-		close(fd[i][0]);
-		dup2(fd[i][1], 1);
+		close(fd[i][0]); //okuma ucunu kapattık. çünkü ilk komut okuma yok.
+		dup2(fd[i][1], 1); //pipeın yazma ucunu stdouta yönlendirdik.
 		close(fd[i][1]);
 		j = 1;
 		while (j < count - 1)

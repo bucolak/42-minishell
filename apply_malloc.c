@@ -6,49 +6,49 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/24 14:20:28 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/03 19:19:11 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// t_arg *create_arg(const char *str, int flag)
-// {
-//     t_arg *arg = malloc(sizeof(t_arg));
-//     if (!arg)
-//         return NULL;
-//     arg->str = ft_strdup(str);
-//     arg->flag = flag;
-//     return arg;
-// }
-t_arg *create_arg(const char *str, int flag, int type)
+t_arg *create_arg(const char *str, int flag)
 {
-    char *new;
-    int i = 0;
-    int j = 0;
     t_arg *arg = malloc(sizeof(t_arg));
     if (!arg)
         return NULL;
-    new = malloc(sizeof(char) * ft_strlen(str));
-    if(type == 4)
-    {
-        while(str[j])
-        {
-            if(str[j] != '"' && str[j] != '\'')
-            {
-                new[i] = str[j];
-                i++;
-            }
-            j++;
-        }
-        arg->str = ft_strdup(new);
-        arg->flag = flag;
-        return arg;
-    }
     arg->str = ft_strdup(str);
     arg->flag = flag;
     return arg;
 }
+// t_arg *create_arg(const char *str, int flag, int type)
+// {
+//     char *new;
+//     int i = 0;
+//     int j = 0;
+//     t_arg *arg = malloc(sizeof(t_arg));
+//     if (!arg)
+//         return NULL;
+//     new = malloc(sizeof(char) * ft_strlen(str));
+//     if(type == 4)
+//     {
+//         while(str[j])
+//         {
+//             if(str[j] != '"' && str[j] != '\'')
+//             {
+//                 new[i] = str[j];
+//                 i++;
+//             }
+//             j++;
+//         }
+//         arg->str = ft_strdup(new);
+//         arg->flag = flag;
+//         return arg;
+//     }
+//     arg->str = ft_strdup(str);
+//     arg->flag = flag;
+//     return arg;
+// }
 t_pipeafter *create_pipeafter(void)
 {
     t_pipeafter *pa = malloc(sizeof(t_pipeafter));
