@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_first.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/05/23 19:57:02 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/19 19:42:35 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,11 @@ void	create_env(t_general *list, t_env **env)
 							% 2 == 0) && is_repeated(env, get_key(new),
 							get_data(new)) == 0)
 						ft_envadd_back(env, get_key(new), get_data(new), list);
+				}
+				if(list->acces_args->args[i+1] && ft_strcmp((*env)->key, " =")==0)
+				{
+					ft_putstr_fd("bash: export: ", 2);
+					ft_putstr_fd("`=': not a valid identifier\n", 2);
 				}
 			}
 			i++;

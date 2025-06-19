@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/03 19:37:16 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/19 19:46:07 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,7 +278,7 @@ int	main(int argc, char *argv[], char **envp)
 		//printf(%s)
 		if (!line)
 		{
-			perror("readline döndü NULL");
+			//perror("readline döndü NULL");
 			exit(1);
 		}
 		if (line[0] == '\0')
@@ -309,4 +309,5 @@ int	main(int argc, char *argv[], char **envp)
 		pipe_blocs = create_general_node(pipe_blocs->dqm);
 		free(line);
 	}
+	return 0;
 }

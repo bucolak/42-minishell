@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/03 19:20:10 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/19 20:19:17 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@
 # include <string.h> // strerror
 
 // terminal özellikleri
-# include <sys/ioctl.h> // ioctl
-# include <termcap.h>   // tgetent, tgetflag, tgetnum, tgetstr, tgoto, tputs
-# include <termios.h>   // tcsetattr, tcgetattr
+//# include <sys/ioctl.h> // ioctl
+// # include <termcap.h>   // tgetent, tgetflag, tgetnum, tgetstr, tgoto, tputs
+// # include <termios.h>   // tcsetattr, tcgetattr
 
 // readline
 # include <readline/history.h>
@@ -94,7 +94,7 @@ typedef struct s_pipe
 void					free_split(char **str);
 // apply_malloc.c
 //t_arg *create_arg(const char *str, int flag);
- t_arg					*create_arg(const char *str, int flag, int type);
+t_arg					*create_arg(const char *str, int flag, int type);
 t_pipeafter				*create_pipeafter(void);
 t_general				*create_general_node(int dqm);
 t_env					*create_env_node(void);
@@ -116,7 +116,7 @@ void					check_cmd_built_in(t_general *pipe_blocs, t_env **node);
 void	built_in_helper_func(t_general *pipe_blocs,
 							t_env **node,
 							int *i);
-void					cd_cmd(t_arg **args, t_env *env);
+void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks);
 void					pwd_cmd(char **ar, t_general *list);
 
 // environment_first.c

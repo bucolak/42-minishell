@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_second.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/23 19:57:58 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/19 19:24:22 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,18 @@ void	print_export_env(t_env **env, t_general *list)
 		node = new_env[i];
 		if (node->key)
 		{
-			if (node->key && node->data && node->data[0] != '\0')
-				printf("declare -x %s\"%s\"\n", node->key, node->data);
-			else if (node->key)
-				printf("declare -x %s%s\n", node->key, node->data);
+			if(ft_strcmp(node->key, "=")!=0)
+			{
+				if (node->key && node->data && node->data[0] != '\0')
+					printf("declare -x %s\"%s\"\n", node->key, node->data);
+				else if (node->key)
+					printf("declare -x %s%s\n", node->key, node->data);
+			}
+			else
+			{
+				ft_putstr_fd("bash: export: ", 2);
+				ft_putstr_fd("`=': not a valid identifier\n", 2);
+			}
 		}
 		i++;
 	}

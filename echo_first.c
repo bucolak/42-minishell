@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo_first.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/23 19:40:11 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/19 18:35:45 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void	echo_flag_4(char *str, char *env, t_general *tmp)
 
 void	echo_cmd(t_general *tmp, char *str, char *env, int i)
 {
+
 	while (tmp->acces_args->args[i])
 	{
 		if (ft_strcmp(tmp->acces_args->args[1]->str, "-n") == 0)
@@ -90,7 +91,7 @@ void	echo_cmd(t_general *tmp, char *str, char *env, int i)
 		}
 		i++;
 	}
-	if (ft_strcmp(tmp->acces_args->args[1]->str, "-n") != 0)
+	if (tmp->acces_args->args[1] && ft_strcmp(tmp->acces_args->args[1]->str, "-n") != 0) //burda(1)
 		ft_putchar_fd('\n', 1);
 }
 
@@ -108,7 +109,6 @@ void	initalized_echo(t_general *list)
 	if (!tmp->acces_args->args[1])
 	{
 		ft_putchar_fd('\n', 1);
-		exit(tmp->dqm);
 	}
 	echo_cmd(tmp, str, env, i);
 }

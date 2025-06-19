@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_built_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/03 19:14:31 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/19 20:27:09 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,17 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 		if ((pipe_blocs->acces_args->args[*i + 1]
 				&& pipe_blocs->acces_args->args[*i + 1]->str)
 			&& !pipe_blocs->acces_args->args[*i + 2])
-			create_env(pipe_blocs, node);
+			{
+				if(ft_strcmp(pipe_blocs->acces_args->args[*i + 1]->str, "=")==0)
+				{
+					ft_putstr_fd("bash: export: ", 2);
+					ft_putstr_fd("`=': not a valid identifier\n", 2);
+					pipe_blocs->dqm=1;
+				}
+				else
+					create_env(pipe_blocs, node);
+			}
+			
 		else if(pipe_blocs->acces_args->args[*i + 2])
 			return ;
 		else
@@ -31,7 +41,12 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 	}
 	else if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
 						"unset") == 0)
-		unset_cmd(pipe_blocs, node);
+						{
+							if(!pipe_blocs->acces_args->args[*i + 1])
+								return;
+							unset_cmd(pipe_blocs, node);
+						}
+		
 	else if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
 						"env") == 0)
 		print_env(pipe_blocs, node, *i);
@@ -59,7 +74,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
 		{
 			if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "cd") == 0)
 			{
-				cd_cmd(pipe_blocs->acces_args->args, *node);
+				cd_cmd(pipe_blocs->acces_args->args, *node, pipe_blocs);
 				break ;
 			}
 			built_in_helper_func(pipe_blocs, node, &i);
@@ -72,7 +87,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
 	}
 }
 
-void	cd_cmd(t_arg **args, t_env *env)
+void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 {
 	char	*line;
 
@@ -82,6 +97,11 @@ void	cd_cmd(t_arg **args, t_env *env)
 		if (line)
 			chdir(line);
 	}
+	else if(args[2])
+	{
+		ft_putstr_fd("bash: cd: too many arguments\n",2);
+		pipe_blocks->dqm = 1;
+	}
 	else
 	{
 		if (args[1]->str[0] == '$' && (args[1]->flag == 0
@@ -90,6 +110,11 @@ void	cd_cmd(t_arg **args, t_env *env)
 			args[1]->str++;
 			chdir(getenv(args[1]->str));
 			return ;
+		}
+		else if(chdir(args[1]->str)==-1)
+		{
+			perror("cd");
+			pipe_blocks->dqm = 1;
 		}
 		while (env)
 		{

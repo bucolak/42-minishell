@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_first.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/17 13:58:41 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/18 16:53:22 by seerel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,7 @@ void	handle_input(t_general *list)
 			if (list->acces_args->args[i + 1])
 			{
 				i++;
-				fd = open(list->acces_args->args[i]->str, O_CREAT | O_RDONLY,
-						0644);
+				fd = open(list->acces_args->args[i]->str, O_RDONLY, 0644);
 				if (fd < 0)
 					perror("open");
 				dup2(fd, 0);

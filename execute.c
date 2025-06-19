@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/03 18:52:52 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/19 13:49:05 by seerel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
 		if (access(end, X_OK) == 0)
 		{
+		printf("aa\n");
+
 			if(pipe_blocs->heredoc_fd!=-1)
 			{
 				dup2(pipe_blocs->heredoc_fd, 0);
@@ -222,11 +224,12 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 		}
 		else
 		{
-			if (pipe_blocs->heredoc_fd != -1)
-			{
-				dup2(pipe_blocs->heredoc_fd, 0);
-				close(pipe_blocs->heredoc_fd);
-			}
+			// if (pipe_blocs->heredoc_fd != -1)
+			// {
+			// 	printf("hey\n");
+			// 	dup2(pipe_blocs->heredoc_fd, 0);
+			// 	close(pipe_blocs->heredoc_fd);
+			// }
 			execute_command(pipe_blocs, get);
 			exit(pipe_blocs->dqm);
 		}
