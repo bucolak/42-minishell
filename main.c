@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/19 19:46:07 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/20 18:44:20 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,7 +291,7 @@ int	main(int argc, char *argv[], char **envp)
 		signal_handler();
 		parse_input(pipe_blocs);
 		handle_heredoc(pipe_blocs);
-		//print_pipes(pipe_blocs);
+		print_pipes(pipe_blocs);
 		if (pipe_blocs->next)
 			handle_pipe(pipe_blocs, get, &env);
 		else if (pipe_blocs->acces_args && pipe_blocs->acces_args->args[0])
@@ -299,11 +299,11 @@ int	main(int argc, char *argv[], char **envp)
 			if ((!has_redireciton(pipe_blocs)
 					&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 			{
-				check_cmd_built_in(pipe_blocs, &env);
+				//check_cmd_built_in(pipe_blocs, &env);
 			}
 			else
 			{
-				check_cmd_sys_call(pipe_blocs, &env, get);
+				//check_cmd_sys_call(pipe_blocs, &env, get);
 			}
 		}
 		pipe_blocs = create_general_node(pipe_blocs->dqm);

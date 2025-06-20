@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   etc.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:30:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/11 15:59:04 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/20 16:33:19 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,21 @@ t_env	*ft_lsttlast(t_env *lst)
 
 int is_numeric(char *str)
 {
-    int i;
-    i = 0;
-    int k = 0;
-    while(str[i])
+    int i = 0;
+
+    if (!str || !str[0])
+        return 0;
+    if (str[0] == '+' || str[0] == '-')
+        i++;
+    if (!str[i])
+        return 0;
+    while (str[i])
     {
-        if(ft_isdigit(str[i]) == 1)
-            k++;
+        if (!ft_isdigit(str[i]))
+            return 0;
         i++;
     }
-    if((size_t)k == ft_strlen(str))
-        return 1;
-    return 0;
+    return 1;
 }
 
 int is_repeated(t_env **node, char *ky, char *dt)
