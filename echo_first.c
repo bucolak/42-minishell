@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/20 18:47:09 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/20 18:55:58 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	echo_flag_4_second(char *str, char *env, t_general *tmp, int *j)
 
 	while (str[*j])
 	{
-		if (str[*j] == '$' && str[*j + 1] != ' ' && str[*j + 1] != '?')
+		if (str[*j] == '$' && str[*j + 1] != ' ' && str[*j + 1] != '?' && str[*j - 1] != '\'')
 		{
 			(*j)++;
 			k = *j;
