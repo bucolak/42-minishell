@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/22 19:12:53 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 15:53:44 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,17 +239,6 @@ void	signal_handler(void)
 	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
 }
-
-void restore_stdin(t_general *list)
-{
-    if (list->heredoc_fd != -1)
-    {
-        dup2(list->heredoc_fd, STDIN_FILENO);
-        close(list->heredoc_fd);
-        list->heredoc_fd = -1;
-    }
-}
-
 
 int	main(int argc, char *argv[], char **envp)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/19 13:47:07 by seerel           ###   ########.fr       */
+/*   Updated: 2025/06/23 16:14:09 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,8 @@ void	direct_and_close_fd(int count, int **fd, int i, int type)
 		close(fd[i - 1][1]);
 		dup2(fd[i - 1][0], 0);
 		close(fd[i - 1][0]);
-		close_fd(count, fd, 1, i);
+		if(count != 2)
+			close_fd(count, fd, 1, i);
 	}
 }
 

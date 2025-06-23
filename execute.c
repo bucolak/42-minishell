@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/23 15:32:42 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 16:14:24 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
 		if (access(end, X_OK) == 0)
 		{
-			if(pipe_blocs->heredoc_fd!=-1)
+			if(pipe_blocs->heredoc_fd==-1)
 			{
 				dup2(pipe_blocs->heredoc_fd, 0);
 				close(pipe_blocs->heredoc_fd);
@@ -278,7 +278,6 @@ void	handle_redirections(t_general *pipe_blocs)
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 {
-	//printf("burxda\n");
 	int		status;
 	pid_t	pid;
 	status = 0;
@@ -298,23 +297,12 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 		}
 		else
 		{
-			// if (pipe_blocs->heredoc_fd != -1)
-			// {
-			// 	printf("hey\n");
-			// 	dup2(pipe_blocs->heredoc_fd, 0);
-			// 	close(pipe_blocs->heredoc_fd);
-			// }
 			execute_command(pipe_blocs, get);
 			exit(pipe_blocs->dqm);
 		}
 	}
 	else
 	{
-		// if (pipe_blocs->heredoc_fd != -1)
-		// {
-		// 	close(pipe_blocs->heredoc_fd);
-		// 	pipe_blocs->heredoc_fd = -1;
-		// }
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			pipe_blocs->dqm = WEXITSTATUS(status);
