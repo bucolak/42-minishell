@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/19 20:27:09 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 15:33:50 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 	{
 		ft_putstr_fd(ft_itoa(pipe_blocs->dqm), 2);
 		ft_putstr_fd(": command not found\n", 2);
-		//pipe_blocs->dqm = 127;
+		pipe_blocs->dqm = 127;
+		exit(pipe_blocs->dqm);
 	}
 }
 

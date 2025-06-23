@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/23 10:19:14 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 15:32:42 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,44 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 	char	**argv;
 	char *cmd;
 	char *env;
+	struct stat sb;
 	
 	cmd = pipe_blocs->acces_args->args[0]->str;
+	if (ft_strchr(cmd, '/')) 
+	{
+		if(stat(cmd, &sb) == 0 && S_ISDIR(sb.st_mode))
+		{
+			ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(cmd, 2);
+            ft_putstr_fd(": Is a directory\n", 2);
+			pipe_blocs->dqm = 126;
+            exit(pipe_blocs->dqm);
+		}
+        else if (access(cmd, F_OK) != 0) 
+		{
+            error_msg(2, cmd, 0, pipe_blocs);
+			pipe_blocs->dqm = 127;
+            exit(pipe_blocs->dqm);
+        } 
+		else if (access(cmd, X_OK) != 0) 
+		{
+            ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(cmd, 2);
+            ft_putstr_fd(": Permission denied\n", 2);
+            pipe_blocs->dqm = 126;
+            exit(pipe_blocs->dqm);
+        }
+	}
 	if(cmd[0] == '$')
 	{
 		env = getenv(cmd+1);
-		if(env)
+		if(ft_strcmp(cmd, "$") == 0)
+		{
+			ft_putstr_fd("$: command not found\n", 2); // "command not found" mesajı
+        	pipe_blocs->dqm = 127;
+        	exit(pipe_blocs->dqm);
+		}
+		else if(env)
 			cmd = env;
 		else
 		{
@@ -85,12 +117,12 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 				pipe_blocs->acces_args->args[i-1] = NULL;
 			}
 			else
-			{
-				exit(0);
+        	{
+        	    pipe_blocs->dqm = 0;
+				exit(pipe_blocs->dqm);
 			}
 		}
 	}
-	
 	i = 0;
 	command_found = 0;
 	args = getenv("PATH");
