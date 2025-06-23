@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/23 17:58:23 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 21:52:16 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,26 @@ void	handle_output(t_general *list)
 				i++;
 				last_input = list->acces_args->args[i]->str;
 				fd = open(last_input,
-						O_CREAT | O_WRONLY | O_TRUNC, 0644);
+					O_CREAT | O_WRONLY | O_TRUNC, 0644);
+				if (ft_strchr(last_input, '/'))
+				{
+					if(access(last_input, F_OK) != 0)
+					{
+						error_msg(2, last_input, 0, list);
+						exit(list->dqm);
+					}
+					if (access(last_input, W_OK) != 0)
+					{
+						ft_putstr_fd("bash: ", 2);
+						ft_putstr_fd(last_input, 2);
+						ft_putstr_fd(": Permission denied\n", 2);
+						list->dqm = 1;
+						exit(list->dqm);
+					}
+				}
 				if (fd < 0)
 				{
+					//printf("burda2\n");
 					error_msg(i, list->acces_args->args[i]->str, 0, list);
 					list->dqm = 1;
 					exit(list->dqm);

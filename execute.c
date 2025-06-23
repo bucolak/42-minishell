@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/23 17:58:50 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 21:43:35 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 	}
 	if (!command_found && pipe_blocs->acces_args->args[0]->str[0] != '$')
 	{
-		//printf("burda\n");
 		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
 		exit(pipe_blocs->dqm);
 	}
