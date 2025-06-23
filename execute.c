@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/23 16:14:24 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 16:28:31 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ void	handle_append(t_general *list)
 							O_CREAT | O_WRONLY | O_APPEND,
 							0644);
 				if (fd < 0)
+				{
 					perror("open");
+				}
+					
 				dup2(fd, 1);
 				close(fd);
 				renew_block2(list);

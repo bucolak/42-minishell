@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/22 15:00:16 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 17:11:43 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,12 @@ void	handle_output(t_general *list)
 				fd = open(list->acces_args->args[i]->str,
 						O_CREAT | O_WRONLY | O_TRUNC, 0644);
 				if (fd < 0)
-					perror("open");
+				{
+					error_msg(i, list->acces_args->args[i]->str, 0, list);
+					list->dqm = 1;
+					exit(list->dqm);
+				}
+					
 				dup2(fd, 1);
 				close(fd);
                 renew_block2(list);
