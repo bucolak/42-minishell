@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/22 00:25:30 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/22 19:12:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,65 +250,70 @@ void restore_stdin(t_general *list)
     }
 }
 
+
 int	main(int argc, char *argv[], char **envp)
 {
-	char		*line;
-	t_general	*pipe_blocs;
-	t_env		*env;
-	t_now		*get;
-	static int	first_run;
-	pipe_blocs = NULL;
-	(void)argc;
-	(void)argv;
-	pipe_blocs = create_general_node(0);
-	pipe_blocs->heredoc_fd=-1;
-	first_run = 1;
-	env = create_env_node();
-	if (first_run)
-	{
-		get_env(&env, envp);
-		first_run = 0;
-	}
-	get = malloc(sizeof(t_now));
-	get->envp = malloc(sizeof(t_now) * ft_lsttsize(env));
-	fill_env(&env, get);
-	while (1)
-	{
-		line = readline("Our_shell% ");
-		//printf(%s)
-		if (!line)
-		{
-			//perror("readline döndü NULL");
-			exit(1);
-		}
-		if (line[0] == '\0')
+    char		*line;
+    t_general	*pipe_blocs;
+    t_env		*env;
+    t_now		*get;
+    static int	first_run;
+
+    pipe_blocs = NULL;
+    (void)argc;
+    (void)argv;
+    pipe_blocs = create_general_node(0);
+    pipe_blocs->heredoc_fd = -1;
+    first_run = 1;
+    env = create_env_node();
+    if (first_run)
+    {
+        get_env(&env, envp);
+        first_run = 0;
+    }
+    while (1)
+    {
+        line = readline("Our_shell% ");
+        if (!line)
+            exit(1);
+        if (line[0] == '\0')
         {
             free(line);
             continue;
         }
-		add_history(line);
-		pipe_parse(&pipe_blocs, line);
-		signal_handler();
-		parse_input(pipe_blocs);
-		handle_heredoc(pipe_blocs);
-		//print_pipes(pipe_blocs);
-		if (pipe_blocs->next)
-			handle_pipe(pipe_blocs, get, &env);
-		else if (pipe_blocs->acces_args && pipe_blocs->acces_args->args[0])
-		{
-			if ((!has_redireciton(pipe_blocs)
-					&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
-			{
-				check_cmd_built_in(pipe_blocs, &env);
-			}
-			else
-			{
-				check_cmd_sys_call(pipe_blocs, &env, get);
-			}
-		}
-		pipe_blocs = create_general_node(pipe_blocs->dqm);
-		free(line);
-	}
-	return 0;
+        add_history(line);
+        pipe_parse(&pipe_blocs, line);
+        signal_handler();
+        parse_input(pipe_blocs);
+        handle_heredoc(pipe_blocs);
+
+        get = malloc(sizeof(t_now));
+        get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
+        fill_env(&env, get);
+
+        if (pipe_blocs->next)
+            handle_pipe(pipe_blocs, get, &env);
+        else if (pipe_blocs->acces_args && pipe_blocs->acces_args->args[0])
+        {
+            if ((!has_redireciton(pipe_blocs)
+                    && is_built_in(pipe_blocs->acces_args->args[0]->str)))
+            {
+                check_cmd_built_in(pipe_blocs, &env);
+                free(get->envp);
+                free(get);
+            }
+            else
+            {
+                check_cmd_sys_call(pipe_blocs, &env, get);
+            }
+        }
+        else
+        {
+            free(get->envp);
+            free(get);
+        }
+        pipe_blocs = create_general_node(pipe_blocs->dqm);
+        free(line);
+    }
+    return 0;
 }
-// cat <"1""2""3""4""5"

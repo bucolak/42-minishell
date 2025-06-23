@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/19 13:49:05 by seerel           ###   ########.fr       */
+/*   Updated: 2025/06/23 10:19:14 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,35 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 	char	*end;
 	int		command_found;
 	char	**argv;
-
+	char *cmd;
+	char *env;
+	
+	cmd = pipe_blocs->acces_args->args[0]->str;
+	if(cmd[0] == '$')
+	{
+		env = getenv(cmd+1);
+		if(env)
+			cmd = env;
+		else
+		{
+			if(pipe_blocs->acces_args->args[1])
+			{
+				cmd = pipe_blocs->acces_args->args[1]->str;
+				i = 1;
+				while(pipe_blocs->acces_args->args[i])
+				{
+					pipe_blocs->acces_args->args[i-1] = pipe_blocs->acces_args->args[i];
+					i++;
+				}	
+				pipe_blocs->acces_args->args[i-1] = NULL;
+			}
+			else
+			{
+				exit(0);
+			}
+		}
+	}
+	
 	i = 0;
 	command_found = 0;
 	args = getenv("PATH");
@@ -73,8 +101,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
 		if (access(end, X_OK) == 0)
 		{
-		printf("aa\n");
-
 			if(pipe_blocs->heredoc_fd!=-1)
 			{
 				dup2(pipe_blocs->heredoc_fd, 0);
@@ -97,10 +123,26 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 		free(end);
 		i++;
 	}
-	if (!command_found)
+	if (!command_found && pipe_blocs->acces_args->args[0]->str[0] != '$')
 	{
+		//printf("burda\n");
 		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
 		exit(pipe_blocs->dqm);
+	}
+	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
+	{
+		pipe_blocs->acces_args->args[0]->str++;
+		if(getenv(pipe_blocs->acces_args->args[0]->str))
+		{
+			ft_putstr_fd("bash: ", 2);
+			ft_putstr_fd(getenv(pipe_blocs->acces_args->args[0]->str), 2);
+			ft_putstr_fd(": Is a directory\n", 2);
+		}
+		if(getenv(pipe_blocs->acces_args->args[0]->str))
+			pipe_blocs->dqm = 126;
+		else
+			pipe_blocs->dqm = 0;
+		
 	}
 }
 
