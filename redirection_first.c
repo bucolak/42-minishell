@@ -6,24 +6,11 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/23 17:11:43 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 17:58:23 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// void print_args(t_arg **args)
-// {
-//     int i = 0;
-
-//     printf("AYIKLANMIŞ ARGÜMANLAR:\n");
-//     while (args && args[i])
-//     {
-//         printf("Arg[%d]: \"%s\", Flag: %d\n", i, args[i]->str,
-//		args[i]->flag);
-//         i++;
-//     }
-// }
 
 int	is_redireciton(char *str)
 {
@@ -84,7 +71,9 @@ void	handle_output(t_general *list)
 {
 	int	i;
 	int	fd;
-
+	char *last_input;
+	int last_fd;
+	last_fd = -1;
 	i = 0;
 	while (list->acces_args->args[i])
 	{
@@ -93,7 +82,8 @@ void	handle_output(t_general *list)
 			if (list->acces_args->args[i + 1])
 			{
 				i++;
-				fd = open(list->acces_args->args[i]->str,
+				last_input = list->acces_args->args[i]->str;
+				fd = open(last_input,
 						O_CREAT | O_WRONLY | O_TRUNC, 0644);
 				if (fd < 0)
 				{
@@ -101,11 +91,9 @@ void	handle_output(t_general *list)
 					list->dqm = 1;
 					exit(list->dqm);
 				}
-					
-				dup2(fd, 1);
-				close(fd);
-                renew_block2(list);
-				break ;
+				if(last_fd !=-1)
+					close(last_fd);
+				last_fd = fd;
 			}
 			else
 			{
@@ -115,6 +103,12 @@ void	handle_output(t_general *list)
 		}
 		i++;
 	}
+	if(last_fd!=-1)
+	{
+		dup2(last_fd, 1);
+		close(last_fd);
+	}
+	//renew_block2(list);
 }
 
 void	handle_input(t_general *list)
@@ -159,6 +153,6 @@ void	handle_input(t_general *list)
 		dup2(last_fd, 0);
 		close(last_fd);
 	}
-	renew_block2(list);
+	//renew_block2(list);
 	
 }
