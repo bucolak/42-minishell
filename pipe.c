@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/23 16:14:09 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/23 16:20:12 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,7 @@ void	init_pipe(t_pipe *pipe, t_general *list)
 void	handle_pipe(t_general *list, t_now *get, t_env **env)
 {
 	t_pipe	*pipe;
+	int status;
 	int		i;
 
 	pipe = malloc(sizeof(t_pipe));
@@ -185,5 +186,14 @@ void	handle_pipe(t_general *list, t_now *get, t_env **env)
 			pipe->tmp = pipe->tmp->next;
 	}
 	close_fd(pipe->count, pipe->fd, 0, i);
+	int last_status = 0;
+	for (int j = 0; j < pipe->count; j++)
+	{
+		waitpid(pipe->pid[j], &status, 0);
+		if (j == pipe->count - 1)
+			last_status = status;
+	}
+	if (WIFEXITED(status))
+		list->dqm = WEXITSTATUS(last_status);
 	free_and_wait(pipe->count, pipe->pid, pipe->fd);
 }
