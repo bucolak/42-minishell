@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/19 19:15:20 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/24 21:01:06 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,37 @@ void	echo_flag_0_and_2_second(char *str, char *env, t_general *tmp, int *j)
 {
 	int		k;
 	char	*var_name;
+	int l;
+	l = 0;
+
 
 	if (str[*j] == '$' && str[*j + 1] != ' ' && str[*j + 1] != '?' && str[*j
 		+ 1] != '"' && str[*j + 1])
 	{
 		(*j)++;
-		k = *j;
+		k = *j + 1;
 		while (str[k] && ((str[k] >= 'A' && str[k] <= 'Z') || (str[k] >= 'a'
 					&& str[k] <= 'z') || (str[k] >= '0' && str[k] <= '9')
 				|| str[k] == '_'))
 			k++;
 		var_name = ft_substr(str, *j, k - *j);
-		env = getenv(var_name);
-		if (env)
-			ft_putstr_fd(env, 1);
+		if(str[*j - 2] != '\'')
+		{
+			env = getenv(var_name);
+			if (env)
+				ft_putstr_fd(env, 1);
+		}
+		else
+		{
+			while(var_name[l])
+			{
+				if(var_name[l] != '\'')
+				{
+					ft_putchar_fd(var_name[l], 1);
+				}
+				l++;
+			}
+		}
 		*j = k;
 		free(var_name);
 	}
@@ -41,7 +58,9 @@ void	echo_flag_0_and_2_second(char *str, char *env, t_general *tmp, int *j)
 	else
 	{
 		if(str[*j]!='"')
+		{
 			ft_putchar_fd(str[*j], 1);
+		}
 		(*j)++;
 	}
 }

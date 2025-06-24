@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/20 18:55:58 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/24 19:23:12 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	echo_cmd(t_general *tmp, char *str, char *env, int i)
 		}
 		i++;
 	}
-	if (tmp->acces_args->args[1] && ft_strcmp(tmp->acces_args->args[1]->str, "-n") != 0) //burda(1)
+	if (tmp->acces_args->args[1] && ft_strcmp(tmp->acces_args->args[1]->str, "-n") != 0)
 		ft_putchar_fd('\n', 1);
 }
 

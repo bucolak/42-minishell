@@ -3,51 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:45:34 by bucolak           #+#    #+#             */
-/*   Updated: 2025/05/23 19:54:16 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/23 23:08:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	unset_cmd_helper_func(t_env *node, t_env *pre_node, char *s)
+void remove_env_var(t_env **env, char *var_name)
 {
-	while (node)
+	t_env *current = *env;
+	t_env *prev = NULL;
+	size_t name_len = ft_strlen(var_name);
+
+	while (current)
 	{
-		if (ft_strcmp(node->key, s) == 0)
+		if (ft_strncmp(current->key, var_name, name_len) == 0 
+			&& (current->key[name_len] == '=' || current->key[name_len] == '\0'))
 		{
-			pre_node->next = node->next;
-			free(node->key);
-			free(node->data);
-			free(node);
-			return ;
+			if (prev == NULL)
+				*env = current->next;
+			else
+				prev->next = current->next;
+			free(current->key);
+			free(current->data);
+			free(current);
+			return;
 		}
-		pre_node = node;
-		node = node->next;
+		prev = current;
+		current = current->next;
 	}
 }
 
-void	unset_cmd(t_general *list, t_env **env)
+void unset_cmd(t_general *list, t_env **env)
 {
-	int i;
-	t_env *node;
-	t_env *pre_node;
-	char *s;
+	int i = 1;
 
-	i = 1;
-	node = *env;
-	pre_node = NULL;
-	if (ft_strcmp(node->key, list->acces_args->args[i]->str) == 0)
+	while (list->acces_args->args[i])
 	{
-		*env = node->next;
-		return ;
+		if (list->acces_args->args[i]->str)
+		{
+			remove_env_var(env, list->acces_args->args[i]->str);
+		}
+		i++;
 	}
-	if (list->acces_args->args[i])
-	{
-		s = list->acces_args->args[i]->str;
-		unset_cmd_helper_func(node, pre_node, s);
-		list->dqm = 0;
-	}
+	list->dqm = 0;
 }

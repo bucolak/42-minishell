@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/23 15:53:44 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/24 22:34:53 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,7 @@ int	main(int argc, char *argv[], char **envp)
         signal_handler();
         parse_input(pipe_blocs);
         handle_heredoc(pipe_blocs);
-
+		//print_pipes(pipe_blocs);
         get = malloc(sizeof(t_now));
         get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
         fill_env(&env, get);
@@ -306,3 +306,5 @@ int	main(int argc, char *argv[], char **envp)
     }
     return 0;
 }
+
+//echo "sevval"'$HOME'
