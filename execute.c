@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/25 19:06:43 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/25 19:13:07 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,51 @@
 void	handle_append(t_general *list, int i)
 {
 	int	fd;
-
+	char *last_input;
+	int last_fd;
+	last_fd = -1;
 		if (ft_strcmp(list->acces_args->args[i]->str, ">>") == 0)
 		{
 			if (list->acces_args->args[i + 1])
 			{
 				i++;
-				fd = open(list->acces_args->args[i]->str,
-							O_CREAT | O_WRONLY | O_APPEND,
+				last_input = list->acces_args->args[i]->str;
+				fd = open(last_input, O_CREAT | O_WRONLY | O_APPEND,
 							0644);
+				if(access(last_input, F_OK) != 0)
+				{
+					error_msg(2, last_input, 0, list);
+					exit(list->dqm);
+				}
+				if (access(last_input, W_OK) != 0)
+				{
+					// printf("burda\n");
+					ft_putstr_fd("bash: ", 2);
+					ft_putstr_fd(last_input, 2);
+					ft_putstr_fd(": Permission denied\n", 2);
+					list->dqm = 1;
+					exit(list->dqm);
+				}
 				if (fd < 0)
 				{
-					perror("open");
+					error_msg(i, list->acces_args->args[i]->str, 0, list);
+					list->dqm = 1;
+					exit(list->dqm);
 				}
-					
-				dup2(fd, 1);
-				close(fd);
-				//renew_block2(list);
+				if(last_fd !=-1)
+					close(last_fd);
+				last_fd = fd;
 			}
+			else
+			{
+				error_msg(2, NULL, 3, list);
+				exit(list->dqm) ;
+			}
+		}
+		if(last_fd!=-1)
+		{
+			dup2(last_fd, 1);
+			close(last_fd);
 		}
 }
 char	**make_argv(t_pipeafter *acces_args)
