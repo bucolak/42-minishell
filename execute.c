@@ -6,20 +6,16 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/23 21:43:35 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/25 19:06:43 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_append(t_general *list)
+void	handle_append(t_general *list, int i)
 {
-	int	i;
 	int	fd;
 
-	i = 0;
-	while (list->acces_args->args[i])
-	{
 		if (ft_strcmp(list->acces_args->args[i]->str, ">>") == 0)
 		{
 			if (list->acces_args->args[i + 1])
@@ -36,11 +32,8 @@ void	handle_append(t_general *list)
 				dup2(fd, 1);
 				close(fd);
 				//renew_block2(list);
-				break ;
 			}
 		}
-		i++;
-	}
 }
 char	**make_argv(t_pipeafter *acces_args)
 {
@@ -272,9 +265,18 @@ void	check_redirection_args(t_general *pipe_blocs)
 
 void	handle_redirections(t_general *pipe_blocs)
 {
-	handle_output(pipe_blocs);
-	handle_input(pipe_blocs);
-	handle_append(pipe_blocs);
+	int i = 0;
+
+	while(pipe_blocs->acces_args->args[i])
+	{
+		if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0)
+			handle_input(pipe_blocs, i);
+		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0)
+			handle_output(pipe_blocs, i);
+		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">>") == 0)
+			handle_append(pipe_blocs, i);
+		i++;
+	}
 	renew_block2(pipe_blocs);
 	//handle_heredoc(pipe_blocs);
 }

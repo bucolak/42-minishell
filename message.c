@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 17:56:22 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/23 21:42:26 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/25 19:00:10 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	error_msg(int i, char *str, int type, t_general *list)
 		ft_putstr_fd("bash: ", i);
 		ft_putstr_fd(str, i);
 		ft_putstr_fd(": No such file or directory\n", i);
-		list->dqm = 127;
+		list->dqm = 1;
 	}
 	else if (type == 1)
 	{

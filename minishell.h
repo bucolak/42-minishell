@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/23 16:13:10 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/25 19:05:50 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,8 +157,9 @@ void					renew_block2(t_general *list);
 void					renew_else_block(t_arg ***new, t_general *tmp, int *i,
 							int *j);
 void					renew_block2(t_general *list);
-void					handle_output(t_general *list);
-void					handle_input(t_general *list);
+void	handle_input(t_general *list, int i);
+void	handle_output(t_general *list, int i);
+void	handle_append(t_general *list, int i);
 
 // redirection_second.c
 void					handle_heredoc(t_general *list);
