@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/23 15:33:50 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/28 23:35:50 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
 	int	i;
 
 	i = 0;
-	while (pipe_blocs)
-	{
+	// while (pipe_blocs)
+	// {
 		i = 0;
 		while (pipe_blocs->acces_args->args[i])
 		{
@@ -84,9 +84,9 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
 				initalized_echo(pipe_blocs);
 			i++;
 		}
-		pipe_blocs = pipe_blocs->next;
+		//pipe_blocs = pipe_blocs->next;
 	}
-}
+//}
 
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 {

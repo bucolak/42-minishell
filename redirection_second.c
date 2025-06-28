@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_second.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/03 18:59:19 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/06/28 23:23:46 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,6 @@ void	handle_heredoc(t_general *list)
 				j++;
 				if (!list->limiter[j])
 				{
-					//original_stdin = dup(STDIN_FILENO);
-					//dup2(fd[0], STDIN_FILENO);
 					list->heredoc_fd = dup(fd[0]);
 				}
 				close(fd[0]);

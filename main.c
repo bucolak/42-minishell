@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/25 00:14:34 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/28 23:29:04 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,6 +240,18 @@ void	signal_handler(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+int has_heredoc(t_general *list)
+{
+	int i = 0;
+	while (list->acces_args->args[i])
+	{
+		if(ft_strcmp(list->acces_args->args[i]->str, "<<") == 0)
+			return 1;
+		i++;
+	}
+	return 0;
+}
+
 int	main(int argc, char *argv[], char **envp)
 {
     char		*line;
@@ -274,8 +286,10 @@ int	main(int argc, char *argv[], char **envp)
         pipe_parse(&pipe_blocs, line);
         signal_handler();
         parse_input(pipe_blocs);
-        handle_heredoc(pipe_blocs);
-		//print_pipes(pipe_blocs);
+		if(has_heredoc(pipe_blocs) == 1)
+        {
+            handle_heredoc(pipe_blocs);
+        }
         get = malloc(sizeof(t_now));
         get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
         fill_env(&env, get);

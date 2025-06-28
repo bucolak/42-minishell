@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   apply_malloc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/18 14:55:24 by seerel           ###   ########.fr       */
+/*   Updated: 2025/06/28 23:28:18 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ t_general *create_general_node(int dqm)
     last_dqm = dqm;
     node->dqm = last_dqm;
     node->acces_args = create_pipeafter();
+    //node->heredoc = 0;
+    node->heredoc_fd = -1;
     node->blocs = NULL;
     node->next = NULL;
     return node;

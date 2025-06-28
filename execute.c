@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/25 19:13:07 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/28 23:08:41 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,8 +156,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
 		if (access(end, X_OK) == 0)
 		{
-			if(pipe_blocs->heredoc_fd==-1)
+			if(pipe_blocs->heredoc_fd!=-1)
 			{
+				//printf("%d\n",pipe_blocs->heredoc_fd);
 				dup2(pipe_blocs->heredoc_fd, 0);
 				close(pipe_blocs->heredoc_fd);
 			}
