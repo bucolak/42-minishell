@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/19 19:24:22 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/02 23:49:27 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ char	*get_key(char *str)
 	int		start;
 	char	*key;
 	int		end;
+	char *final_key;
 
 	i = 0;
 	start = 0;
@@ -37,7 +38,9 @@ char	*get_key(char *str)
 	if (str[i] == '=')
 		end = i + 1;
 	key = ft_substr(str, start, end - start);
-	return (ft_strtrim(key, "'\""));
+	final_key = ft_strtrim(key, "'\"");
+	free(key);
+	return (final_key);
 }
 
 char	*get_data(char *str)
@@ -131,7 +134,6 @@ t_env	**export_cmd(t_env **env)
 	swap = NULL;
 	len = ft_lsttsize(*env);
 	i = 0;
-	new_env = env;
 	new_env = malloc(sizeof(t_env *) * len);
 	tmp = *env;
 	while (i < len)

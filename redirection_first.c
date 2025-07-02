@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/25 19:11:42 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/02 17:51:54 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ void	renew_block2(t_general *list)
 	tmp = list;
 	while (tmp->acces_args->args[i])
 		i++;
-	new = malloc(sizeof(t_arg *) * (i + 1));
+	//new = malloc(sizeof(t_arg *) * (i + 1));
+	new = ft_calloc(sizeof(t_arg *), (i + 1));
 	i = 0;
 	while (tmp->acces_args->args[i])
 	{
@@ -65,6 +66,7 @@ void	renew_block2(t_general *list)
 	}
 	new[j] = NULL;
 	tmp->acces_args->args = new;
+	//dfree(new);
 }
 
 void	handle_output(t_general *list, int i)

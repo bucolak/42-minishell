@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/06/19 19:42:35 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/02 23:45:54 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ void	create_env(t_general *list, t_env **env)
 				}
 				if(list->acces_args->args[i+1] && ft_strcmp((*env)->key, " =")==0)
 				{
+					free(new);
 					ft_putstr_fd("bash: export: ", 2);
 					ft_putstr_fd("`=': not a valid identifier\n", 2);
 				}
@@ -150,4 +151,5 @@ void	create_env(t_general *list, t_env **env)
 		}
 		list = list->next;
 	}
+	//free(new);
 }

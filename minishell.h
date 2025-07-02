@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/28 23:28:55 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/02 23:43:46 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,19 +70,12 @@ typedef struct s_general
 	t_pipeafter			*acces_args;
 	struct s_general	*next;
 	int					heredoc_fd;
-	//int heredoc;
 }						t_general;
 
 typedef struct s_now
 {
 	char				**envp;
 }						t_now;
-
-// typedef struct s_heredoc
-// {
-// 	char				*content;
-// 	struct s_heredoc	*next;
-// }						t_heredoc;
 
 typedef struct s_pipe
 {
@@ -95,7 +88,7 @@ typedef struct s_pipe
 void					free_split(char **str);
 // apply_malloc.c
 //t_arg *create_arg(const char *str, int flag);
-t_arg					*create_arg(const char *str, int flag, int type);
+t_arg					*create_arg(char *str, int flag, int type);
 t_pipeafter				*create_pipeafter(void);
 t_general				*create_general_node(int dqm);
 t_env					*create_env_node(void);
@@ -181,8 +174,8 @@ void					echo_flag_0_and_2(char *env, char *str, t_general *tmp,
 void					echo_flag_1(char *env, t_general *tmp, int i);
 
 // exit.c
-void					exit_cont(t_general *list, int a);
-void					exit_cmd(t_general *list);
+void					exit_cont(t_general *list, int a, t_env *env);
+void	exit_cmd(t_general *list, t_env *env);
 
 // unset.c
 void					unset_cmd_helper_func(t_env *node, t_env *pre_node,
@@ -191,5 +184,10 @@ void					unset_cmd(t_general *list, t_env **env);
 
 void					handle_signal(int signo);
 void					remove_heredoc(t_general *list);
+
+//free.c
+void	free_envp(char **envp);
+void free_env(t_env *env);
+void free_pipe_blocks(t_general *blocks);
 
 #endif

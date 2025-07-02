@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/06/28 23:08:41 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/02 23:24:53 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	handle_append(t_general *list, int i)
 				if(access(last_input, F_OK) != 0)
 				{
 					error_msg(2, last_input, 0, list);
+					free_pipe_blocks(list);
 					exit(list->dqm);
 				}
 				if (access(last_input, W_OK) != 0)
@@ -37,6 +38,7 @@ void	handle_append(t_general *list, int i)
 					ft_putstr_fd("bash: ", 2);
 					ft_putstr_fd(last_input, 2);
 					ft_putstr_fd(": Permission denied\n", 2);
+					free_pipe_blocks(list);
 					list->dqm = 1;
 					exit(list->dqm);
 				}
@@ -44,6 +46,7 @@ void	handle_append(t_general *list, int i)
 				{
 					error_msg(i, list->acces_args->args[i]->str, 0, list);
 					list->dqm = 1;
+					free_pipe_blocks(list);
 					exit(list->dqm);
 				}
 				if(last_fd !=-1)
@@ -53,6 +56,7 @@ void	handle_append(t_general *list, int i)
 			else
 			{
 				error_msg(2, NULL, 3, list);
+				free_pipe_blocks(list);
 				exit(list->dqm) ;
 			}
 		}
@@ -339,8 +343,6 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			pipe_blocs->dqm = WEXITSTATUS(status);
-		free(get->envp);
-		free(get);
 	}
 }
 
