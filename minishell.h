@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 23:43:46 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/06 23:55:53 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,9 @@ void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env,
 int						is_built_in(char *str);
 void					fill_env(t_env **env, t_now *get);
 void					handle_pipe(t_general *list, t_now *get, t_env **env);
-void					handle_redirections(t_general *pipe_blocs);
-void					execute_command(t_general *pipe_blocs, t_now *get);
+void	handle_redirections(t_general *pipe_blocs, t_env *env, t_now *get);
+void	execute_command(t_general *pipe_blocs, t_now *get, t_env *env);
+void cleanup_and_exit(t_general *list, t_env *env, t_now *get, int exit_code);
 // cmd_built_in.c
 void					check_cmd_built_in(t_general *pipe_blocs, t_env **node);
 void	built_in_helper_func(t_general *pipe_blocs,
@@ -152,9 +153,9 @@ void					renew_block2(t_general *list);
 void					renew_else_block(t_arg ***new, t_general *tmp, int *i,
 							int *j);
 void					renew_block2(t_general *list);
-void	handle_input(t_general *list, int i);
-void	handle_output(t_general *list, int i);
-void	handle_append(t_general *list, int i);
+void	handle_input(t_general *list, int i, t_env *env, t_now *get);
+void	handle_output(t_general *list, int i, t_env *env, t_now *get);
+void	handle_append(t_general *list, int i, t_env *env, t_now *get);
 
 // redirection_second.c
 void					handle_heredoc(t_general *list);

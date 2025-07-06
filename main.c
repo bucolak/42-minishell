@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 23:35:20 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/07 00:37:32 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	pipe_parse(t_general **pipe_block, char *line)
 			trimmed = ft_substr(line, start, i - start);
 			tmp->blocs = ft_strtrim(trimmed, " ");
 			free(trimmed);
-			// Yeni node oluştur
 			tmp->next = create_general_node(tmp->dqm);
 			tmp = tmp->next;
 			start = i + 1;
@@ -156,8 +155,6 @@ int	main(int argc, char *argv[], char **envp)
     pipe_blocs = NULL;
     (void)argc;
     (void)argv;
-    pipe_blocs = create_general_node(0);
-    pipe_blocs->heredoc_fd = -1;
     first_run = 1;
     env = create_env_node();
     if (first_run)
@@ -167,12 +164,19 @@ int	main(int argc, char *argv[], char **envp)
     }
     while (1)
     {
+		pipe_blocs = create_general_node(0);
+		if (!pipe_blocs)
+            cleanup_and_exit(NULL, env, get, 1);
         line = readline("Our_shell% ");
         if (!line)
-            exit(1);
+		{
+			pipe_blocs->dqm = 1;
+			cleanup_and_exit(pipe_blocs, env, get, pipe_blocs->dqm);
+		}
         if (line[0] == '\0')
         {
             free(line);
+			free_pipe_blocks(pipe_blocs);
             continue;
         }
         add_history(line);
@@ -184,7 +188,13 @@ int	main(int argc, char *argv[], char **envp)
             handle_heredoc(pipe_blocs);
         }
         get = malloc(sizeof(t_now));
+		if (!get)
+            cleanup_and_exit(pipe_blocs, env, NULL, 1);
         get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
+		if (!get->envp)
+        {
+            cleanup_and_exit(pipe_blocs, env, get, 1);
+        }
         fill_env(&env, get);
 		
         if (pipe_blocs->next)
@@ -195,26 +205,22 @@ int	main(int argc, char *argv[], char **envp)
 			&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 			{
 				check_cmd_built_in(pipe_blocs, &env);
-				// free_envp(get->envp);
-				// free(get);
             }
             else
             {
                 check_cmd_sys_call(pipe_blocs, &env, get);
             }
         }
-        else
-        {
-			free_pipe_blocks(pipe_blocs);
-            // free_envp(get->envp);
-            // free(get);
-        }
 		free_envp(get->envp);
 		free(get);
-        pipe_blocs = create_general_node(pipe_blocs->dqm);
+		get = NULL;
+       	pipe_blocs = create_general_node(pipe_blocs->dqm);
         free(line);
     }
 	free_env(env);
+	if(get->envp)
+		free_envp(get->envp);
+	free(get);
 	free_pipe_blocks(pipe_blocs);
     return 0;
 }

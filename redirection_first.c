@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 17:51:54 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/07 00:00:21 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	renew_block2(t_general *list)
 	//dfree(new);
 }
 
-void	handle_output(t_general *list, int i)
+void	handle_output(t_general *list, int i, t_env *env, t_now *get)
 {
 	int	fd;
 	char *last_input;
@@ -85,23 +85,21 @@ void	handle_output(t_general *list, int i)
 			if(access(last_input, F_OK) != 0)
 			{
 				error_msg(2, last_input, 0, list);
-				exit(list->dqm);
+				cleanup_and_exit(list, env, get, list->dqm);
 			}
 			if (access(last_input, W_OK) != 0)
 			{
-				// printf("burda\n");
 				ft_putstr_fd("bash: ", 2);
 				ft_putstr_fd(last_input, 2);
 				ft_putstr_fd(": Permission denied\n", 2);
 				list->dqm = 1;
-				exit(list->dqm);
+				cleanup_and_exit(list, env, get, list->dqm);
 			}
 			if (fd < 0)
 			{
-				//printf("burda2\n");
 				error_msg(i, list->acces_args->args[i]->str, 0, list);
 				list->dqm = 1;
-				exit(list->dqm);
+				cleanup_and_exit(list, env, get, list->dqm);
 			}
 			if(last_fd !=-1)
 				close(last_fd);
@@ -110,7 +108,7 @@ void	handle_output(t_general *list, int i)
 		else
 		{
 			error_msg(2, NULL, 3, list);
-			exit(list->dqm) ;
+			cleanup_and_exit(list, env, get, list->dqm);
 		}
 	}
 	if(last_fd!=-1)
@@ -118,17 +116,14 @@ void	handle_output(t_general *list, int i)
 		dup2(last_fd, 1);
 		close(last_fd);
 	}
-	//renew_block2(list);
 }
 
-void	handle_input(t_general *list, int i)
+void	handle_input(t_general *list, int i, t_env *env, t_now *get)
 {
 	int	fd;
 	char *last_input;
 	int last_fd;
 	last_fd = -1;
-	// while (list->acces_args->args[i])
-	// {
 		if (ft_strcmp(list->acces_args->args[i]->str, "<") == 0)
 		{
 			if (list->acces_args->args[i + 1])
@@ -140,23 +135,22 @@ void	handle_input(t_general *list, int i)
 				if(access(last_input, F_OK) != 0)
 				{
 					error_msg(2, last_input, 0, list);
-					exit(list->dqm);
+					cleanup_and_exit(list, env, get, list->dqm);
 				}
 				if (access(last_input, R_OK) != 0)
 				{
-					//printf("burda\n");
 					ft_putstr_fd("bash: ", 2);
 					ft_putstr_fd(last_input, 2);
 					ft_putstr_fd(": Permission denied\n", 2);
 					list->dqm = 1;
-					exit(list->dqm);
+					cleanup_and_exit(list, env, get, list->dqm);
 				}
 				
 				if (fd < 0)
 				{
 					error_msg(i, list->acces_args->args[i]->str, 0, list);
 					list->dqm = 1;
-					exit(list->dqm);
+					cleanup_and_exit(list, env, get, list->dqm);
 				}
 				if(last_fd !=-1)
 					close(last_fd);
@@ -165,16 +159,12 @@ void	handle_input(t_general *list, int i)
 			else
 			{
 				error_msg(2, NULL, 3, list);
-                exit(list->dqm);
+				cleanup_and_exit(list, env, get, list->dqm);
 			}
 		}
-	// 	i++;
-	// }
 	if(last_fd!=-1)
 	{
 		dup2(last_fd, 0);
 		close(last_fd);
 	}
-	//renew_block2(list);
-	
 }

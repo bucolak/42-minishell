@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 23:43:26 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/07 00:38:12 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,17 @@ t_arg *create_arg(char *str, int flag, int type)
     int j = 0;
     t_arg *arg = malloc(sizeof(t_arg));
     if (!arg)
+    {
+        free(str);
         return NULL;
+    }
     new =ft_calloc((ft_strlen(str)+1), sizeof(char));
+    if (!new)
+    {
+        free(arg);
+        free(str);
+        return NULL;
+    }
     if(type == 4)
     {
         while(str[j])
@@ -44,6 +53,7 @@ t_arg *create_arg(char *str, int flag, int type)
         new[i] = '\0';
         arg->str = ft_strdup(new);
         free(new);
+        free(str);
         arg->flag = flag;
         return arg;
     }
