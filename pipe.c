@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/07 00:05:04 by buket            ###   ########.fr       */
+/*   Updated: 2025/06/28 23:32:06 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,14 @@ void	create_pipe(int count, int **fd)
 
 void	direct_cmd(t_general *tmp, t_now *get, t_env **env)
 {
-	handle_redirections(tmp, *env, get);
+	handle_redirections(tmp);
 	if (is_built_in(tmp->acces_args->args[0]->str) == 1)
 	{
 		check_cmd_built_in(tmp, env);
 		exit(tmp->dqm);
 	}
 	else
-		execute_command(tmp, get, *env);
+		execute_command(tmp, get);
 }
 
 void	direct_and_close_fd(int count, int **fd, int i, int type)

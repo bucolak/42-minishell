@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/07 00:37:25 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/02 19:37:05 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,28 +53,25 @@ void free_env(t_env *env)
         free(env);
         env = tmp;
     }
-    free(tmp);
 }
 
 void free_pipe_blocks(t_general *blocks)
 {
-    t_general *new_tmp;
+    t_general *tmp;
     int i;
-    new_tmp = blocks;
-    while(new_tmp)
+    tmp = blocks;
+    while(tmp)
     {
         i = 0;
-        new_tmp = blocks->next;
-        while(blocks->acces_args->args[i])
+        while(tmp->acces_args->args[i])
         {
-            if(blocks->acces_args->args[i]->str)
-                free(blocks->acces_args->args[i]->str);
-            free(blocks->acces_args->args[i]);
+            if(tmp->acces_args->args[i]->str)
+                free(tmp->acces_args->args[i]->str);
+            free(tmp->acces_args->args[i]);
             i++;
         }
-        free(blocks->acces_args->args);
-        free(blocks->acces_args);
-        free(blocks);
-        blocks = new_tmp;
+        free(tmp->acces_args->args);
+        free(tmp->acces_args);
+        tmp = tmp->next;
     }
 }

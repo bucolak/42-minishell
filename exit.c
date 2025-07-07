@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/06 23:19:27 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/02 23:28:41 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ void	exit_cmd(t_general *list, t_env *env)
 		{
 			printf("exit\n");
 			list->dqm = 0;
-			// free_pipe_blocks(list);
-			// free_env(env);
+			free_pipe_blocks(list);
+			free_env(env);
 			exit(list->dqm);
 		}
 	}

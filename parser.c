@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/06 23:35:14 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/03 00:01:18 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ char *clean_double_quotes(char *str)
 		i++;
 	}
 	new[j] = '\0';
-	free(str);
 	return new;
 }
 void	parse_input(t_general *a)
