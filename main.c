@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 23:35:20 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/09 01:15:54 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,12 +145,43 @@ int has_heredoc(t_general *list)
 	return 0;
 }
 
+void	init_pipe(t_pipe *pipe, t_general *list)
+{
+	pipe->count = 0;
+	pipe->tmp = list;
+	while (pipe->tmp)
+	{
+		pipe->count++;
+		pipe->tmp = pipe->tmp->next;
+	}
+	pipe->fd = malloc(sizeof(int *) * (pipe->count - 1));
+	pipe->pid = malloc(sizeof(pid_t) * pipe->count);
+}
+
+void	create_pipe(int count, int **fd)
+{
+	int	i;
+
+	i = 0;
+	while (i < count - 1)
+	{
+		fd[i] = malloc(sizeof(int) * 2);
+		if (pipe(fd[i]) == -1)
+		{
+			perror("pipe");
+			exit(1);
+		}
+		i++;
+	}
+}
+
 int	main(int argc, char *argv[], char **envp)
 {
     char		*line;
     t_general	*pipe_blocs;
     t_env		*env;
     t_now		*get;
+	t_pipe	*pipe;
     static int	first_run;
 
     pipe_blocs = NULL;
@@ -188,13 +219,18 @@ int	main(int argc, char *argv[], char **envp)
         fill_env(&env, get);
 		
         if (pipe_blocs->next)
-			handle_pipe(pipe_blocs, get, &env);
+		{
+			pipe = malloc(sizeof(t_pipe));
+			init_pipe(pipe, pipe_blocs);
+			create_pipe(pipe->count, pipe->fd);
+			handle_pipe(pipe_blocs, get, &env, pipe);
+		}
         else if (pipe_blocs->acces_args && pipe_blocs->acces_args->args[0])
         {
 			if ((!has_redireciton(pipe_blocs)
 			&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 			{
-				check_cmd_built_in(pipe_blocs, &env);
+				check_cmd_built_in(pipe_blocs, &env, pipe, get);
 				// free_envp(get->envp);
 				// free(get);
             }
@@ -209,8 +245,7 @@ int	main(int argc, char *argv[], char **envp)
             // free_envp(get->envp);
             // free(get);
         }
-		free_envp(get->envp);
-		free(get);
+		free_envp(get);
         pipe_blocs = create_general_node(pipe_blocs->dqm);
         free(line);
     }

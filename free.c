@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 19:37:05 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/09 01:14:25 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,6 @@ void free_split(char **str)
         i++;
     }
     free(str);
-}
-
-void	free_envp(char **envp)
-{
-	int i = 0;
-	if (!envp)
-		return;
-	while (envp[i])
-	{
-		free(envp[i]);
-		i++;
-	}
-	free(envp);
 }
 
 void free_env(t_env *env)
@@ -74,4 +61,32 @@ void free_pipe_blocks(t_general *blocks)
         free(tmp->acces_args);
         tmp = tmp->next;
     }
+}
+
+void free_pipe(t_pipe *pipe)
+{
+    int i = 0;
+    while(pipe->fd[i])
+    {
+        free(pipe->fd[i]);
+        i++;
+    }   
+    free(pipe->fd);
+    free(pipe->pid);
+    free(pipe->tmp);
+    free(pipe);
+}
+
+void free_envp(t_now *get)
+{
+    int i;
+    i = 0;
+    while (get->envp[i])
+    {
+        free(get->envp[i]);
+        i++;
+    }
+    free(get->envp);
+    free(get);
+    get = NULL;
 }

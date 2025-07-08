@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 23:43:46 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/09 01:13:13 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,14 +103,11 @@ void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env,
 							t_now *get);
 int						is_built_in(char *str);
 void					fill_env(t_env **env, t_now *get);
-void					handle_pipe(t_general *list, t_now *get, t_env **env);
+void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe);
 void					handle_redirections(t_general *pipe_blocs);
 void					execute_command(t_general *pipe_blocs, t_now *get);
 // cmd_built_in.c
-void					check_cmd_built_in(t_general *pipe_blocs, t_env **node);
-void	built_in_helper_func(t_general *pipe_blocs,
-							t_env **node,
-							int *i);
+void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get);
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks);
 void					pwd_cmd(char **ar, t_general *list);
 
@@ -175,7 +172,7 @@ void					echo_flag_1(char *env, t_general *tmp, int i);
 
 // exit.c
 void					exit_cont(t_general *list, int a, t_env *env);
-void	exit_cmd(t_general *list, t_env *env);
+void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get);
 
 // unset.c
 void					unset_cmd_helper_func(t_env *node, t_env *pre_node,
@@ -186,8 +183,9 @@ void					handle_signal(int signo);
 void					remove_heredoc(t_general *list);
 
 //free.c
-void	free_envp(char **envp);
 void free_env(t_env *env);
 void free_pipe_blocks(t_general *blocks);
+void free_pipe(t_pipe *pipe);
+void free_envp(t_now *get);
 
 #endif

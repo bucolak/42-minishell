@@ -6,13 +6,13 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/02 23:26:53 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/09 01:08:24 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
+void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i, t_pipe *pipe, t_now *get)
 {
 	if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
 					"pwd") == 0)
@@ -52,7 +52,7 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 		print_env(pipe_blocs, node, *i);
 	else if (ft_strcmp(pipe_blocs->acces_args->args[*i]->str,
 						"exit") == 0)
-		exit_cmd(pipe_blocs, *node);
+		exit_cmd(pipe_blocs, *node, pipe, get);
 	else if (ft_strcmp(pipe_blocs->acces_args->args[0]->str,
 						"$?") == 0)
 	{
@@ -63,7 +63,7 @@ void	built_in_helper_func(t_general *pipe_blocs, t_env **node, int *i)
 	}
 }
 
-void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
+void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get)
 {
 	int	i;
 
@@ -75,7 +75,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node)
 			cd_cmd(pipe_blocs->acces_args->args, *node, pipe_blocs);
 			break ;
 		}
-		built_in_helper_func(pipe_blocs, node, &i);
+		built_in_helper_func(pipe_blocs, node, &i, pipe, get);
 		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str,
 						"echo") == 0)
 			initalized_echo(pipe_blocs);

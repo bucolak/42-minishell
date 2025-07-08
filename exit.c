@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 23:28:41 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/09 01:13:20 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	exit_cont(t_general *list, int a, t_env *env)
 	}
 }
 
-void	exit_cmd(t_general *list, t_env *env)
+void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get)
 {
 	int	a;
 
@@ -65,6 +65,9 @@ void	exit_cmd(t_general *list, t_env *env)
 			list->dqm = 0;
 			free_pipe_blocks(list);
 			free_env(env);
+			free_envp(get);
+			if(list->next)
+				free_pipe(pipe);
 			exit(list->dqm);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/28 23:32:06 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/09 00:56:04 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,29 +63,12 @@ void	close_fd(int count, int **fd, int type, int i)
 	}
 }
 
-void	create_pipe(int count, int **fd)
-{
-	int	i;
-
-	i = 0;
-	while (i < count - 1)
-	{
-		fd[i] = malloc(sizeof(int) * 2);
-		if (pipe(fd[i]) == -1)
-		{
-			perror("pipe");
-			exit(1);
-		}
-		i++;
-	}
-}
-
-void	direct_cmd(t_general *tmp, t_now *get, t_env **env)
+void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
 {
 	handle_redirections(tmp);
 	if (is_built_in(tmp->acces_args->args[0]->str) == 1)
 	{
-		check_cmd_built_in(tmp, env);
+		check_cmd_built_in(tmp, env, pipe);
 		exit(tmp->dqm);
 	}
 	else
@@ -139,28 +122,15 @@ void	free_and_wait(int count, pid_t *pid, int **fd)
 	free(pid);
 }
 
-void	init_pipe(t_pipe *pipe, t_general *list)
+void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe)
 {
-	pipe->count = 0;
-	pipe->tmp = list;
-	while (pipe->tmp)
-	{
-		pipe->count++;
-		pipe->tmp = pipe->tmp->next;
-	}
-	pipe->fd = malloc(sizeof(int *) * (pipe->count - 1));
-	pipe->pid = malloc(sizeof(pid_t) * pipe->count);
-}
-
-void	handle_pipe(t_general *list, t_now *get, t_env **env)
-{
-	t_pipe	*pipe;
+	//t_pipe	*pipe;
 	int status;
 	int		i;
 
-	pipe = malloc(sizeof(t_pipe));
-	init_pipe(pipe, list);
-	create_pipe(pipe->count, pipe->fd);
+	// pipe = malloc(sizeof(t_pipe));
+	// init_pipe(pipe, list);
+	// create_pipe(pipe->count, pipe->fd);
 	pipe->tmp = list;
 	i = 0;
 	while (i < pipe->count)
@@ -174,7 +144,7 @@ void	handle_pipe(t_general *list, t_now *get, t_env **env)
 				direct_and_close_fd(pipe->count, pipe->fd, i, 1);
 			else
 				end_block(pipe->count, i, pipe->fd);
-			direct_cmd(pipe->tmp, get, env);
+			direct_cmd(pipe->tmp, get, env, pipe);
 		}
 		i++;
 		if (pipe->tmp)
