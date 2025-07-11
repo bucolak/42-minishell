@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/09 01:15:54 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/12 00:58:20 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,7 @@ int	main(int argc, char *argv[], char **envp)
             }
             else
             {
-                check_cmd_sys_call(pipe_blocs, &env, get);
+                check_cmd_sys_call(pipe_blocs, &env, get, pipe);
             }
         }
         else

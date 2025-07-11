@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/09 01:13:13 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/12 00:58:07 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,7 @@ void					parse_input(t_general *a);
 int has_heredoc(t_general *list);
 
 // execute.c
-void					check_cmd_sys_call(t_general *pipe_blocs, t_env **env,
-							t_now *get);
+void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe);
 int						is_built_in(char *str);
 void					fill_env(t_env **env, t_now *get);
 void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe);

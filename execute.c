@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/02 23:24:53 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/12 01:00:36 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ void	handle_redirections(t_general *pipe_blocs)
 	//handle_heredoc(pipe_blocs);
 }
 
-void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
+void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe)
 {
 	int		status;
 	pid_t	pid;
@@ -321,7 +321,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 	pid = fork();
 	if (pipe_blocs->next)
 	{
-		handle_pipe(pipe_blocs, get, env);
+		handle_pipe(pipe_blocs, get, env, pipe);
 		return ;
 	}
 	if (pid == 0)
@@ -329,7 +329,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get)
 		handle_redirections(pipe_blocs);
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
-			check_cmd_built_in(pipe_blocs, env);
+			check_cmd_built_in(pipe_blocs, env, pipe, get);
 			exit(pipe_blocs->dqm);
 		}
 		else

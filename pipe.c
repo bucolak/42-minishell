@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/09 00:56:04 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/12 01:00:55 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
 	handle_redirections(tmp);
 	if (is_built_in(tmp->acces_args->args[0]->str) == 1)
 	{
-		check_cmd_built_in(tmp, env, pipe);
+		check_cmd_built_in(tmp, env, pipe, get);
 		exit(tmp->dqm);
 	}
 	else
