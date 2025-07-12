@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/09 01:14:25 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 00:45:52 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,34 @@ void free_env(t_env *env)
 void free_pipe_blocks(t_general *blocks)
 {
     t_general *tmp;
+    t_general *next;
     int i;
+
     tmp = blocks;
-    while(tmp)
+    while (tmp)
     {
         i = 0;
-        while(tmp->acces_args->args[i])
+        if (tmp->acces_args && tmp->acces_args->args)
         {
-            if(tmp->acces_args->args[i]->str)
-                free(tmp->acces_args->args[i]->str);
-            free(tmp->acces_args->args[i]);
-            i++;
+            while (tmp->acces_args->args[i])
+            {
+                if (tmp->acces_args->args[i]->str)
+                {
+                    free(tmp->acces_args->args[i]->str);
+                    tmp->acces_args->args[i]->str = NULL;
+                }
+                free(tmp->acces_args->args[i]);
+                i++;
+            }
+            free(tmp->acces_args->args);
         }
-        free(tmp->acces_args->args);
-        free(tmp->acces_args);
-        tmp = tmp->next;
+        if (tmp->acces_args)
+            free(tmp->acces_args);
+        if (tmp->blocs)
+            free(tmp->blocs);
+        next = tmp->next;
+        free(tmp);
+        tmp = next;
     }
 }
 
@@ -88,5 +101,4 @@ void free_envp(t_now *get)
     }
     free(get->envp);
     free(get);
-    get = NULL;
 }

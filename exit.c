@@ -6,14 +6,15 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/09 01:13:20 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 00:48:00 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	exit_cont(t_general *list, int a, t_env *env)
+void	exit_cont(t_general *list, int a, t_env *env, t_now *get)
 {
+	int exit_code;
 	if (is_numeric(list->acces_args->args[1]->str))
 	{
 		a = ft_atoi(list->acces_args->args[1]->str);
@@ -25,9 +26,10 @@ void	exit_cont(t_general *list, int a, t_env *env)
 		}
 		list->dqm = a;
 		printf("exit\n");
+		exit_code = list->dqm;
 		free_pipe_blocks(list);
 		free_env(env);
-		exit(list->dqm);
+		exit(exit_code);
 	}
 	else
 	{
@@ -36,17 +38,19 @@ void	exit_cont(t_general *list, int a, t_env *env)
 		ft_putstr_fd(list->acces_args->args[1]->str, 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
 		list->dqm = 2;
-		free_pipe_blocks(list);
+		exit_code = list->dqm;
 		free_env(env);
-		exit(list->dqm);
+		free_envp(get);
+		free_pipe_blocks(list);
+		exit(exit_code);
 	}
 }
 
 void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get)
 {
-	int	a;
-
-	a = 0;
+	//int	a;
+	int	exit_code;
+	//a = 0;
 	if (list->acces_args->args[2])
 	{
 		ft_putstr_fd("bash: exit: too many arguments\n", 2);
@@ -57,18 +61,19 @@ void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get)
 	{
 		if (list->acces_args->args[1])
 		{
-			exit_cont(list, a, env);
+			exit_cont(list, 0, env, get);
 		}
 		else
 		{
 			printf("exit\n");
 			list->dqm = 0;
-			free_pipe_blocks(list);
+			exit_code = list->dqm;
 			free_env(env);
 			free_envp(get);
 			if(list->next)
 				free_pipe(pipe);
-			exit(list->dqm);
+			free_pipe_blocks(list);
+			exit(exit_code);
 		}
 	}
 }

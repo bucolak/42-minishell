@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/12 00:58:20 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 00:49:56 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,7 @@ int	main(int argc, char *argv[], char **envp)
     t_env		*env;
     t_now		*get;
 	t_pipe	*pipe;
+	int last_dqm;
     static int	first_run;
 
     pipe_blocs = NULL;
@@ -200,7 +201,9 @@ int	main(int argc, char *argv[], char **envp)
     {
         line = readline("Our_shell% ");
         if (!line)
+		{
             exit(1);
+		}
         if (line[0] == '\0')
         {
             free(line);
@@ -231,8 +234,6 @@ int	main(int argc, char *argv[], char **envp)
 			&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 			{
 				check_cmd_built_in(pipe_blocs, &env, pipe, get);
-				// free_envp(get->envp);
-				// free(get);
             }
             else
             {
@@ -242,14 +243,15 @@ int	main(int argc, char *argv[], char **envp)
         else
         {
 			free_pipe_blocks(pipe_blocs);
-            // free_envp(get->envp);
-            // free(get);
         }
 		free_envp(get);
-        pipe_blocs = create_general_node(pipe_blocs->dqm);
+		last_dqm = pipe_blocs->dqm;
+		free_pipe_blocks(pipe_blocs);
+        pipe_blocs = create_general_node(last_dqm);
         free(line);
     }
 	free_env(env);
+	free_envp(get);
 	free_pipe_blocks(pipe_blocs);
     return 0;
 }

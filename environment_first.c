@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/07/02 23:45:54 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 00:52:35 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,25 @@
 void	get_env_helper_func(int *i, int *j, t_env *tmp, char **envp)
 {
 	(*i)++;
+	if (tmp->key)
+	{
+		free(tmp->key);
+	}
+        
+    if (tmp->data)
+	{
+		free(tmp->data);
+	}
 	if (envp[*j][*i] == '=')
 	{
 		tmp->key = ft_substr(envp[*j], 0, *i + 1);
 		tmp->data = ft_strdup(envp[*j] + *i + 1);
 	}
 	else
+	{
 		tmp->key = ft_substr(envp[*j], 0, *i);
+		tmp->data = NULL;
+	}
 }
 
 void	get_env(t_env **node, char **envp)
@@ -151,5 +163,4 @@ void	create_env(t_general *list, t_env **env)
 		}
 		list = list->next;
 	}
-	//free(new);
 }

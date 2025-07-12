@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/09 01:21:44 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/12 23:23:52 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ t_env *create_env_node(void)
     t_env *node = malloc(sizeof(t_env));
     if (!node)
         return NULL;
+    node->key = NULL;
     node->data = NULL;
     node->next = NULL;
     return node;

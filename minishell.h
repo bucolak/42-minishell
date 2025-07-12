@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/12 00:58:07 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 00:02:37 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ void					echo_flag_0_and_2(char *env, char *str, t_general *tmp,
 void					echo_flag_1(char *env, t_general *tmp, int i);
 
 // exit.c
-void					exit_cont(t_general *list, int a, t_env *env);
+
 void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get);
 
 // unset.c

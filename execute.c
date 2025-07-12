@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/12 01:00:36 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 00:38:45 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 	char *cmd;
 	char *env;
 	struct stat sb;
+	int exit_code;
 	
 	cmd = pipe_blocs->acces_args->args[0]->str;
 	if (ft_strchr(cmd, '/')) 
@@ -162,7 +163,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 		{
 			if(pipe_blocs->heredoc_fd!=-1)
 			{
-				//printf("%d\n",pipe_blocs->heredoc_fd);
 				dup2(pipe_blocs->heredoc_fd, 0);
 				close(pipe_blocs->heredoc_fd);
 			}
@@ -186,7 +186,10 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 	if (!command_found && pipe_blocs->acces_args->args[0]->str[0] != '$')
 	{
 		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
-		exit(pipe_blocs->dqm);
+		free_envp(get);
+		exit_code = pipe_blocs->dqm;
+		free_pipe_blocks(pipe_blocs);
+		exit(exit_code);
 	}
 	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
 	{
@@ -310,7 +313,6 @@ void	handle_redirections(t_general *pipe_blocs)
 		i++;
 	}
 	renew_block2(pipe_blocs);
-	//handle_heredoc(pipe_blocs);
 }
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe)
@@ -335,6 +337,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 		else
 		{
 			execute_command(pipe_blocs, get);
+			free_envp(get);
 			exit(pipe_blocs->dqm);
 		}
 	}

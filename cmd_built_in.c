@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/09 01:08:24 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 00:46:59 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,8 @@ void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 		if (args[1]->str[0] == '$' && (args[1]->flag == 0
 				|| args[1]->flag == 2))
 		{
-			args[1]->str++;
-			chdir(getenv(args[1]->str));
+			char *env_name = args[1]->str + 1; // Orijinal pointer'ı değiştirme!
+    chdir(getenv(env_name));
 			return ;
 		}
 		else if(chdir(args[1]->str)==-1)
