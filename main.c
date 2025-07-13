@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/13 00:49:56 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 18:51:41 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,20 +185,22 @@ int	main(int argc, char *argv[], char **envp)
 	int last_dqm;
     static int	first_run;
 
-    pipe_blocs = NULL;
+    //pipe_blocs = NULL;
     (void)argc;
     (void)argv;
-    pipe_blocs = create_general_node(0);
-    pipe_blocs->heredoc_fd = -1;
+    //pipe_blocs = create_general_node(0);
     first_run = 1;
+	last_dqm = 0;
     env = create_env_node();
     if (first_run)
     {
-        get_env(&env, envp);
+		get_env(&env, envp);
         first_run = 0;
     }
+	pipe = malloc(sizeof(t_pipe)); // bunun yerinden çok emin değilim.
     while (1)
     {
+		pipe_blocs = create_general_node(last_dqm);
         line = readline("Our_shell% ");
         if (!line)
 		{
@@ -223,7 +225,6 @@ int	main(int argc, char *argv[], char **envp)
 		
         if (pipe_blocs->next)
 		{
-			pipe = malloc(sizeof(t_pipe));
 			init_pipe(pipe, pipe_blocs);
 			create_pipe(pipe->count, pipe->fd);
 			handle_pipe(pipe_blocs, get, &env, pipe);
@@ -247,7 +248,7 @@ int	main(int argc, char *argv[], char **envp)
 		free_envp(get);
 		last_dqm = pipe_blocs->dqm;
 		free_pipe_blocks(pipe_blocs);
-        pipe_blocs = create_general_node(last_dqm);
+        //pipe_blocs = create_general_node(last_dqm);
         free(line);
     }
 	free_env(env);

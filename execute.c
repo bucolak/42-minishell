@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/13 00:38:45 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 18:06:01 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	**make_argv(t_pipeafter *acces_args)
 	argv[count] = NULL;
 	return (argv);
 }
-void	execute_command(t_general *pipe_blocs, t_now *get)
+void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe)
 {
 	int		i;
 	char	*args;
@@ -177,7 +177,12 @@ void	execute_command(t_general *pipe_blocs, t_now *get)
 			for (int j = 0; paths[j]; j++)
 				free(paths[j]);
 			free(paths);
-			exit(1);
+			free_pipe(pipe);
+			pipe_blocs->dqm = 0;
+			exit_code = pipe_blocs->dqm;
+			free_pipe_blocks(pipe_blocs);
+			exit(exit_code);
+			//exit(1);
 		}
 		free(str);
 		free(end);
@@ -336,7 +341,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 		}
 		else
 		{
-			execute_command(pipe_blocs, get);
+			execute_command(pipe_blocs, get, pipe);
 			free_envp(get);
 			exit(pipe_blocs->dqm);
 		}

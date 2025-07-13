@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/13 00:48:00 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 18:07:38 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get)
 			if(list->next)
 				free_pipe(pipe);
 			free_pipe_blocks(list);
+			free(pipe);
 			exit(exit_code);
 		}
 	}

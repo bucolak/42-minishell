@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/12 23:23:52 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 18:10:45 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ t_general *create_general_node(int dqm)
     node->acces_args = create_pipeafter();
     node->heredoc_fd = -1;
     node->blocs = NULL;
+    node->limiter = NULL;
     node->next = NULL;
     return node;
 }

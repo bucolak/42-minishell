@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/28 23:23:46 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 18:28:36 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ void	handle_heredoc(t_general *list)
 	int		fd[2];
 	int j;
 	char	*line;
-	//int		original_stdin;
 
 	while (list)
 	{
