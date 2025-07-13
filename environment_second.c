@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/02 23:49:27 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 17:32:01 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	print_export_env(t_env **env, t_general *list)
 		}
 		i++;
 	}
+	free(new_env);
 	list->dqm = 0;
 }
 

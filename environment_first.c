@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/07/13 00:52:35 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/13 17:30:09 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,8 @@ void	create_env(t_general *list, t_env **env)
 {
 	int		i;
 	char	*new;
+	char	*key;
+    char	*data;
 
 	while (list)
 	{
@@ -147,10 +149,14 @@ void	create_env(t_general *list, t_env **env)
 				if (list->acces_args->args[i] && new)
 				{
 					list->dqm = 0;
+					key = get_key(new);
+                    data = get_data(new);
 					if ((count_dquote(new) % 2 == 0 || count_squote(new)
-							% 2 == 0) && is_repeated(env, get_key(new),
-							get_data(new)) == 0)
-						ft_envadd_back(env, get_key(new), get_data(new), list);
+							% 2 == 0) && is_repeated(env, key,
+							data) == 0)
+						ft_envadd_back(env, key, data, list);
+                    free(key);
+                    free(data);
 				}
 				if(list->acces_args->args[i+1] && ft_strcmp((*env)->key, " =")==0)
 				{
