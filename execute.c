@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/15 00:39:07 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/15 00:59:07 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	**make_argv(t_pipeafter *acces_args)
 	argv[count] = NULL;
 	return (argv);
 }
-void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe)
+void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv)
 {
 	int		i;
 	char	*args;
@@ -195,6 +195,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe)
 		for (int j = 0; paths[j]; j++)
 			free(paths[j]);
 		free(paths);
+		free_env(envv);
+		if(pipe_blocs->next)
+			free_pipe(pipe);
 		exit_code = pipe_blocs->dqm;
 		free_pipe_blocks(pipe_blocs);
 		exit(exit_code);
@@ -358,7 +361,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 		}
 		else
 		{
-			execute_command(pipe_blocs, get, pipe);
+			execute_command(pipe_blocs, get, pipe, *env);
 			free_envp(get);
 			free_env(*env);
 			exit(pipe_blocs->dqm); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo

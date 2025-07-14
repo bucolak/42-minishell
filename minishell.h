@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/13 18:02:42 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/15 00:57:20 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int						is_built_in(char *str);
 void					fill_env(t_env **env, t_now *get);
 void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe);
 void					handle_redirections(t_general *pipe_blocs);
-void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe);
+void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv);
 // cmd_built_in.c
 void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get);
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks);
