@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/13 18:51:41 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/14 19:52:05 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,6 @@ int	main(int argc, char *argv[], char **envp)
 		free_envp(get);
 		last_dqm = pipe_blocs->dqm;
 		free_pipe_blocks(pipe_blocs);
-        //pipe_blocs = create_general_node(last_dqm);
         free(line);
     }
 	free_env(env);

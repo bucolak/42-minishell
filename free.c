@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/13 18:30:04 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/14 18:50:23 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ void free_pipe_blocks(t_general *blocks)
                 i++;
             }
             free(tmp->acces_args->args);
+            if (tmp->acces_args)
+                free(tmp->acces_args);
         }
         i = 0;
         if (tmp->limiter)
@@ -76,8 +78,6 @@ void free_pipe_blocks(t_general *blocks)
             }
         }
         free(tmp->limiter);
-        if (tmp->acces_args)
-            free(tmp->acces_args);
         if (tmp->blocs)
             free(tmp->blocs);
         next = tmp->next;

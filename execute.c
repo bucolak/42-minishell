@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/13 18:06:01 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/15 00:39:07 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,16 +182,19 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe)
 			exit_code = pipe_blocs->dqm;
 			free_pipe_blocks(pipe_blocs);
 			exit(exit_code);
-			//exit(1);
 		}
-		free(str);
-		free(end);
+			free(str);
+			free(end);
+		
 		i++;
 	}
 	if (!command_found && pipe_blocs->acces_args->args[0]->str[0] != '$')
 	{
 		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
 		free_envp(get);
+		for (int j = 0; paths[j]; j++)
+			free(paths[j]);
+		free(paths);
 		exit_code = pipe_blocs->dqm;
 		free_pipe_blocks(pipe_blocs);
 		exit(exit_code);
@@ -209,8 +212,10 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe)
 			pipe_blocs->dqm = 126;
 		else
 			pipe_blocs->dqm = 0;
-		
 	}
+	for (int j = 0; paths[j]; j++)
+		free(paths[j]);
+	free(paths);
 }
 
 void	fill_env(t_env **env, t_now *get)
@@ -306,23 +311,35 @@ void	check_redirection_args(t_general *pipe_blocs)
 void	handle_redirections(t_general *pipe_blocs)
 {
 	int i = 0;
-
+	int is_redirect = 0;
 	while(pipe_blocs->acces_args->args[i])
 	{
 		if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0)
+		{
+			is_redirect = 1;
 			handle_input(pipe_blocs, i);
+		}
 		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0)
+		{
+			is_redirect = 1;
 			handle_output(pipe_blocs, i);
+		}
 		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">>") == 0)
+		{
+			is_redirect = 1;
 			handle_append(pipe_blocs, i);
+		}
 		i++;
 	}
-	renew_block2(pipe_blocs);
+	if(is_redirect == 1)
+		renew_block2(pipe_blocs);
 }
+
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe)
 {
 	int		status;
+	//int exit_code;
 	pid_t	pid;
 	status = 0;
 	pid = fork();
@@ -343,7 +360,8 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 		{
 			execute_command(pipe_blocs, get, pipe);
 			free_envp(get);
-			exit(pipe_blocs->dqm);
+			free_env(*env);
+			exit(pipe_blocs->dqm); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo
 		}
 	}
 	else
