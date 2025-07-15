@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/15 00:59:07 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/16 00:48:01 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	char	*args;
 	char	**paths;
 	char	*str;
+	char *new;
 	char	*end;
 	int		command_found;
 	char	**argv;
@@ -130,7 +131,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
         	exit(pipe_blocs->dqm);
 		}
 		else if(env)
+		{
 			cmd = env;
+		}
 		else
 		{
 			if(pipe_blocs->acces_args->args[1])
@@ -204,14 +207,14 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	}
 	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
 	{
-		pipe_blocs->acces_args->args[0]->str++;
-		if(getenv(pipe_blocs->acces_args->args[0]->str))
+		new = pipe_blocs->acces_args->args[0]->str+1;
+		if(getenv(new))
 		{
 			ft_putstr_fd("bash: ", 2);
-			ft_putstr_fd(getenv(pipe_blocs->acces_args->args[0]->str), 2);
+			ft_putstr_fd(getenv(new), 2);
 			ft_putstr_fd(": Is a directory\n", 2);
 		}
-		if(getenv(pipe_blocs->acces_args->args[0]->str))
+		if(getenv(new))
 			pipe_blocs->dqm = 126;
 		else
 			pipe_blocs->dqm = 0;
@@ -342,7 +345,7 @@ void	handle_redirections(t_general *pipe_blocs)
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe)
 {
 	int		status;
-	//int exit_code;
+	int e;
 	pid_t	pid;
 	status = 0;
 	pid = fork();
@@ -364,7 +367,9 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 			execute_command(pipe_blocs, get, pipe, *env);
 			free_envp(get);
 			free_env(*env);
-			exit(pipe_blocs->dqm); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo
+			e = pipe_blocs->dqm;
+			free_pipe_blocks(pipe_blocs);
+			exit(e); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo
 		}
 	}
 	else

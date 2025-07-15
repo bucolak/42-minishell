@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/15 00:59:25 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/16 00:56:30 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,6 +212,7 @@ int	main(int argc, char *argv[], char **envp)
         pipe_parse(&pipe_blocs, line);
         signal_handler();
         parse_input(pipe_blocs);
+		//print_pipes(pipe_blocs);
 		if(has_heredoc(pipe_blocs) == 1)
         {
             handle_heredoc(pipe_blocs);

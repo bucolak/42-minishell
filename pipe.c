@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/14 18:19:09 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/16 00:38:16 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
 		exit(tmp->dqm);
 	}
 	else
-		execute_command(tmp, get,pipe);
+		execute_command(tmp, get,pipe, *env);
 }
 
 void	direct_and_close_fd(int count, int **fd, int i, int type)
