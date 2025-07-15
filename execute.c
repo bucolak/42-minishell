@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/16 00:48:01 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/16 01:17:51 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,12 @@ void	handle_append(t_general *list, int i)
 			close(last_fd);
 		}
 }
+char * extend_env(char *str)
+{
+	char *new;
+	new =getenv(str);
+	return new;
+}
 char	**make_argv(t_pipeafter *acces_args)
 {
 	int		count;
@@ -76,13 +82,21 @@ char	**make_argv(t_pipeafter *acces_args)
 		count++;
 	argv = malloc(sizeof(char *) * (count + 1));
 	for (int i = 0; i < count; i++)
-		argv[i] = acces_args->args[i]->str;
+	{
+		if((acces_args->args[i]->flag == 0 || acces_args->args[i]->flag == 2) && acces_args->args[i]->str[0] == '$')
+		{
+			argv[i]=extend_env(acces_args->args[i]->str+1);
+		}
+		else
+			argv[i] = acces_args->args[i]->str;
+	}
 	argv[count] = NULL;
 	return (argv);
 }
 void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv)
 {
 	int		i;
+	int j;
 	char	*args;
 	char	**paths;
 	char	*str;
@@ -94,130 +108,134 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	char *env;
 	struct stat sb;
 	int exit_code;
-	
-	cmd = pipe_blocs->acces_args->args[0]->str;
-	if (ft_strchr(cmd, '/')) 
+	j = 0;
+	while(pipe_blocs->acces_args->args[j])
 	{
-		if(stat(cmd, &sb) == 0 && S_ISDIR(sb.st_mode))
+		cmd = pipe_blocs->acces_args->args[j]->str;
+		if (ft_strchr(cmd, '/')) 
 		{
-			ft_putstr_fd("bash: ", 2);
-            ft_putstr_fd(cmd, 2);
-            ft_putstr_fd(": Is a directory\n", 2);
-			pipe_blocs->dqm = 126;
-            exit(pipe_blocs->dqm);
-		}
-        else if (access(cmd, F_OK) != 0) 
-		{
-            error_msg(2, cmd, 0, pipe_blocs);
-			pipe_blocs->dqm = 127;
-            exit(pipe_blocs->dqm);
-        } 
-		else if (access(cmd, X_OK) != 0) 
-		{
-            ft_putstr_fd("bash: ", 2);
-            ft_putstr_fd(cmd, 2);
-            ft_putstr_fd(": Permission denied\n", 2);
-            pipe_blocs->dqm = 126;
-            exit(pipe_blocs->dqm);
-        }
-	}
-	if(cmd[0] == '$')
-	{
-		env = getenv(cmd+1);
-		if(ft_strcmp(cmd, "$") == 0)
-		{
-			ft_putstr_fd("$: command not found\n", 2); // "command not found" mesajı
-        	pipe_blocs->dqm = 127;
-        	exit(pipe_blocs->dqm);
-		}
-		else if(env)
-		{
-			cmd = env;
-		}
-		else
-		{
-			if(pipe_blocs->acces_args->args[1])
+			if(stat(cmd, &sb) == 0 && S_ISDIR(sb.st_mode))
 			{
-				cmd = pipe_blocs->acces_args->args[1]->str;
-				i = 1;
-				while(pipe_blocs->acces_args->args[i])
-				{
-					pipe_blocs->acces_args->args[i-1] = pipe_blocs->acces_args->args[i];
-					i++;
-				}	
-				pipe_blocs->acces_args->args[i-1] = NULL;
+				ft_putstr_fd("bash: ", 2);
+				ft_putstr_fd(cmd, 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+				pipe_blocs->dqm = 126;
+				exit(pipe_blocs->dqm);
 			}
-			else
-        	{
-        	    pipe_blocs->dqm = 0;
+			else if (access(cmd, F_OK) != 0) 
+			{
+				error_msg(2, cmd, 0, pipe_blocs);
+				pipe_blocs->dqm = 127;
+				exit(pipe_blocs->dqm);
+			} 
+			else if (access(cmd, X_OK) != 0) 
+			{
+				ft_putstr_fd("bash: ", 2);
+				ft_putstr_fd(cmd, 2);
+				ft_putstr_fd(": Permission denied\n", 2);
+				pipe_blocs->dqm = 126;
 				exit(pipe_blocs->dqm);
 			}
 		}
-	}
-	i = 0;
-	command_found = 0;
-	args = getenv("PATH");
-	paths = ft_split(args, ':');
-	while (paths[i])
-	{
-		str = ft_strjoin(paths[i], "/");
-		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
-		if (access(end, X_OK) == 0)
+		if(cmd[0] == '$')
 		{
-			if(pipe_blocs->heredoc_fd!=-1)
+			env = getenv(cmd+1);
+			if(ft_strcmp(cmd, "$") == 0)
 			{
-				dup2(pipe_blocs->heredoc_fd, 0);
-				close(pipe_blocs->heredoc_fd);
+				ft_putstr_fd("$: command not found\n", 2); // "command not found" mesajı
+				pipe_blocs->dqm = 127;
+				exit(pipe_blocs->dqm);
 			}
-			command_found = 1;
-			argv = make_argv(pipe_blocs->acces_args);
-			execve(end, argv, get->envp);
-			perror("execve\n");
-			free(argv);
-			free(str);
-			free(end);
-			// paths'i temizle
+			else if(env)
+			{
+				cmd = env;
+			}
+			else
+			{
+				if(pipe_blocs->acces_args->args[j+1])
+				{
+					cmd = pipe_blocs->acces_args->args[j+1]->str;
+					i = j+1;
+					while(pipe_blocs->acces_args->args[i])
+					{
+						pipe_blocs->acces_args->args[i-1] = pipe_blocs->acces_args->args[i];
+						i++;
+					}	
+					pipe_blocs->acces_args->args[i-1] = NULL;
+				}
+				else
+				{
+					pipe_blocs->dqm = 0;
+					exit(pipe_blocs->dqm);
+				}
+			}
+		}
+		i = 0;
+		command_found = 0;
+		args = getenv("PATH");
+		paths = ft_split(args, ':');
+		while (paths[i])
+		{
+			str = ft_strjoin(paths[i], "/");
+			end = ft_strjoin(str, pipe_blocs->acces_args->args[j]->str);
+			if (access(end, X_OK) == 0)
+			{
+				if(pipe_blocs->heredoc_fd!=-1)
+				{
+					dup2(pipe_blocs->heredoc_fd, 0);
+					close(pipe_blocs->heredoc_fd);
+				}
+				command_found = 1;
+				argv = make_argv(pipe_blocs->acces_args);
+				execve(end, argv, get->envp);
+				perror("execve\n");
+				free(argv);
+				free(str);
+				free(end);
+				// paths'i temizle
+				for (int j = 0; paths[j]; j++)
+					free(paths[j]);
+				free(paths);
+				free_pipe(pipe);
+				pipe_blocs->dqm = 0;
+				exit_code = pipe_blocs->dqm;
+				free_pipe_blocks(pipe_blocs);
+				//exit(exit_code);
+			}
+				free(str);
+				free(end);
+			
+			i++;
+		}
+		if (!command_found && pipe_blocs->acces_args->args[j]->str[0] != '$')
+		{
+			error_msg(2, pipe_blocs->acces_args->args[j]->str, 1, pipe_blocs);
+			free_envp(get);
 			for (int j = 0; paths[j]; j++)
 				free(paths[j]);
 			free(paths);
-			free_pipe(pipe);
-			pipe_blocs->dqm = 0;
+			free_env(envv);
+			if(pipe_blocs->next)
+				free_pipe(pipe);
 			exit_code = pipe_blocs->dqm;
 			free_pipe_blocks(pipe_blocs);
 			exit(exit_code);
 		}
-			free(str);
-			free(end);
-		
-		i++;
-	}
-	if (!command_found && pipe_blocs->acces_args->args[0]->str[0] != '$')
-	{
-		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
-		free_envp(get);
-		for (int j = 0; paths[j]; j++)
-			free(paths[j]);
-		free(paths);
-		free_env(envv);
-		if(pipe_blocs->next)
-			free_pipe(pipe);
-		exit_code = pipe_blocs->dqm;
-		free_pipe_blocks(pipe_blocs);
-		exit(exit_code);
-	}
-	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
-	{
-		new = pipe_blocs->acces_args->args[0]->str+1;
-		if(getenv(new))
+		else if(pipe_blocs->acces_args->args[j]->str[0] == '$')
 		{
-			ft_putstr_fd("bash: ", 2);
-			ft_putstr_fd(getenv(new), 2);
-			ft_putstr_fd(": Is a directory\n", 2);
+			new = pipe_blocs->acces_args->args[j]->str+1;
+			if(getenv(new))
+			{
+				ft_putstr_fd("bash: ", 2);
+				ft_putstr_fd(getenv(new), 2);
+				ft_putstr_fd(": Is a directory\n", 2);
+			}
+			if(getenv(new))
+				pipe_blocs->dqm = 126;
+			else
+				pipe_blocs->dqm = 0;
 		}
-		if(getenv(new))
-			pipe_blocs->dqm = 126;
-		else
-			pipe_blocs->dqm = 0;
+		j++;
 	}
 	for (int j = 0; paths[j]; j++)
 		free(paths[j]);
