@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/14 20:02:53 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/17 01:51:17 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,6 @@ t_pipeafter *create_pipeafter(void)
         free(pa);
         return NULL;
     }
-    pa->args = ft_calloc(100, sizeof(t_arg *)); // max arg 100 (geliştirilebilir)
-    if (!pa->args)
-    {
-        free(pa->args);
-        free(pa);
-        return NULL;
-    }
     return pa;
 }
 
@@ -83,6 +76,7 @@ t_general *create_general_node(int dqm)
     last_dqm = dqm;
     node->dqm = last_dqm;
     node->acces_args = create_pipeafter();
+    node->acces_args->args=NULL;
     node->heredoc_fd = -1;
     node->blocs = NULL;
     node->limiter = NULL;

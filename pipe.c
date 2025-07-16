@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/16 00:38:16 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/17 01:57:44 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,13 +124,8 @@ void	free_and_wait(int count, pid_t *pid, int **fd)
 
 void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe)
 {
-	//t_pipe	*pipe;
 	int status;
 	int		i;
-
-	// pipe = malloc(sizeof(t_pipe));
-	// init_pipe(pipe, list);
-	// create_pipe(pipe->count, pipe->fd);
 	pipe->tmp = list;
 	i = 0;
 	while (i < pipe->count)

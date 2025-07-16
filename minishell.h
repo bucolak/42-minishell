@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/15 00:57:20 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/17 01:31:39 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ t_env					*create_env_node(void);
 
 // main.c
 void					pipe_parse(t_general **pipe_block, char *line);
-void					parse_input(t_general *a);
+void	parse_input(t_general *a);
 int has_heredoc(t_general *list);
 
 // execute.c

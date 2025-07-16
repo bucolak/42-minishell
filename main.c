@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/16 00:56:30 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/17 01:35:13 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,6 @@ int	main(int argc, char *argv[], char **envp)
 		get_env(&env, envp);
         first_run = 0;
     }
-	// pipe = malloc(sizeof(t_pipe)); // bunun yerinden çok emin değilim.
     while (1)
     {
 		pipe_blocs = create_general_node(last_dqm);
@@ -212,7 +211,6 @@ int	main(int argc, char *argv[], char **envp)
         pipe_parse(&pipe_blocs, line);
         signal_handler();
         parse_input(pipe_blocs);
-		//print_pipes(pipe_blocs);
 		if(has_heredoc(pipe_blocs) == 1)
         {
             handle_heredoc(pipe_blocs);
@@ -246,6 +244,8 @@ int	main(int argc, char *argv[], char **envp)
         }
 		free_envp(get);
 		last_dqm = pipe_blocs->dqm;
+		if(pipe_blocs->heredoc_fd!=-1)
+			close(pipe_blocs->heredoc_fd);
 		free_pipe_blocks(pipe_blocs);
         free(line);
     }

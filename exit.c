@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/13 18:07:38 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/17 01:36:22 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,8 @@ void	exit_cont(t_general *list, int a, t_env *env, t_now *get)
 
 void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get)
 {
-	//int	a;
 	int	exit_code;
-	//a = 0;
-	if (list->acces_args->args[2])
+	if (list->acces_args->args[1] && list->acces_args->args[2])
 	{
 		ft_putstr_fd("bash: exit: too many arguments\n", 2);
 		list->dqm=1;
@@ -73,7 +71,7 @@ void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get)
 			if(list->next)
 				free_pipe(pipe);
 			free_pipe_blocks(list);
-			free(pipe);
+			//free(pipe);
 			exit(exit_code);
 		}
 	}

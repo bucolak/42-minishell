@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/14 18:50:23 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/17 02:00:00 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void free_pipe(t_pipe *pipe)
     free(pipe->pid);
     free(pipe->tmp);
     free(pipe);
+    pipe = NULL;
 }
 
 void free_envp(t_now *get)
