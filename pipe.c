@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/17 01:57:44 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/18 01:46:38 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,12 +106,12 @@ void	free_and_wait(int count, pid_t *pid, int **fd)
 {
 	int	i;
 
-	i = 0;
-	while (i < count)
-	{
-		waitpid(pid[i], NULL, 0);
-		i++;
-	}
+	// i = 0;
+	// while (i < count)
+	// {
+	// 	waitpid(pid[i], NULL, 0);
+	// 	i++;
+	// }
 	i = 0;
 	while (i < count - 1)
 	{

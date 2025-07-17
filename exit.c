@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/17 01:36:22 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/18 01:51:29 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,11 @@ void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get)
 			exit_code = list->dqm;
 			free_env(env);
 			free_envp(get);
-			if(list->next)
+			if(pipe->has == 1)
+			{
+				printf("burda\n");
 				free_pipe(pipe);
+			}
 			free_pipe_blocks(list);
 			//free(pipe);
 			exit(exit_code);
