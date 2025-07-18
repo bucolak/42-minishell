@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/18 01:46:38 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/18 23:11:09 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,5 +155,5 @@ void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe)
 	}
 	if (WIFEXITED(status))
 		list->dqm = WEXITSTATUS(last_status);
-	free_and_wait(pipe->count, pipe->pid, pipe->fd);
+	//free_and_wait(pipe->count, pipe->pid, pipe->fd);
 }

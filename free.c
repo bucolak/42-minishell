@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/18 01:43:34 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/18 23:13:37 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,13 @@ void free_pipe_blocks(t_general *blocks)
 void free_pipe(t_pipe *pipe)
 {
     int i = 0;
-    while(pipe->fd[i])
+    while(i < pipe->count-1)
     {
         free(pipe->fd[i]);
         i++;
     }   
     free(pipe->fd);
     free(pipe->pid);
-    free(pipe->tmp);
     free(pipe);
     pipe = NULL;
 }
