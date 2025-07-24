@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/18 23:02:43 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/24 17:35:38 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,7 @@ int	main(int argc, char *argv[], char **envp)
     (void)argv;
     first_run = 1;
 	last_dqm = 0;
+	pipe = NULL;
     env = create_env_node();
     if (first_run)
     {
