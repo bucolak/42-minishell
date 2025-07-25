@@ -6,11 +6,22 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/24 19:23:12 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/25 16:55:16 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	echo_flag_4_second_2(int *j, char *str, t_general *tmp)
+{
+	if (str[*j] == '$' && str[*j + 1] == '?')
+	{
+		ft_putstr_fd(ft_itoa(tmp->dqm), 1);
+		*j += 2;
+	}
+	else if (str[*j] != '"' && str[*j] != '\'')
+		ft_putchar_fd(str[*j], 1);
+}
 
 void	echo_flag_4_second(char *str, char *env, t_general *tmp, int *j)
 {
@@ -32,13 +43,8 @@ void	echo_flag_4_second(char *str, char *env, t_general *tmp, int *j)
 				ft_putstr_fd(env, 1);
 			*j = k;
 		}
-		else if (str[*j] == '$' && str[*j + 1] == '?')
-		{
-			ft_putstr_fd(ft_itoa(tmp->dqm), 1);
-			*j += 2;
-		}
-		else if (str[*j] != '"' && str[*j] != '\'')
-			ft_putchar_fd(str[*j], 1);
+		else
+			echo_flag_4_second_2(j, str, tmp);
 		(*j)++;
 	}
 }
