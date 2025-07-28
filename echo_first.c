@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/25 16:55:16 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/29 00:04:46 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@ void	echo_flag_4_second_2(int *j, char *str, t_general *tmp)
 		ft_putchar_fd(str[*j], 1);
 }
 
-void	echo_flag_4_second(char *str, char *env, t_general *tmp, int *j)
+void	echo_flag_4_second(char *str, t_env *env, t_general *tmp, int *j)
 {
 	int		k;
 	char	*var_name;
-
+	char *envv;
 	while (str[*j])
 	{
 		if (str[*j] == '$' && str[*j + 1] != ' ' && str[*j + 1] != '?' && str[*j - 1] != '\'')
@@ -38,9 +38,9 @@ void	echo_flag_4_second(char *str, char *env, t_general *tmp, int *j)
 				&& str[k] != '$')
 				k++;
 			var_name = ft_substr(str, *j, k - *j);
-			env = getenv(var_name);
-			if (env)
-				ft_putstr_fd(env, 1);
+			envv = get_getenv(env,var_name);
+			if (envv)
+				ft_putstr_fd(envv, 1);
 			*j = k;
 		}
 		else
@@ -49,7 +49,7 @@ void	echo_flag_4_second(char *str, char *env, t_general *tmp, int *j)
 	}
 }
 
-void	echo_flag_4(char *str, char *env, t_general *tmp)
+void	echo_flag_4(char *str, t_env *env, t_general *tmp)
 {
 	int	j;
 
@@ -72,7 +72,7 @@ void	echo_flag_4(char *str, char *env, t_general *tmp)
 	}
 }
 
-void	echo_cmd(t_general *tmp, char *str, char *env, int i)
+void	echo_cmd(t_general *tmp, char *str, t_env *env, int i)
 {
 
 	while (tmp->acces_args->args[i])
@@ -88,7 +88,7 @@ void	echo_cmd(t_general *tmp, char *str, char *env, int i)
 		if (tmp->acces_args->args[i]->flag == 4)
 			echo_flag_4(str, env, tmp);
 		else if (tmp->acces_args->args[i]->flag == 1)
-			echo_flag_1(env, tmp, i);
+			echo_flag_1(tmp, i);
 		else
 		{
 			if (tmp->acces_args->args[i]->flag == 0
@@ -101,10 +101,9 @@ void	echo_cmd(t_general *tmp, char *str, char *env, int i)
 		ft_putchar_fd('\n', 1);
 }
 
-void	initalized_echo(t_general *list)
+void	initalized_echo(t_general *list, t_env *env)
 {
 	int			i;
-	char		*env;
 	char		*str;
 	t_general	*tmp;
 

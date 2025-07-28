@@ -6,17 +6,17 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/27 22:22:18 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/29 01:25:30 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	echo_flag_0_and_2_second_2(char *str, char *env, int j, int *k)
+void	echo_flag_0_and_2_second_2(char *str, t_env *env, int j, int *k)
 {
 	char	*var_name;
 	int l;
-
+	char *envv;
 	l = 0;
 	*k = j+1;
 	while (str[*k] && ((str[*k] >= 'A' && str[*k] <= 'Z') || (str[*k] >= 'a'
@@ -24,11 +24,11 @@ void	echo_flag_0_and_2_second_2(char *str, char *env, int j, int *k)
 				|| str[*k] == '_'))
 			(*k)++;
 	var_name = ft_substr(str, j, *k - j);
-	if(str[j-2] && str[j - 2] != '\'')
+	if(str[j - 2] && str[j - 2] != '\'')
 	{
-		env = getenv(var_name);
-		if (env)
-			ft_putstr_fd(env, 1);
+		envv = get_getenv(env,var_name);
+		if (envv)
+			ft_putstr_fd(envv, 1);
 	}
 	else
 	{
@@ -41,7 +41,7 @@ void	echo_flag_0_and_2_second_2(char *str, char *env, int j, int *k)
 	}
 }
 
-void	echo_flag_0_and_2_second(char *str, char *env, t_general *tmp, int *j)
+void	echo_flag_0_and_2_second(char *str, t_env *env, t_general *tmp, int *j)
 {
 	int		k;
 	char	*var_name;
@@ -68,7 +68,7 @@ void	echo_flag_0_and_2_second(char *str, char *env, t_general *tmp, int *j)
 	}
 }
 
-void	echo_flag_0_and_2(char *env, char *str, t_general *tmp, int i)
+void	echo_flag_0_and_2(t_env *env, char *str, t_general *tmp, int i)
 {
     int	j;
 
@@ -77,14 +77,16 @@ void	echo_flag_0_and_2(char *env, char *str, t_general *tmp, int i)
     {
         echo_flag_0_and_2_second(str, env, tmp, &j);
     }
-    if (tmp->acces_args->args[i + 1])
-        ft_putchar_fd(' ', 1);
+    if (tmp->acces_args->args[i]->s == 1)
+	{
+		if(tmp->acces_args->args[i+1])
+        	ft_putchar_fd(' ', 1);
+	}
 }
 
-void	echo_flag_1(char *env, t_general *tmp, int i)
+void	echo_flag_1(t_general *tmp, int i)
 {
     int	j;
-	(void)env;
     char *str;
 
     j = 0;
@@ -94,6 +96,9 @@ void	echo_flag_1(char *env, t_general *tmp, int i)
         ft_putchar_fd(str[j], 1);
         j++;
     }
-    if (tmp->acces_args->args[i + 1])
-        ft_putchar_fd(' ', 1);
+    if (tmp->acces_args->args[i]->s == 1)
+        {
+		if(tmp->acces_args->args[i+1])
+        	ft_putchar_fd(' ', 1);
+	}
 }

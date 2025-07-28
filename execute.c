@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/28 11:14:51 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/28 14:48:44 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,13 @@ void	handle_append(t_general *list, int i)
 	}
 }
 
-char * extend_env(char *str)
+char * extend_env(char *str, t_env *env)
 {
 	char *new;
-	new =getenv(str);
+	new =get_getenv(env,str);
 	return new;
 }
-char	**make_argv(t_pipeafter *acces_args)
+char	**make_argv(t_pipeafter *acces_args, t_env *env)
 {
 	int		count;
 	char	**argv;
@@ -93,7 +93,7 @@ char	**make_argv(t_pipeafter *acces_args)
 	{
 		if((acces_args->args[i]->flag == 0 || acces_args->args[i]->flag == 2) && acces_args->args[i]->str[0] == '$')
 		{
-			argv[i]=extend_env(acces_args->args[i]->str+1);
+			argv[i]=extend_env(acces_args->args[i]->str+1, env);
 		}
 		else
 			argv[i] = acces_args->args[i]->str;
@@ -146,14 +146,14 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			free(pipe_blocs->acces_args->args[1]->str);
 			pipe_blocs->acces_args->args[1]->str = ft_itoa(pipe_blocs->dqm);
 		}
- 		argv = make_argv(pipe_blocs->acces_args);
+ 		argv = make_argv(pipe_blocs->acces_args, envv);
 		execve(cmd, argv, get->envp);
 		pipe_blocs->dqm = 0;
 		exit(pipe_blocs->dqm);
 	}
 	if(cmd[0] == '$')
 	{
-			env = getenv(cmd+1);
+			env = get_getenv(envv,cmd+1);
 		if(ft_strcmp(cmd, "$") == 0)
 		{
 			ft_putstr_fd("$: command not found\n", 2);
@@ -184,7 +184,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	}
 	i = 0;
 	command_found = 0;
-	args = getenv("PATH");
+	args = get_getenv(envv,"PATH");
 	paths = ft_split(args, ':');
 	while (paths[i])
 	{
@@ -199,7 +199,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 				close(pipe_blocs->heredoc_fd);
 			}
 			command_found = 1;
-			argv = make_argv(pipe_blocs->acces_args);
+			argv = make_argv(pipe_blocs->acces_args, envv);
 			execve(end, argv, get->envp);
 			perror("execve\n");
 			free(argv);
@@ -237,13 +237,13 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
 	{
 		new = pipe_blocs->acces_args->args[0]->str+1;
-		if(getenv(new))
+		if(get_getenv(envv, new))
 		{
 			ft_putstr_fd("bash: ", 2);
-			ft_putstr_fd(getenv(new), 2);
+			ft_putstr_fd(get_getenv(envv, new), 2);
 			ft_putstr_fd(": Is a directory\n", 2);
 		}
-		if(getenv(new))
+		if(get_getenv(envv, new))
 			pipe_blocs->dqm = 126;
 		else
 			pipe_blocs->dqm = 0;
@@ -382,7 +382,7 @@ int count_malloc(t_general *list, int j)
 		str = list->acces_args->args[j]->str;
 		while(str[i])
 		{
-			if(str[i] == '$' && str[i+1] && str[i+1] == '?')
+			if(str[i] == '$' && str[i] && str[i] == '?')
 			{
 				c+=ft_strlen(ft_itoa(list->dqm));
 				i++;
@@ -407,7 +407,7 @@ void expand_dolar(t_general *list)
 	{
 		i = 0;
 		k = 0;
-		new = malloc(sizeof(char) * (count_malloc(list, j) + 1));
+		new = malloc(sizeof(char *) * (count_malloc(list, j) + 1));
 		str = list->acces_args->args[j]->str;
 		while(str[i])
 		{
@@ -455,7 +455,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 			free_env(*env);
 			e = pipe_blocs->dqm;
 			free_pipe_blocks(pipe_blocs);
-			exit(e);
+			exit(e); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo
 		}
 	}
 	else

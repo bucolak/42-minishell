@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/27 22:04:11 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/28 10:12:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,9 @@ void free_pipe(t_pipe *pipe)
 
 void free_envp(t_now *get)
 {
-    int i;
-    i = 0;
+    if (!get)
+        return;
+    int i = 0;
     while (get->envp[i])
     {
         free(get->envp[i]);

@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/28 11:03:58 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/29 00:56:08 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,19 +135,19 @@ void	signal_handler(void)
 
 int has_heredoc(t_general *list)
 {
-    int i = 0;
+	int i = 0;
 
-    if (!list || !list->acces_args || !list->acces_args->args)
-        return 0;
-        
-    while (list->acces_args->args[i])
-    {
-        if (list->acces_args->args[i]->str && 
-            ft_strcmp(list->acces_args->args[i]->str, "<<") == 0)
-            return 1;
-        i++;
-    }
-    return 0;
+	if (!list || !list->acces_args || !list->acces_args->args)
+		return 0;
+		
+	while (list->acces_args->args[i])
+	{
+		if (list->acces_args->args[i]->str && 
+			ft_strcmp(list->acces_args->args[i]->str, "<<") == 0)
+			return 1;
+		i++;
+	}
+	return 0;
 }
 
 void	init_pipe(t_pipe *pipe, t_general *list)
@@ -179,7 +179,6 @@ void	create_pipe(int count, int **fd)
 		i++;
 	}
 }
-//DEVAM EDİLİYOR
 
 // void expand_dolar(t_general *list)
 // {
@@ -209,94 +208,116 @@ void	create_pipe(int count, int **fd)
 // 	}	
 // }
 
+char *get_getenv(t_env *env, char *key)
+{
+	t_env *tmp;
+
+	tmp = env;
+	while(tmp)
+	{
+		if(ft_strncmp(key, tmp->key, ft_strlen(key)) == 0 && tmp->key[ft_strlen(key)] == '=')
+			return tmp->data;
+		tmp = tmp->next;
+	}
+	return NULL;
+}
+ 
 int	main(int argc, char *argv[], char **envp)
 {
-    char		*line;
-    t_general	*pipe_blocs;
-    t_env		*env;
-    t_now		*get;
+	char		*line;
+	t_general	*pipe_blocs;
+	t_env		*env;
+	t_now		*get;
 	t_pipe	*pipe;
 	int last_dqm;
-    static int	first_run;
-    (void)argc;
-    (void)argv;
-    first_run = 1;
+	static int	first_run;
+	(void)argc;
+	(void)argv;
+	first_run = 1;
 	last_dqm = 0;
 	pipe = NULL;
 	get = NULL;
-    env = create_env_node();
-    if (first_run)
-    {
+	env = create_env_node();
+	if (first_run)
+	{
 		get_env(&env, envp);
-        first_run = 0;
-    }
-    while (1)
-    {
+		first_run = 0;
+	}
+	while (1)
+	{
 		signal_handler();
 		pipe_blocs = create_general_node(last_dqm);
-        line = readline("Our_shell% ");
-       if (!line)
+		line = readline("Our_shell% ");
+	   if (!line)
 		{
-            if (pipe_blocs)
-                free_pipe_blocks(pipe_blocs);
-            if (env)
-                free_env(env);
-            if (get)
-                free_envp(get);
-            if (pipe)
-                free_pipe(pipe);
-            exit(0);
+			if (pipe_blocs)
+				free_pipe_blocks(pipe_blocs);
+			if (env)
+			{
+				free_env(env);
+				get=NULL;
+			}
+			if (get)
+			{
+				free_envp(get);
+				get = NULL;
+			}
+			if (pipe)
+				free_pipe(pipe);
+			exit(0);
 		}
-        if (line[0] == '\0')
-        {
+		if (line[0] == '\0')
+		{
 			free_pipe_blocks(pipe_blocs);
-            free(line);
-            continue;
-        }
-        add_history(line);
-        pipe_parse(&pipe_blocs, line);
-        parse_input(pipe_blocs);
+			free(line);
+			continue;
+		}
+		add_history(line);
+		pipe_parse(&pipe_blocs, line);
+		parse_input(pipe_blocs);
 		//print_pipes(pipe_blocs);
 		if(has_heredoc(pipe_blocs) == 1)
-        {
-            handle_heredoc(pipe_blocs);
-        }
-        get = malloc(sizeof(t_now));
-        get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
-        fill_env(&env, get);
+		{
+			handle_heredoc(pipe_blocs);
+		}
+		get = malloc(sizeof(t_now));
+		get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
+		fill_env(&env, get);
 		
-        if (pipe_blocs->next)
+		if (pipe_blocs->next)
 		{
 			pipe = malloc(sizeof(t_pipe));
 			init_pipe(pipe, pipe_blocs);
 			create_pipe(pipe->count, pipe->fd);
 			handle_pipe(pipe_blocs, get, &env, pipe);
 		}
-        else if (pipe_blocs->acces_args && pipe_blocs->acces_args->args[0])
-        {
+		else if (pipe_blocs->acces_args && pipe_blocs->acces_args->args[0])
+		{
 			if ((!has_redireciton(pipe_blocs)
 			&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
 			{
 				check_cmd_built_in(pipe_blocs, &env, pipe, get);
-            }
-            else
-            {
-                check_cmd_sys_call(pipe_blocs, &env, get, pipe);
-            }
-        }
-        else
-        {
+			}
+			else
+			{
+				check_cmd_sys_call(pipe_blocs, &env, get, pipe);
+			}
+		}
+		else
+		{
 			free_pipe_blocks(pipe_blocs);
-        }
+		}
 		free_envp(get);
+		get = NULL;
 		last_dqm = pipe_blocs->dqm;
 		if(pipe_blocs->heredoc_fd!=-1)
 			close(pipe_blocs->heredoc_fd);
 		free_pipe_blocks(pipe_blocs);
-        free(line);
-    }
+		free(line);
+	}
 	free_env(env);
 	free_envp(get);
+	get = NULL;
 	free_pipe_blocks(pipe_blocs);
-    return 0;
+	return 0;
 }

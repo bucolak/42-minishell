@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/25 16:50:23 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/29 00:29:30 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	built_in_helper_func_2(t_full *full, int i)
 {
 	if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 					"pwd") == 0)
-		pwd_cmd(&full->pipe_blocks->acces_args->args[i]->str, full->pipe_blocks);
+		pwd_cmd(&full->pipe_blocks->acces_args->args[i]->str, full->pipe_blocks, *full->node);
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 		"unset") == 0)
 		{
@@ -89,7 +89,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str,
 						"echo") == 0)
 		{
-							initalized_echo(pipe_blocs);
+							initalized_echo(pipe_blocs, *node);
 							break;
 		}
 		i++;
@@ -102,7 +102,7 @@ void cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks, t_env *env)
 				|| args[1]->flag == 2))
 		{
 			env_name = args[1]->str + 1; // bi sorun çıkarsa buraya bi gözat
-    		chdir(getenv(env_name));
+    		chdir(get_getenv(env ,env_name));
 			return ;
 		}
 		else if(chdir(args[1]->str)==-1)
@@ -131,7 +131,7 @@ void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 	env_name = NULL;
 	if (!args[1] || ft_strcmp(args[1]->str, "-") == 0)
 	{
-		line = getenv("HOME");
+		line = get_getenv(env, "HOME");
 		if (line)
 			chdir(line);
 	}
@@ -144,7 +144,7 @@ void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 		cd_helper(args, env_name, pipe_blocks, env);
 }
 
-void	pwd_cmd(char **ar, t_general *list)
+void	pwd_cmd(char **ar, t_general *list, t_env *env)
 {
 	char	*line;
 
@@ -154,7 +154,7 @@ void	pwd_cmd(char **ar, t_general *list)
 		list->dqm = 0;
 		if (!line)
 		{
-			printf("Error\n");	line = getenv("HOME");
+			printf("Error\n");	line = get_getenv(env, "HOME");
 			free(line);
 			list->dqm = 1;
 			return ;

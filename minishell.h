@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/25 16:33:47 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/29 01:13:59 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_arg
 {
 	char				*str;
 	int					flag;
+	int s;
 }						t_arg;
 
 typedef struct s_pipeafter
@@ -93,11 +94,11 @@ typedef struct s_full
 	t_now *get;
 }	t_full;
 
-
+char *get_getenv(t_env *env, char *key);
 void					free_split(char **str);
 // apply_malloc.c
 //t_arg *create_arg(const char *str, int flag);
-t_arg					*create_arg(char *str, int flag, int type);
+t_arg *create_arg(char *str, int flag, int type, int s);
 t_pipeafter				*create_pipeafter(void);
 t_general				*create_general_node(int dqm);
 t_env					*create_env_node(void);
@@ -117,7 +118,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 // cmd_built_in.c
 void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get);
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks);
-void					pwd_cmd(char **ar, t_general *list);
+void	pwd_cmd(char **ar, t_general *list, t_env *env);
 
 // environment_first.c
 void					get_env_helper_func(int *i, int *j, t_env *tmp,
@@ -165,18 +166,16 @@ void	handle_append(t_general *list, int i);
 void					handle_heredoc(t_general *list);
 
 // echo_first.c
-void					echo_flag_4_second(char *str, char *env, t_general *tmp,
-							int *j);
-void					echo_flag_4(char *str, char *env, t_general *tmp);
-void					echo_cmd(t_general *tmp, char *str, char *env, int i);
-void					initalized_echo(t_general *list);
+void	echo_flag_4_second(char *str, t_env *env, t_general *tmp, int *j);
+void	echo_cmd(t_general *tmp, char *str, t_env *env, int i);
+void	initalized_echo(t_general *list, t_env *env);
 
 // echo_second.c
-void					echo_flag_0_and_2_second(char *str, char *env,
+void					echo_flag_0_and_2_second(char *str, t_env *env,
 							t_general *tmp, int *j);
-void					echo_flag_0_and_2(char *env, char *str, t_general *tmp,
+void					echo_flag_0_and_2(t_env *env, char *str, t_general *tmp,
 							int i);
-void					echo_flag_1(char *env, t_general *tmp, int i);
+void					echo_flag_1(t_general *tmp, int i);
 
 // exit.c
 
