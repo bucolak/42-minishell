@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/07/13 17:30:09 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/25 17:21:08 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,14 @@ int	key_cont(char *key)
 	}
 	return (1);
 }
-
+void print_message(char *key, char *data, t_general *list)
+{
+	ft_putstr_fd("bash: export: `", 2);
+	ft_putstr_fd(key, 2);
+	ft_putstr_fd(data, 2);
+	ft_putstr_fd("' : not a valid identifier\n", 2);
+	list->dqm = 1;
+}
 void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 {
 	t_env	*last;
@@ -120,22 +127,41 @@ void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 			list->dqm = 0;
 		}
 		else
-		{
-			ft_putstr_fd("bash: export: `", 2);
-			ft_putstr_fd(key, 2);
-			ft_putstr_fd(data, 2);
-			ft_putstr_fd("' : not a valid identifier\n", 2);
-			list->dqm = 1;
-		}
+			print_message(key, data, list);
+	}
+}
+
+void create_env_2(t_general *list, t_env **env, int i)
+{
+	char	*new;
+	char	*key;
+    char	*data;
+	
+	new = list->acces_args->args[i]->str;
+	if (list->acces_args->args[i] && new)
+	{
+		list->dqm = 0;
+		key = get_key(new);
+        data = get_data(new);
+		if ((count_dquote(new) % 2 == 0 || count_squote(new)
+				% 2 == 0) && is_repeated(env, key,
+				data) == 0)
+			ft_envadd_back(env, key, data, list);
+        free(key);
+        free(data);
+	}
+	if(list->acces_args->args[i+1] && ft_strcmp((*env)->key, " =")==0)
+	{
+		free(new);
+		ft_putstr_fd("bash: export: ", 2);
+		ft_putstr_fd("`=': not a valid identifier\n", 2);
 	}
 }
 
 void	create_env(t_general *list, t_env **env)
 {
 	int		i;
-	char	*new;
-	char	*key;
-    char	*data;
+	
 
 	while (list)
 	{
@@ -145,25 +171,7 @@ void	create_env(t_general *list, t_env **env)
 			if (ft_strncmp(list->acces_args->args[i]->str, "export", 6) == 0)
 			{
 				i++;
-				new = list->acces_args->args[i]->str;
-				if (list->acces_args->args[i] && new)
-				{
-					list->dqm = 0;
-					key = get_key(new);
-                    data = get_data(new);
-					if ((count_dquote(new) % 2 == 0 || count_squote(new)
-							% 2 == 0) && is_repeated(env, key,
-							data) == 0)
-						ft_envadd_back(env, key, data, list);
-                    free(key);
-                    free(data);
-				}
-				if(list->acces_args->args[i+1] && ft_strcmp((*env)->key, " =")==0)
-				{
-					free(new);
-					ft_putstr_fd("bash: export: ", 2);
-					ft_putstr_fd("`=': not a valid identifier\n", 2);
-				}
+				create_env_2(list, env, i);
 			}
 			i++;
 		}

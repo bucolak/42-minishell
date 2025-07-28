@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   environment_second.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/13 17:32:01 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/26 13:09:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void get_key_2(int *i, int *end, char *str)
+{
+	*i = 0;
+	while (str[*i] && str[*i] != '=')
+		(*i)++;
+	*end = *i;
+	if (str[*i] == '=')
+		*end = *i + 1;
+}
 
 char	*get_key(char *str)
 {
@@ -31,12 +41,7 @@ char	*get_key(char *str)
 		}
 		i++;
 	}
-	i = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	end = i;
-	if (str[i] == '=')
-		end = i + 1;
+	get_key_2(&i, &end, str);
 	key = ft_substr(str, start, end - start);
 	final_key = ft_strtrim(key, "'\"");
 	free(key);
@@ -64,6 +69,22 @@ char	*get_data(char *str)
 	return (ft_substr(str, k, i - k));
 }
 
+void print_export_env_2(t_env	*node)
+{
+	if(ft_strcmp(node->key, "=")!=0)
+	{
+		if (node->key && node->data && node->data[0] != '\0')
+			printf("declare -x %s\"%s\"\n", node->key, node->data);
+		else if (node->key)
+			printf("declare -x %s%s\n", node->key, node->data);
+	}
+	else
+	{
+		ft_putstr_fd("bash: export: ", 2);
+		ft_putstr_fd("`=': not a valid identifier\n", 2);
+	}
+}
+
 void	print_export_env(t_env **env, t_general *list)
 {
 	t_env	**new_env;
@@ -78,20 +99,7 @@ void	print_export_env(t_env **env, t_general *list)
 	{
 		node = new_env[i];
 		if (node->key)
-		{
-			if(ft_strcmp(node->key, "=")!=0)
-			{
-				if (node->key && node->data && node->data[0] != '\0')
-					printf("declare -x %s\"%s\"\n", node->key, node->data);
-				else if (node->key)
-					printf("declare -x %s%s\n", node->key, node->data);
-			}
-			else
-			{
-				ft_putstr_fd("bash: export: ", 2);
-				ft_putstr_fd("`=': not a valid identifier\n", 2);
-			}
-		}
+			print_export_env_2(node);
 		i++;
 	}
 	free(new_env);

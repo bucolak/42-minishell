@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/18 23:02:34 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/25 16:33:47 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,15 @@ typedef struct s_pipe
 	int					count;
 	t_general			*tmp;
 }						t_pipe;
+
+typedef struct s_full
+{
+	t_general *pipe_blocks;
+	t_env **node;
+	t_pipe *pipe;
+	t_now *get;
+}	t_full;
+
 
 void					free_split(char **str);
 // apply_malloc.c

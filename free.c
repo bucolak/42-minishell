@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/18 23:13:37 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/27 22:04:11 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,33 +51,35 @@ void free_pipe_blocks(t_general *blocks)
     tmp = blocks;
     while (tmp)
     {
-        i = 0;
-        if (tmp->acces_args && tmp->acces_args->args)
+        // Free acces_args and its args
+        if (tmp->acces_args)
         {
-            while (tmp->acces_args->args[i])
+            if (tmp->acces_args->args)
             {
-                if (tmp->acces_args->args[i]->str)
+                i = 0;
+                while (tmp->acces_args->args[i])
                 {
-                    free(tmp->acces_args->args[i]->str);
-                    tmp->acces_args->args[i]->str = NULL;
+                    if (tmp->acces_args->args[i]->str)
+                        free(tmp->acces_args->args[i]->str);
+                    free(tmp->acces_args->args[i]);
+                    i++;
                 }
-                free(tmp->acces_args->args[i]);
-                i++;
+                free(tmp->acces_args->args);
             }
-            free(tmp->acces_args->args);
-            if (tmp->acces_args)
-                free(tmp->acces_args);
+            free(tmp->acces_args);
         }
-        i = 0;
+        // Free limiter array
         if (tmp->limiter)
         {
+            i = 0;
             while(tmp->limiter[i])
             {
                 free(tmp->limiter[i]);
                 i++;
             }
+            free(tmp->limiter);
         }
-        free(tmp->limiter);
+        // Free blocs string
         if (tmp->blocs)
             free(tmp->blocs);
         next = tmp->next;

@@ -6,66 +6,74 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/18 01:04:44 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/28 11:14:51 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void handle_append_2(char *last_input, t_general *list, int *fd, int i)
+{
+	last_input = list->acces_args->args[i]->str;
+	*fd = open(last_input, O_CREAT | O_WRONLY | O_APPEND,
+			0644);
+	if(access(last_input, F_OK) != 0)
+	{
+		error_msg(2, last_input, 0, list);
+		free_pipe_blocks(list);
+		exit(list->dqm);
+	}
+	if (access(last_input, W_OK) != 0)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(last_input, 2);
+		ft_putstr_fd(": Permission denied\n", 2);
+		free_pipe_blocks(list);
+		list->dqm = 1;
+		exit(list->dqm);
+	}
+	if (*fd < 0)
+	{
+		error_msg(i, list->acces_args->args[i]->str, 0, list);
+		list->dqm = 1;
+		free_pipe_blocks(list);
+		exit(list->dqm);
+	}
+}
 
 void	handle_append(t_general *list, int i)
 {
 	int	fd;
 	char *last_input;
 	int last_fd;
+
 	last_fd = -1;
-		if (ft_strcmp(list->acces_args->args[i]->str, ">>") == 0)
+	last_input = NULL;
+	fd = -1;
+	if (ft_strcmp(list->acces_args->args[i]->str, ">>") == 0)
+	{
+		if (list->acces_args->args[i + 1])
 		{
-			if (list->acces_args->args[i + 1])
-			{
-				i++;
-				last_input = list->acces_args->args[i]->str;
-				fd = open(last_input, O_CREAT | O_WRONLY | O_APPEND,
-							0644);
-				if(access(last_input, F_OK) != 0)
-				{
-					error_msg(2, last_input, 0, list);
-					free_pipe_blocks(list);
-					exit(list->dqm);
-				}
-				if (access(last_input, W_OK) != 0)
-				{
-					// printf("burda\n");
-					ft_putstr_fd("bash: ", 2);
-					ft_putstr_fd(last_input, 2);
-					ft_putstr_fd(": Permission denied\n", 2);
-					free_pipe_blocks(list);
-					list->dqm = 1;
-					exit(list->dqm);
-				}
-				if (fd < 0)
-				{
-					error_msg(i, list->acces_args->args[i]->str, 0, list);
-					list->dqm = 1;
-					free_pipe_blocks(list);
-					exit(list->dqm);
-				}
-				if(last_fd !=-1)
-					close(last_fd);
-				last_fd = fd;
-			}
-			else
-			{
-				error_msg(2, NULL, 3, list);
-				free_pipe_blocks(list);
-				exit(list->dqm) ;
-			}
+			i++;
+			handle_append_2(last_input,list,&fd,i);
+			if(last_fd !=-1)
+				close(last_fd);
+			last_fd = fd;
 		}
-		if(last_fd!=-1)
+		else
 		{
-			dup2(last_fd, 1);
-			close(last_fd);
+			error_msg(2, NULL, 3, list);
+			free_pipe_blocks(list);
+			exit(list->dqm) ;
 		}
+	}
+	if(last_fd!=-1)
+	{
+		dup2(last_fd, 1);
+		close(last_fd);
+	}
 }
+
 char * extend_env(char *str)
 {
 	char *new;
@@ -93,10 +101,10 @@ char	**make_argv(t_pipeafter *acces_args)
 	argv[count] = NULL;
 	return (argv);
 }
+
 void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv)
 {
 	int		i;
-	//int j;
 	char	*args;
 	char	**paths;
 	char	*str;
@@ -133,20 +141,27 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			pipe_blocs->dqm = 126;
 			exit(pipe_blocs->dqm);
 		}
+		if (pipe_blocs->acces_args->args[1] && ft_strcmp(pipe_blocs->acces_args->args[1]->str, "$?") == 0 && pipe_blocs->acces_args->args[1]->flag != 1)
+		{
+			free(pipe_blocs->acces_args->args[1]->str);
+			pipe_blocs->acces_args->args[1]->str = ft_itoa(pipe_blocs->dqm);
+		}
+ 		argv = make_argv(pipe_blocs->acces_args);
+		execve(cmd, argv, get->envp);
+		pipe_blocs->dqm = 0;
+		exit(pipe_blocs->dqm);
 	}
 	if(cmd[0] == '$')
 	{
-		env = getenv(cmd+1);
+			env = getenv(cmd+1);
 		if(ft_strcmp(cmd, "$") == 0)
 		{
-			ft_putstr_fd("$: command not found\n", 2); // "command not found" mesajı
+			ft_putstr_fd("$: command not found\n", 2);
 			pipe_blocs->dqm = 127;
 			exit(pipe_blocs->dqm);
 		}
 		else if(env)
-		{
 			cmd = env;
-		}
 		else
 		{
 			if(pipe_blocs->acces_args->args[1])
@@ -177,6 +192,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
 		if (access(end, X_OK) == 0)
 		{
+			printf("burda\n");
 			if(pipe_blocs->heredoc_fd!=-1)
 			{
 				dup2(pipe_blocs->heredoc_fd, 0);
@@ -354,6 +370,62 @@ void	handle_redirections(t_general *pipe_blocs)
 		renew_block2(pipe_blocs);
 }
 
+int count_malloc(t_general *list, int j)
+{
+	int c;
+	int i;
+	char *str;
+	i = 0;
+	c = 0;
+	if(list->acces_args->args[j])
+	{
+		str = list->acces_args->args[j]->str;
+		while(str[i])
+		{
+			if(str[i] == '$' && str[i+1] && str[i+1] == '?')
+			{
+				c+=ft_strlen(ft_itoa(list->dqm));
+				i++;
+			}
+			else
+				c++;
+			i++;
+		}
+	}
+	return c;
+}
+
+void expand_dolar(t_general *list)
+{
+	char *str;
+	int i;
+	int j;
+	int k;
+	char *new;
+	j = 0;
+	while(list->acces_args->args[j])
+	{
+		i = 0;
+		k = 0;
+		new = malloc(sizeof(char) * (count_malloc(list, j) + 1));
+		str = list->acces_args->args[j]->str;
+		while(str[i])
+		{
+			if(str[i] == '$' && str[i+1] && str[i+1] == '?')
+			{
+				ft_memcpy(new+k, ft_itoa(list->dqm), ft_strlen(ft_itoa(list->dqm)));
+				i+=2;
+				k+=ft_strlen(ft_itoa(list->dqm));
+			}
+			else
+				new[k++] = str[i++];
+		}
+		new[k] = '\0';
+		free(list->acces_args->args[j]->str);
+		list->acces_args->args[j]->str = ft_strdup(new);
+		j++;
+	}
+}
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe)
 {
@@ -377,12 +449,13 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 		}
 		else
 		{
+			expand_dolar(pipe_blocs);
 			execute_command(pipe_blocs, get, pipe, *env);
 			free_envp(get);
 			free_env(*env);
 			e = pipe_blocs->dqm;
 			free_pipe_blocks(pipe_blocs);
-			exit(e); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo
+			exit(e);
 		}
 	}
 	else

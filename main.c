@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/24 17:35:38 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/28 11:03:58 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,14 +135,19 @@ void	signal_handler(void)
 
 int has_heredoc(t_general *list)
 {
-	int i = 0;
-	while (list->acces_args->args[i])
-	{
-		if(ft_strcmp(list->acces_args->args[i]->str, "<<") == 0)
-			return 1;
-		i++;
-	}
-	return 0;
+    int i = 0;
+
+    if (!list || !list->acces_args || !list->acces_args->args)
+        return 0;
+        
+    while (list->acces_args->args[i])
+    {
+        if (list->acces_args->args[i]->str && 
+            ft_strcmp(list->acces_args->args[i]->str, "<<") == 0)
+            return 1;
+        i++;
+    }
+    return 0;
 }
 
 void	init_pipe(t_pipe *pipe, t_general *list)
@@ -174,6 +179,35 @@ void	create_pipe(int count, int **fd)
 		i++;
 	}
 }
+//DEVAM EDİLİYOR
+
+// void expand_dolar(t_general *list)
+// {
+// 	t_general *tmp;
+// 	char *str;
+// 	char *a;
+// 	tmp = list;
+// 	int i;
+// 	int j;
+// 	while(tmp)
+// 	{
+// 		i = 0;
+// 		while(tmp->acces_args->args[i])
+// 		{
+// 			j = 0;
+// 			while(tmp->acces_args->args[i]->str[j])
+// 			{
+// 				if(tmp->acces_args->args[i]->str[j] == '$')
+// 				{
+// 					if(tmp->acces_args->args[i]->str[j+1])
+// 						a = tmp->acces_args->args[i]->str++;
+// 					str = getenv(a);
+					
+// 				}
+// 			}
+// 		}	
+// 	}	
+// }
 
 int	main(int argc, char *argv[], char **envp)
 {
@@ -189,6 +223,7 @@ int	main(int argc, char *argv[], char **envp)
     first_run = 1;
 	last_dqm = 0;
 	pipe = NULL;
+	get = NULL;
     env = create_env_node();
     if (first_run)
     {
@@ -197,21 +232,31 @@ int	main(int argc, char *argv[], char **envp)
     }
     while (1)
     {
+		signal_handler();
 		pipe_blocs = create_general_node(last_dqm);
         line = readline("Our_shell% ");
-        if (!line)
+       if (!line)
 		{
-            exit(1);
+            if (pipe_blocs)
+                free_pipe_blocks(pipe_blocs);
+            if (env)
+                free_env(env);
+            if (get)
+                free_envp(get);
+            if (pipe)
+                free_pipe(pipe);
+            exit(0);
 		}
         if (line[0] == '\0')
         {
+			free_pipe_blocks(pipe_blocs);
             free(line);
             continue;
         }
         add_history(line);
         pipe_parse(&pipe_blocs, line);
-        signal_handler();
         parse_input(pipe_blocs);
+		//print_pipes(pipe_blocs);
 		if(has_heredoc(pipe_blocs) == 1)
         {
             handle_heredoc(pipe_blocs);
