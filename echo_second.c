@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/29 01:25:30 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 02:14:06 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,24 +41,13 @@ void	echo_flag_0_and_2_second_2(char *str, t_env *env, int j, int *k)
 	}
 }
 
-void	echo_flag_0_and_2_second(char *str, t_env *env, t_general *tmp, int *j)
+void	echo_flag_0_and_2_second(char *str, t_general *tmp, int *j)
 {
-	int		k;
-	char	*var_name;
-
-	var_name = NULL;
-	if (str[*j] == '$' && str[*j + 1] != ' ' && str[*j + 1] != '?' && str[*j
-		+ 1] != '"' && str[*j + 1])
-	{
-		(*j)++;
-		echo_flag_0_and_2_second_2(str,env, *j, &k);
-		*j = k;
-		free(var_name);
-	}
-	else if (str[*j] == '$' && str[*j + 1] == '?')
+	if (str[*j] == '$' && str[*j + 1] == '?')
 	{
 		ft_putstr_fd(ft_itoa(tmp->dqm), 1);
-		*j += 2;
+		
+			*j += 2;
 	}
 	else
 	{
@@ -68,19 +57,21 @@ void	echo_flag_0_and_2_second(char *str, t_env *env, t_general *tmp, int *j)
 	}
 }
 
-void	echo_flag_0_and_2(t_env *env, char *str, t_general *tmp, int i)
+void	echo_flag_0_and_2(char *str, t_general *tmp, int i)
 {
     int	j;
 
     j = 0;
     while (str[j])
     {
-        echo_flag_0_and_2_second(str, env, tmp, &j);
+        echo_flag_0_and_2_second(str, tmp, &j);
     }
     if (tmp->acces_args->args[i]->s == 1)
 	{
 		if(tmp->acces_args->args[i+1])
+		{
         	ft_putchar_fd(' ', 1);
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/15 00:18:18 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 02:07:25 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	renew_else_block(t_arg ***new, t_general *tmp, int *i, int *j)
 	(*new)[*j] = malloc(sizeof(t_arg));
 	(*new)[*j]->str = ft_strdup(tmp->acces_args->args[*i]->str);
 	(*new)[*j]->flag = tmp->acces_args->args[*i]->flag;
+	(*new)[*j]->s = tmp->acces_args->args[*i]->s;  
 }
 
 void	renew_block2(t_general *list)

@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/28 14:48:44 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/29 23:12:37 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
 		if (access(end, X_OK) == 0)
 		{
-			printf("burda\n");
 			if(pipe_blocs->heredoc_fd!=-1)
 			{
 				dup2(pipe_blocs->heredoc_fd, 0);
@@ -395,7 +394,7 @@ int count_malloc(t_general *list, int j)
 	return c;
 }
 
-void expand_dolar(t_general *list)
+void expand_dolar_qmark(t_general *list)
 {
 	char *str;
 	int i;
@@ -449,7 +448,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 		}
 		else
 		{
-			expand_dolar(pipe_blocs);
+			expand_dolar_qmark(pipe_blocs);
 			execute_command(pipe_blocs, get, pipe, *env);
 			free_envp(get);
 			free_env(*env);

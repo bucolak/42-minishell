@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/29 00:29:30 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/29 17:56:08 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str,
 						"echo") == 0)
 		{
-							initalized_echo(pipe_blocs, *node);
+							initalized_echo(pipe_blocs);
 							break;
 		}
 		i++;
