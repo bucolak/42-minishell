@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 02:14:06 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 23:26:46 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	echo_flag_0_and_2_second(char *str, t_general *tmp, int *j)
 	if (str[*j] == '$' && str[*j + 1] == '?')
 	{
 		ft_putstr_fd(ft_itoa(tmp->dqm), 1);
-		
+		tmp->dqm = 0;
 			*j += 2;
 	}
 	else
@@ -66,13 +66,11 @@ void	echo_flag_0_and_2(char *str, t_general *tmp, int i)
     {
         echo_flag_0_and_2_second(str, tmp, &j);
     }
-    if (tmp->acces_args->args[i]->s == 1)
-	{
+
 		if(tmp->acces_args->args[i+1])
 		{
         	ft_putchar_fd(' ', 1);
 		}
-	}
 }
 
 void	echo_flag_1(t_general *tmp, int i)

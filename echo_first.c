@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 02:09:27 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 23:29:22 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	echo_cmd(t_general *tmp, char *str, int i)
     	    i++;
     	    continue;
     	}
-		if (ft_strcmp(tmp->acces_args->args[1]->str, "-n") == 0)
+		if (ft_strcmp(tmp->acces_args->args[i]->str, "-n") == 0)
 			i++;
 		if (ft_strcmp(tmp->acces_args->args[i]->str, ">>") == 0
 			|| ft_strcmp(tmp->acces_args->args[i]->str, ">") == 0
@@ -103,6 +103,7 @@ void	echo_cmd(t_general *tmp, char *str, int i)
 	}
 	if (tmp->acces_args->args[1] && ft_strcmp(tmp->acces_args->args[1]->str, "-n") != 0)
 		ft_putchar_fd('\n', 1);
+	tmp->dqm = 0;
 }
 
 void	initalized_echo(t_general *list)
