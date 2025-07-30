@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 13:54:50 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 21:34:30 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,13 +150,17 @@ void	parse_input(t_general *a)
 				if (a->blocs[i] == '"'  && ((a->blocs[i+1]&&a->blocs[i+1] != '"') || !a->blocs[i+1]))
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
-					a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
-					if((a->blocs[i+1] == '\'' || a->blocs[i+1] == '"' || a->blocs[i+1]!=' ') && a->acces_args->args[k])
+					if(tmp_str[0])
 					{
-						a->acces_args->args[k]->s = 0;
+						a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
+						if((a->blocs[i+1] == '\'' || a->blocs[i+1] == '"' || a->blocs[i+1]!=' ') && a->acces_args->args[k])
+						{
+							a->acces_args->args[k]->s = 0;
+						}
+						k++;
+						
 					}
 					free(tmp_str);
-					k++;
 					i++;
 				}
 				else
@@ -173,14 +177,18 @@ void	parse_input(t_general *a)
 					if (a->blocs[i] == '"')
 					{
 						tmp_str = ft_substr(a->blocs, j, i- j);
-						a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
-						a->acces_args->args[k]->str = clean_double_quotes(a->acces_args->args[k]->str);
-						if((a->blocs[i+1] == '\'' || a->blocs[i+1] == '"' || a->blocs[i+1]!=' ') && a->acces_args->args[k])
+						if(tmp_str[0])
 						{
-							a->acces_args->args[k]->s = 0;
+							a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
+							a->acces_args->args[k]->str = clean_double_quotes(a->acces_args->args[k]->str);
+							if((a->blocs[i+1] == '\'' || a->blocs[i+1] == '"' || a->blocs[i+1]!=' ') && a->acces_args->args[k])
+							{
+								a->acces_args->args[k]->s = 0;
+							}
+							
+							k++;
 						}
 						free(tmp_str);
-						k++;
 						i++;
 					}
 				}
