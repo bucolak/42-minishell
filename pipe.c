@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/18 23:11:09 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 22:21:33 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,25 @@ void	close_fd(int count, int **fd, int type, int i)
 void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
 {
 	handle_redirections(tmp);
-	if (is_built_in(tmp->acces_args->args[0]->str) == 1)
+	//handle_heredoc(tmp);
+	//  if (ft_strcmp(tmp->acces_args->args[0]->str, "<<") == 0)
+    // {
+    //     handle_heredoc(tmp); // heredoc prompt açılır
+    //     ft_putstr_fd("bash: <<: command not found\n", 2);
+    //     tmp->dqm = 127;
+    //     exit(tmp->dqm);
+    // } // SAÇMA SAPAN BİŞEY OLDUĞUNU DÜŞÜNÜYORUM AMA YİNE DE KALSIN
+	if(tmp->acces_args->args[0]->flag !=5)
 	{
-		check_cmd_built_in(tmp, env, pipe, get);
-		exit(tmp->dqm);
+		if (is_built_in(tmp->acces_args->args[0]->str) == 1)
+		{
+			check_cmd_built_in(tmp, env, pipe, get);
+			exit(tmp->dqm);
+		}
+		else
+			execute_command(tmp, get,pipe, *env);
+		
 	}
-	else
-		execute_command(tmp, get,pipe, *env);
 }
 
 void	direct_and_close_fd(int count, int **fd, int i, int type)
@@ -124,10 +136,18 @@ void	free_and_wait(int count, pid_t *pid, int **fd)
 
 void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe)
 {
+	t_general *tmp ;
+	tmp = list;
 	int status;
 	int		i;
 	pipe->tmp = list;
 	i = 0;
+    while (tmp) 
+	{
+        if (has_heredoc(tmp)) 
+            handle_heredoc(tmp);
+        tmp = tmp->next;
+    }
 	while (i < pipe->count)
 	{
 		pipe->pid[i] = fork();

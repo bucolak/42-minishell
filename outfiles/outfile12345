@@ -1,6 +1,7 @@
 <
 >
 >>
+42_minishell_tester
 apply_malloc.c
 apply_malloc.o
 asd
@@ -35,6 +36,7 @@ message.c
 message.o
 minishell
 minishell.h
+minishell_tester
 outfiles
 parser.c
 parser.o
