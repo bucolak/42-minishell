@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/07/25 17:21:08 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 17:40:10 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,14 +107,28 @@ void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 {
 	t_env	*last;
 	t_env	*new_node;
-
+	t_env	*tmp;
+	tmp = *lst;
+    while (tmp)
+    {
+        if (ft_strcmp(tmp->key, key) == 0)
+        {
+            if (tmp->data)
+                free(tmp->data);
+            tmp->data = ft_strdup(data);
+            list->dqm = 0;
+            return;
+        }
+        tmp = tmp->next;
+    }
+	
 	new_node = create_env_node();
 	if (key)
 	{
 		if(key_cont(key) == 1)
 		{
 			new_node->key = ft_strdup(key);
-			new_node->data = ft_strdup(data);
+			new_node->data = ft_strdup(data);			
 			if (*lst == NULL)
 				*lst = new_node;
 			else
@@ -143,10 +157,13 @@ void create_env_2(t_general *list, t_env **env, int i)
 		list->dqm = 0;
 		key = get_key(new);
         data = get_data(new);
+		//printf("%s\n", data);
 		if ((count_dquote(new) % 2 == 0 || count_squote(new)
-				% 2 == 0) && is_repeated(env, key,
-				data) == 0)
-			ft_envadd_back(env, key, data, list);
+		% 2 == 0)) //burda is_repeat fonksiyonu vardı kaldırdım  çünkü şuan böyle gerekti sonra lazım olursa duruma göre bakarız
+				{
+					//printf("burda\n");
+					ft_envadd_back(env, key, data, list);
+				}
         free(key);
         free(data);
 	}

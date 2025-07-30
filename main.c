@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 02:12:09 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 19:00:10 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,14 +219,15 @@ void expand_dolar(t_general *list, t_env *env)
 {
 	t_general *tmp;
 	char *new;
-	
 	char *str;
 	char *a;
-	tmp = list;
 	int i;
 	int start;	
+	int l;
 	int j;
 	int k;
+	
+	tmp = list;
 	while(tmp)
 	{
 		i = 0;
@@ -250,17 +251,13 @@ void expand_dolar(t_general *list, t_env *env)
 					a =ft_substr(tmp->acces_args->args[i]->str, start, j-start);
 					if(a)
 						str = get_getenv(env, a);
-					if(str)
+					if (str && str[0] != '\0') 
 					{
-						ft_memcpy(new+k,str, ft_strlen(str));
-						
+					    ft_memcpy(new + k, str, ft_strlen(str));
+					    k += ft_strlen(str);
 					}
-					else
-					{
-						str = "";
-						new = ft_memcpy(new+k,str, ft_strlen(str));
-					}
-					k+= ft_strlen(str);				
+					 if(a)
+                        free(a);
 				}
 				else
 				{
@@ -275,6 +272,21 @@ void expand_dolar(t_general *list, t_env *env)
 			}
 			tmp->acces_args->args[i]->str = ft_strdup(new);
 			free(new);
+			if(tmp->acces_args->args[i] && !tmp->acces_args->args[i]->str[0])
+			{
+				if(tmp->acces_args->args[i]->str)
+					free(tmp->acces_args->args[i]->str);
+				if(tmp->acces_args->args[i])
+    				free(tmp->acces_args->args[i]);
+				l = i;
+				while(tmp->acces_args->args[l + 1]) // l+1 kontrolü ekle
+    			{
+    			    tmp->acces_args->args[l] = tmp->acces_args->args[l+1];
+    			    l++;
+    			}
+    			tmp->acces_args->args[l] = NULL; 
+				continue;
+			}
 			i++;
 		}
 		tmp = tmp->next;	
@@ -293,6 +305,46 @@ char *get_getenv(t_env *env, char *key)
 		tmp = tmp->next;
 	}
 	return NULL;
+}
+
+void connect_count_malloc(t_general *list)
+{
+	t_general *tmp;
+	tmp = list;
+	int i;
+	int c;
+	int j;
+	char *new;
+	i = 0;
+
+	while(tmp)
+	{
+		i = 0;
+		while(tmp->acces_args->args[i])
+		{
+			if(tmp->acces_args->args[i]->s == 0 && tmp->acces_args->args[i+1])
+			{
+				c = ft_strlen(tmp->acces_args->args[i]->str) + ft_strlen(tmp->acces_args->args[i+1]->str);
+				new = malloc(sizeof(char) * (c+1));
+				ft_strlcpy(new, tmp->acces_args->args[i]->str, c+1);
+                ft_strlcat(new, tmp->acces_args->args[i+1]->str,c+1);
+				free(tmp->acces_args->args[i+1]->str);
+				tmp->acces_args->args[i+1]->str = NULL;
+				free(tmp->acces_args->args[i]->str);
+				tmp->acces_args->args[i]->str = new;
+				j = i+1;
+				while(tmp->acces_args->args[j])
+				{
+					tmp->acces_args->args[j] = tmp->acces_args->args[j+1];
+					j++;
+				}
+				tmp->acces_args->args[j] = NULL;
+				continue;
+			}
+			i++;
+		}
+		tmp = tmp->next;
+	}	
 }
  
 int	main(int argc, char *argv[], char **envp)
@@ -349,6 +401,7 @@ int	main(int argc, char *argv[], char **envp)
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
 		expand_dolar(pipe_blocs, env);
+		connect_count_malloc(pipe_blocs);
 		//print_pipes(pipe_blocs);
 		
 		if(has_heredoc(pipe_blocs) == 1)
@@ -379,10 +432,6 @@ int	main(int argc, char *argv[], char **envp)
 				check_cmd_sys_call(pipe_blocs, &env, get, pipe);
 				
 			}
-		}
-		else
-		{
-			free_pipe_blocks(pipe_blocs);
 		}
 		free_envp(get);
 		get = NULL;

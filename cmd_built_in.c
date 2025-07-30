@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/29 17:56:08 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 17:20:53 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ void	built_in_helper_func(t_full *full, int i)
 					full->pipe_blocks->dqm=1;
 				}
 				else
+				{
 					create_env(full->pipe_blocks, full->node);
+				}
 			}
 			
 		else if(full->pipe_blocks->acces_args->args[i + 2])

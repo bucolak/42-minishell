@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_second.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/26 13:09:30 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/07/30 17:16:03 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,15 @@ char	*get_key(char *str)
 
 	i = 0;
 	start = 0;
-	while (str[i])
-	{
-		if (str[i] == ' ')
-		{
-			printf("error\n");
-			return (NULL);
-		}
-		i++;
-	}
+	// while (str[i])
+	// {
+	// 	if (str[i] == ' ')
+	// 	{
+	// 		printf("error\n");
+	// 		return (NULL);
+	// 	}
+	// 	i++;
+	// }
 	get_key_2(&i, &end, str);
 	key = ft_substr(str, start, end - start);
 	final_key = ft_strtrim(key, "'\"");

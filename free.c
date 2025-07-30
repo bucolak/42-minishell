@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/28 10:12:25 by marvin           ###   ########.fr       */
+/*   Updated: 2025/07/30 18:53:21 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void free_pipe_blocks(t_general *blocks)
                     if (tmp->acces_args->args[i]->str)
                         free(tmp->acces_args->args[i]->str);
                     free(tmp->acces_args->args[i]);
+                    tmp->acces_args->args[i] = NULL;
                     i++;
                 }
                 free(tmp->acces_args->args);

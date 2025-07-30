@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 02:10:43 by buket            ###   ########.fr       */
+/*   Updated: 2025/07/30 13:54:50 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ void	parse_input(t_general *a)
 				j = ++i;
 				while (a->blocs[i] && a->blocs[i] != '"')
 					i++;
-				if (a->blocs[i] == '"' )
+				if (a->blocs[i] == '"'  && ((a->blocs[i+1]&&a->blocs[i+1] != '"') || !a->blocs[i+1]))
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
 					a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
@@ -162,18 +162,27 @@ void	parse_input(t_general *a)
 				else
 				{
 					while (a->blocs[i])
-						i++;
-					if(has_single(&a->blocs[j]) == 0)
 					{
-						a->acces_args->args[k] = create_arg(ft_substr(a->blocs, j, i
-								- j), 0,0);
-						if(a->blocs[i] == '\'' || a->blocs[i] == '"')
+						if(a->blocs[i] == '"' &&  a->blocs[i+1]&&a->blocs[i+1] == '"')
+							i+=2;
+						else if(!a->blocs[i+1])
+							break;
+						else
+							i++;
+					}
+					if (a->blocs[i] == '"')
+					{
+						tmp_str = ft_substr(a->blocs, j, i- j);
+						a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
+						a->acces_args->args[k]->str = clean_double_quotes(a->acces_args->args[k]->str);
+						if((a->blocs[i+1] == '\'' || a->blocs[i+1] == '"' || a->blocs[i+1]!=' ') && a->acces_args->args[k])
 						{
 							a->acces_args->args[k]->s = 0;
 						}
-						a->acces_args->args[k]->str = clean_double_quotes(a->acces_args->args[k]->str);
-					}		
-					k++;
+						free(tmp_str);
+						k++;
+						i++;
+					}
 				}
 				continue ;
 			}
@@ -182,7 +191,8 @@ void	parse_input(t_general *a)
 				j = ++i;
 				while (a->blocs[i] != '\'' && a->blocs[i])
 					i++;
-				if (a->blocs[i] == '\'')  // if (a->blocs[i] == '\'' && (!a->blocs[i+1] || a->blocs[i+1] == ' ' || a->blocs[i-1] == '\''))
+					
+				if (a->blocs[i] == '\''  && ((a->blocs[i+1]&&a->blocs[i+1] != '\'') || !a->blocs[i+1]))  
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
 					if(tmp_str[0])
@@ -195,6 +205,31 @@ void	parse_input(t_general *a)
 						k++;
 					}
 					free(tmp_str);
+				}
+				else
+				{
+					while (a->blocs[i])
+					{
+						if(a->blocs[i] == '\'' &&  a->blocs[i+1]&&a->blocs[i+1] == '\'')
+							i+=2;
+						else if(!a->blocs[i+1])
+							break;
+						else
+							i++;
+					}
+					if (a->blocs[i] == '\'')
+					{
+						tmp_str = ft_substr(a->blocs, j, i- j);
+						a->acces_args->args[k] = create_arg(tmp_str, 1, 0);
+						a->acces_args->args[k]->str = clean_double_quotes(a->acces_args->args[k]->str);
+						if((a->blocs[i+1] == '\'' || a->blocs[i+1] == '"' || a->blocs[i+1]!=' ') && a->acces_args->args[k])
+						{
+							a->acces_args->args[k]->s = 0;
+						}
+						free(tmp_str);
+						k++;
+						i++;
+					}
 				}
 				continue ;
 			}
@@ -212,7 +247,7 @@ void	parse_input(t_general *a)
 						i++;
 					
 				}
-				if ((!a->blocs[i] || a->blocs[i] == ' ' || a->blocs[i] == '<' || a->blocs[i] == '>' || a->blocs[i] != '"' || a->blocs[i] != '\'') && a->blocs[i-1] != '"' && a->blocs[i-1] != '\'')
+				if ((!a->blocs[i] || a->blocs[i] == ' ' || a->blocs[i] == '<' || a->blocs[i] == '>' || (a->blocs[i] != '"' || a->blocs[i] != '\'')) && a->blocs[i-1] != '"' && a->blocs[i-1] != '\'')
 				{
 					tmp_str = ft_substr(a->blocs, j,i - j);
 					a->acces_args->args[k] = create_arg(tmp_str, 2, 0);
