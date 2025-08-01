@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/18 23:15:11 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/02 01:12:38 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get)
 			printf("exit\n");
 			list->dqm = 0;
 			exit_code = list->dqm;
+			if(list->heredoc_fd != -1)
+				close(list->heredoc_fd);
 			free_env(env);
 			free_envp(get);
 			if(pipe)

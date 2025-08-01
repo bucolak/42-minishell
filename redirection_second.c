@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/18 01:16:45 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/02 01:06:32 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	remove_heredoc(t_general *list)
 	{
 		if (ft_strcmp(list->acces_args->args[i]->str, "<<") == 0)
 		{
-			i += 2; // skip '<<' and its delimiter
+			i += 2;
 			continue ;
 		}
 		new_arg[j++] = list->acces_args->args[i++];
@@ -102,17 +102,18 @@ void	handle_heredoc(t_general *list)
 	int		fd[2];
 	int j;
 	char	*line;
-
-	while (list)
+	t_general *tmp;
+	tmp = list;
+	while (tmp)
 	{
-		fill_limiter(list);
+		fill_limiter(tmp);
 		i = 0;
 		j = 0;
-		while (list->acces_args->args[i])
+		while (tmp->acces_args->args[i])
 		{
-			if (ft_strcmp(list->acces_args->args[i]->str, "<<") == 0)
+			if (ft_strcmp(tmp->acces_args->args[i]->str, "<<") == 0)
 			{
-				if (!list->acces_args->args[i + 1])
+				if (!tmp->acces_args->args[i + 1])
 				{
 					ft_putstr_fd("bash: syntax error near unexpected token `newline'\n",
 							2);
@@ -122,7 +123,7 @@ void	handle_heredoc(t_general *list)
 				while (1)
 				{
 					line = readline("heredoc > ");
-					if (!line || ft_strcmp(line, list->limiter[j]) == 0)
+					if (!line || ft_strcmp(line, tmp->limiter[j]) == 0)
 					{
 						free(line);
 						break ;
@@ -133,17 +134,17 @@ void	handle_heredoc(t_general *list)
 				}
 				close(fd[1]);
 				j++;
-				if (!list->limiter[j])
+				if (!tmp->limiter[j])
 				{
-					list->heredoc_fd = dup(fd[0]);
+					tmp->heredoc_fd = dup(fd[0]);
 				}
 				close(fd[0]);
-				i += 2; // skip '<<' and its delimiter
+				i += 2;
 				continue ;
 			}
 			i++;
 		}
-		remove_heredoc(list);
-		list = list->next;
+		remove_heredoc(tmp);
+		tmp = tmp->next;
 	}
 }

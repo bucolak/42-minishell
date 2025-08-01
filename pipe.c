@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 22:21:33 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/02 01:08:02 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,12 @@ void	close_fd(int count, int **fd, int type, int i)
 
 void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
 {
+	if (!tmp || !tmp->acces_args || !tmp->acces_args->args || !tmp->acces_args->args[0])
+    {
+		if(tmp->heredoc_fd!=-1)
+			close(tmp->heredoc_fd);
+        exit(127); // Command not found
+    }
 	handle_redirections(tmp);
 	//handle_heredoc(tmp);
 	//  if (ft_strcmp(tmp->acces_args->args[0]->str, "<<") == 0)

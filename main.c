@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 23:15:42 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/02 01:02:08 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,7 +279,7 @@ void expand_dolar(t_general *list, t_env *env)
 				if(tmp->acces_args->args[i])
     				free(tmp->acces_args->args[i]);
 				l = i;
-				while(tmp->acces_args->args[l + 1]) // l+1 kontrolü ekle
+				while(tmp->acces_args->args[l + 1]) 
     			{
     			    tmp->acces_args->args[l] = tmp->acces_args->args[l+1];
     			    l++;
@@ -328,8 +328,10 @@ void connect_count_malloc(t_general *list)
 				new = malloc(sizeof(char) * (c+1));
 				ft_strlcpy(new, tmp->acces_args->args[i]->str, c+1);
                 ft_strlcat(new, tmp->acces_args->args[i+1]->str,c+1);
+				
 				free(tmp->acces_args->args[i+1]->str);
-				tmp->acces_args->args[i+1]->str = NULL;
+				free(tmp->acces_args->args[i+1]);
+				
 				free(tmp->acces_args->args[i]->str);
 				tmp->acces_args->args[i]->str = new;
 				j = i+1;

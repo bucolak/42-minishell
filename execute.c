@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/29 23:12:37 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/02 01:17:55 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,6 +374,7 @@ int count_malloc(t_general *list, int j)
 	int c;
 	int i;
 	char *str;
+	char *itoa;
 	i = 0;
 	c = 0;
 	if(list->acces_args->args[j])
@@ -383,7 +384,9 @@ int count_malloc(t_general *list, int j)
 		{
 			if(str[i] == '$' && str[i] && str[i] == '?')
 			{
-				c+=ft_strlen(ft_itoa(list->dqm));
+				itoa = ft_itoa(list->dqm);
+				c+=ft_strlen(itoa);
+				free(itoa);
 				i++;
 			}
 			else
@@ -422,6 +425,7 @@ void expand_dolar_qmark(t_general *list)
 		new[k] = '\0';
 		free(list->acces_args->args[j]->str);
 		list->acces_args->args[j]->str = ft_strdup(new);
+		free(new);
 		j++;
 	}
 }
