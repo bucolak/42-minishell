@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/02 01:02:08 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/03 03:21:51 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,10 +266,10 @@ void expand_dolar(t_general *list, t_env *env)
 				}
 			}
 			new[k]='\0';
-			if(tmp->acces_args->args[i])
-			{
-				free(tmp->acces_args->args[i]->str);
-			}
+			if(tmp->acces_args->args[i] && tmp->acces_args->args[i]->str)
+            {
+                free(tmp->acces_args->args[i]->str);
+            }
 			tmp->acces_args->args[i]->str = ft_strdup(new);
 			free(new);
 			if(tmp->acces_args->args[i] && !tmp->acces_args->args[i]->str[0])
@@ -407,7 +407,6 @@ int	main(int argc, char *argv[], char **envp)
 		//print_pipes(pipe_blocs);
 		if(has_heredoc(pipe_blocs) == 1)
 		{
-			
 			handle_heredoc(pipe_blocs);
 		}
 		get = malloc(sizeof(t_now));
@@ -417,10 +416,13 @@ int	main(int argc, char *argv[], char **envp)
 		
 		if (pipe_blocs->next)
 		{
+			printf("burda\n");
 			pipe = malloc(sizeof(t_pipe));
 			init_pipe(pipe, pipe_blocs);
 			create_pipe(pipe->count, pipe->fd);
 			handle_pipe(pipe_blocs, get, &env, pipe);
+			free_pipe(pipe);
+            pipe = NULL;
 		}
 		else if (pipe_blocs->acces_args && pipe_blocs->acces_args->args[0])
 		{
