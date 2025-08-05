@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_built_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/07/30 17:20:53 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 20:05:52 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,21 @@ void	built_in_helper_func_2(t_full *full, int i)
 {
 	if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 					"pwd") == 0)
-		pwd_cmd(&full->pipe_blocks->acces_args->args[i]->str, full->pipe_blocks, *full->node);
+		pwd_cmd(&full->pipe_blocks->acces_args->args[i]->str, full->pipe_blocks, full->node);
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 		"unset") == 0)
 		{
 			if(!full->pipe_blocks->acces_args->args[i + 1])
 				return;
-			unset_cmd(full->pipe_blocks, full->node);
+			unset_cmd(full->pipe_blocks, &full->node);
 		}
 		
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 						"env") == 0)
-		print_env(full->pipe_blocks, full->node, i);
+		print_env(full->pipe_blocks, &full->node, i);
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 						"exit") == 0)
-		exit_cmd(full->pipe_blocks, *full->node, full->pipe, full->get);
+		exit_cmd(full->pipe_blocks, full->node, full->pipe, full->get);
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[0]->str,
 						"$?") == 0)
 	{
@@ -47,8 +47,7 @@ void	built_in_helper_func(t_full *full, int i)
 						"export") == 0)
 	{
 		if ((full->pipe_blocks->acces_args->args[i + 1]
-				&& full->pipe_blocks->acces_args->args[i + 1]->str)
-			&& !full->pipe_blocks->acces_args->args[i + 2])
+				&& full->pipe_blocks->acces_args->args[i + 1]->str))
 			{
 				if(ft_strcmp(full->pipe_blocks->acces_args->args[i + 1]->str, "=")==0)
 				{
@@ -58,14 +57,11 @@ void	built_in_helper_func(t_full *full, int i)
 				}
 				else
 				{
-					create_env(full->pipe_blocks, full->node);
+					create_env(full->pipe_blocks, &full->node);
 				}
 			}
-			
-		else if(full->pipe_blocks->acces_args->args[i + 2])
-			return ;
 		else
-			print_export_env(full->node, full->pipe_blocks);
+			print_export_env(&full->node, full->pipe_blocks);
 	}
 	built_in_helper_func_2(full, i);
 }
@@ -76,7 +72,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 	t_full full;
 	
 	full.pipe_blocks = pipe_blocs;
-	full.node = node;
+	full.node = *node;
 	full.get = get;
 	full.pipe = pipe;
 	i = 0;

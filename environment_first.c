@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_first.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/07/30 17:40:10 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 20:09:55 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,6 @@ void create_env_2(t_general *list, t_env **env, int i)
 		if ((count_dquote(new) % 2 == 0 || count_squote(new)
 		% 2 == 0)) //burda is_repeat fonksiyonu vardı kaldırdım  çünkü şuan böyle gerekti sonra lazım olursa duruma göre bakarız
 				{
-					//printf("burda\n");
 					ft_envadd_back(env, key, data, list);
 				}
         free(key);
@@ -188,7 +187,12 @@ void	create_env(t_general *list, t_env **env)
 			if (ft_strncmp(list->acces_args->args[i]->str, "export", 6) == 0)
 			{
 				i++;
-				create_env_2(list, env, i);
+				while (list->acces_args->args[i])
+                {
+                    create_env_2(list, env, i);
+                    i++;
+                }
+                break;
 			}
 			i++;
 		}

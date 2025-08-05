@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/05 14:53:27 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/05 19:35:52 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ char	**make_argv(t_pipeafter *acces_args, t_env *env)
 	return (argv);
 }
 
-void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv)
+void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv,t_full *full)
 {
 	int		i;
 	char	*args;
@@ -240,10 +240,14 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			free(paths[j]);
 		free(paths);
 		free_env(envv);
-		if(pipe_blocs->next)
+		if(pipe)
 			free_pipe(pipe);
 		exit_code = pipe_blocs->dqm;
-		free_pipe_blocks(pipe_blocs);
+		if (full)
+		{
+			free_pipe_blocks(full->pipe_blocks);
+		}
+			
 		exit(exit_code);
 	}
 	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
@@ -448,7 +452,7 @@ void expand_dolar_qmark(t_general *list)
 	}
 }
 
-void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe)
+void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe, t_full *full)
 {
 	int		status;
 	pid_t	pid;
@@ -457,7 +461,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 	pid = fork();
 	if (pipe_blocs->next)
 	{
-		handle_pipe(pipe_blocs, get, env, pipe);
+		handle_pipe(pipe_blocs, get, env, pipe,full);
 		return ;
 	}
 	if (pid == 0)
@@ -473,7 +477,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 		else
 		{
 			expand_dolar_qmark(pipe_blocs);
-			execute_command(pipe_blocs, get, pipe, *env);
+			execute_command(pipe_blocs, get, pipe, *env, full);
 			free_envp(get);
 			free_env(*env);
 			exit_code = pipe_blocs->dqm;

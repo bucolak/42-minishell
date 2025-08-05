@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/02 00:55:06 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 20:19:59 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ void	parse_input(t_general *a)
 				j = ++i;
 				while (a->blocs[i] && a->blocs[i] != '"')
 					i++;
-				if (a->blocs[i] == '"'  && ((a->blocs[i+1]&&a->blocs[i+1] != '"') || !a->blocs[i+1]))
+				if (a->blocs[i] == '"'  )
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
 					if(tmp_str[0])

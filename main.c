@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/05 14:54:56 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/05 20:20:36 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,6 +352,7 @@ int	main(int argc, char *argv[], char **envp)
 	t_general	*pipe_blocs;
 	t_env		*env;
 	t_now		*get;
+	t_full full;
 	t_pipe	*pipe;
 	int last_dqm;
 	static int	first_run;
@@ -367,6 +368,7 @@ int	main(int argc, char *argv[], char **envp)
 	if (first_run)
 	{
 		get_env(&env, envp);
+		full.node = env;
 		first_run = 0;
 	}
 	while (1)
@@ -409,24 +411,28 @@ int	main(int argc, char *argv[], char **envp)
 		add_history(line);
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
+		print_pipes(pipe_blocs);
 		expand_dolar(pipe_blocs, env);
 		connect_count_malloc(pipe_blocs);
-		//print_pipes(pipe_blocs);
+		full.pipe_blocks = pipe_blocs;
 		if(has_heredoc(pipe_blocs) == 1)
 		{
 			handle_heredoc(pipe_blocs);
+			
 		}
 		get = malloc(sizeof(t_now));
 		get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
 		
 		fill_env(&env, get);
-		
+		full.get = get;
 		if (pipe_blocs->next)
 		{
 			pipe = malloc(sizeof(t_pipe));
 			init_pipe(pipe, pipe_blocs);
 			create_pipe(pipe->count, pipe->fd);
-			handle_pipe(pipe_blocs, get, &env, pipe);
+			full.pipe = pipe;
+			handle_pipe(pipe_blocs, get, &env, pipe,&full);
+			
 			free_pipe(pipe);
             pipe = NULL;
 		}
@@ -439,7 +445,7 @@ int	main(int argc, char *argv[], char **envp)
 			}
 			else
 			{
-				check_cmd_sys_call(pipe_blocs, &env, get, pipe);
+				check_cmd_sys_call(pipe_blocs, &env, get, pipe,&full);
 			}
 		}
 		free_envp(get);

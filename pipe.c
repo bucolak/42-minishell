@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/05 14:55:27 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/05 19:34:38 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	close_fd(int count, int **fd, int type, int i)
 	}
 }
 
-void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
+void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe, t_full *full)
 {
 	int exit_code;
 	if (!tmp || !tmp->acces_args || !tmp->acces_args->args || !tmp->acces_args->args[0])
@@ -75,7 +75,7 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
 		free_pipe(pipe);
 		tmp->dqm = 127;
 		exit_code = tmp->dqm;
-		free_pipe_blocks(tmp);
+		free_pipe_blocks(full->pipe_blocks);
         exit(exit_code);
     }
 	handle_redirections(tmp);
@@ -90,7 +90,7 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
 		}
 		else
 		{
-			execute_command(tmp, get,pipe, *env);
+			execute_command(tmp, get,pipe, *env,full);
 		}
 		
 	}
@@ -123,27 +123,7 @@ void	direct_and_close_fd(int count, int **fd, int i, int type)
 	}
 }
 
-void	free_and_wait(int count, pid_t *pid, int **fd)
-{
-	int	i;
-
-	// i = 0;
-	// while (i < count)
-	// {
-	// 	waitpid(pid[i], NULL, 0);
-	// 	i++;
-	// }
-	i = 0;
-	while (i < count - 1)
-	{
-		free(fd[i]);
-		i++;
-	}
-	free(fd);
-	free(pid);
-}
-
-void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe)
+void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe, t_full *full)
 {
 	t_general *tmp ;
 	tmp = list;
@@ -168,7 +148,7 @@ void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe)
 				direct_and_close_fd(pipe->count, pipe->fd, i, 1);
 			else
 				end_block(pipe->count, i, pipe->fd);
-			direct_cmd(pipe->tmp, get, env, pipe);
+			direct_cmd(pipe->tmp, get, env, pipe, full);
 		}
 		i++;
 		if (pipe->tmp)
@@ -184,5 +164,4 @@ void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe)
 	}
 	if (WIFEXITED(status))
 		list->dqm = WEXITSTATUS(last_status);
-	//free_and_wait(pipe->count, pipe->pid, pipe->fd);
 }
