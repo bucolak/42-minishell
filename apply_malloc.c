@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   apply_malloc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/03 03:20:18 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 14:26:18 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,24 +33,33 @@ void complete_create_arg(char *str, char *new)
 
 t_arg *create_arg(char *str, int flag, int type)
 {
-    char *new;
+    //char *new;
+    (void)type;
     t_arg *arg = malloc(sizeof(t_arg));
     if (!arg)
         return NULL;
-    new =ft_calloc((ft_strlen(str)+1), sizeof(char));
-    if(type == 4)
-    {
-        complete_create_arg(str, new);
-        arg->str = ft_strdup(new);
-         arg->s = 1;
-        free(new);
-        arg->flag = flag;
-        return arg;
-    }
+    // if(type == 4)
+    // {
+    //     new =ft_calloc((ft_strlen(str)+1), sizeof(char));
+    //     if (!new)
+    //     {
+    //         free(arg);
+    //         return NULL;
+    //     }
+    //     complete_create_arg(str, new);
+    //     arg->str = new;
+    //     arg->s = 1;
+    //     arg->flag = flag;
+    //     return arg;
+    // }
     arg->str = ft_strdup(str);
+    if (!arg->str)
+    {
+        free(arg);
+        return NULL;
+    }
     arg->flag = flag;
     arg->s = 1;
-    free(new);
     return arg;
 }
 

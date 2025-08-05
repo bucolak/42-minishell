@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 18:53:21 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 14:41:15 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void free_pipe_blocks(t_general *blocks)
     t_general *tmp;
     t_general *next;
     int i;
-
+    if (!blocks) return;
     tmp = blocks;
     while (tmp)
     {
@@ -61,13 +61,16 @@ void free_pipe_blocks(t_general *blocks)
                 {
                     if (tmp->acces_args->args[i]->str)
                         free(tmp->acces_args->args[i]->str);
-                    free(tmp->acces_args->args[i]);
+                    if(tmp->acces_args->args[i])
+                        free(tmp->acces_args->args[i]);
                     tmp->acces_args->args[i] = NULL;
                     i++;
                 }
-                free(tmp->acces_args->args);
+                if(tmp->acces_args->args)
+                    free(tmp->acces_args->args);
             }
-            free(tmp->acces_args);
+            if(tmp->acces_args)
+                free(tmp->acces_args);
         }
         // Free limiter array
         if (tmp->limiter)

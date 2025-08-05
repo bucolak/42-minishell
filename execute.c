@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/02 01:17:55 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 14:53:27 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,13 +125,17 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			ft_putstr_fd(cmd, 2);
 			ft_putstr_fd(": Is a directory\n", 2);
 			pipe_blocs->dqm = 126;
-			exit(pipe_blocs->dqm);
+			exit_code = pipe_blocs->dqm;
+			free_pipe_blocks(pipe_blocs);
+			exit(exit_code);
 		}
 		else if (access(cmd, F_OK) != 0) 
 		{
 			error_msg(2, cmd, 0, pipe_blocs);
 			pipe_blocs->dqm = 127;
-			exit(pipe_blocs->dqm);
+			exit_code = pipe_blocs->dqm;
+			free_pipe_blocks(pipe_blocs);
+			exit(exit_code);
 		} 
 		else if (access(cmd, X_OK) != 0) 
 		{
@@ -139,7 +143,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			ft_putstr_fd(cmd, 2);
 			ft_putstr_fd(": Permission denied\n", 2);
 			pipe_blocs->dqm = 126;
-			exit(pipe_blocs->dqm);
+			exit_code = pipe_blocs->dqm;
+			free_pipe_blocks(pipe_blocs);
+			exit(exit_code);
 		}
 		if (pipe_blocs->acces_args->args[1] && ft_strcmp(pipe_blocs->acces_args->args[1]->str, "$?") == 0 && pipe_blocs->acces_args->args[1]->flag != 1)
 		{
@@ -149,7 +155,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
  		argv = make_argv(pipe_blocs->acces_args, envv);
 		execve(cmd, argv, get->envp);
 		pipe_blocs->dqm = 0;
-		exit(pipe_blocs->dqm);
+		exit_code = pipe_blocs->dqm;
+		free_pipe_blocks(pipe_blocs);
+		exit(exit_code);
 	}
 	if(cmd[0] == '$')
 	{
@@ -158,7 +166,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		{
 			ft_putstr_fd("$: command not found\n", 2);
 			pipe_blocs->dqm = 127;
-			exit(pipe_blocs->dqm);
+			exit_code = pipe_blocs->dqm;
+			free_pipe_blocks(pipe_blocs);
+			exit(exit_code);
 		}
 		else if(env)
 			cmd = env;
@@ -178,6 +188,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			else
 			{
 				pipe_blocs->dqm = 0;
+				exit_code = pipe_blocs->dqm;
+				free_pipe_blocks(pipe_blocs);
+				exit(exit_code);
 				exit(pipe_blocs->dqm);
 			}
 		}
@@ -315,7 +328,7 @@ void	check_redirection_args2(t_general *pipe_blocs, int *i)
 void	check_redirection_args(t_general *pipe_blocs)
 {
 	int	i;
-
+	int exit_code;
 	i = 0;
 	while (pipe_blocs->acces_args->args[i])
 	{
@@ -324,7 +337,10 @@ void	check_redirection_args(t_general *pipe_blocs)
 			if (!pipe_blocs->acces_args->args[i + 1])
 			{
 				error_msg(2, NULL, 3, pipe_blocs);
-				exit(1);
+				exit_code = pipe_blocs->dqm;
+				free_pipe_blocks(pipe_blocs);
+				exit(exit_code);
+				
 			}
 		}
 		else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0)
@@ -335,7 +351,9 @@ void	check_redirection_args(t_general *pipe_blocs)
 			if (!pipe_blocs->acces_args->args[i])
 			{
 				error_msg(2, NULL, 3, pipe_blocs);
-				exit(1);
+				exit_code = pipe_blocs->dqm;
+				free_pipe_blocks(pipe_blocs);
+				exit(exit_code);
 			}
 		}
 		i++;
@@ -433,9 +451,9 @@ void expand_dolar_qmark(t_general *list)
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe)
 {
 	int		status;
-	int e;
 	pid_t	pid;
 	status = 0;
+	int exit_code;
 	pid = fork();
 	if (pipe_blocs->next)
 	{
@@ -448,7 +466,9 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
 			check_cmd_built_in(pipe_blocs, env, pipe, get);
-			exit(pipe_blocs->dqm);
+			exit_code = pipe_blocs->dqm;
+			free_pipe_blocks(pipe_blocs);
+			exit(exit_code);
 		}
 		else
 		{
@@ -456,9 +476,9 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 			execute_command(pipe_blocs, get, pipe, *env);
 			free_envp(get);
 			free_env(*env);
-			e = pipe_blocs->dqm;
+			exit_code = pipe_blocs->dqm;
 			free_pipe_blocks(pipe_blocs);
-			exit(e); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo
+			exit(exit_code); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo
 		}
 	}
 	else

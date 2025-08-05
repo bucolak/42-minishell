@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_second.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/02 01:06:32 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 14:59:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	remove_heredoc(t_general *list)
 		i++;
 	}
 	new_arg = malloc(sizeof(t_arg *) * (i + 1));
+	if(!new_arg)
+		return ;
 	i = 0;
 	j = 0;
 	while (list->acces_args->args[i])

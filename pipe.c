@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/03 03:14:47 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 14:55:27 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,9 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe)
 		if (is_built_in(tmp->acces_args->args[0]->str) == 1)
 		{
 			check_cmd_built_in(tmp, env, pipe, get);
-			exit(tmp->dqm);
+			exit_code = tmp->dqm;
+			free_pipe_blocks(tmp);
+        	exit(exit_code);
 		}
 		else
 		{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/03 03:21:51 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 14:54:56 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ void	pipe_parse(t_general **pipe_block, char *line)
 	tmp->blocs = ft_strtrim(trimmed, " ");
 	free(trimmed);
 }
-
-// Tırnak kontrolü için yardımcı fonksiyon
 
 void	print_pipes(t_general *pipe_block)
 {
@@ -270,8 +268,7 @@ void expand_dolar(t_general *list, t_env *env)
             {
                 free(tmp->acces_args->args[i]->str);
             }
-			tmp->acces_args->args[i]->str = ft_strdup(new);
-			free(new);
+			tmp->acces_args->args[i]->str = new;
 			if(tmp->acces_args->args[i] && !tmp->acces_args->args[i]->str[0])
 			{
 				if(tmp->acces_args->args[i]->str)
@@ -358,11 +355,13 @@ int	main(int argc, char *argv[], char **envp)
 	t_pipe	*pipe;
 	int last_dqm;
 	static int	first_run;
+	int exit_code;
 	(void)argc;
 	(void)argv;
 	first_run = 1;
 	last_dqm = 0;
 	pipe = NULL;
+	pipe_blocs = NULL;
 	get = NULL;
 	env = create_env_node();
 	if (first_run)
@@ -375,14 +374,18 @@ int	main(int argc, char *argv[], char **envp)
 		signal_handler();
 		pipe_blocs = create_general_node(last_dqm);
 		line = readline("Our_shell% ");
-	   if (!line)
+		if (!line)
 		{
 			if (pipe_blocs)
+			{
+				exit_code = pipe_blocs->dqm;
 				free_pipe_blocks(pipe_blocs);
+				pipe_blocs = NULL;
+			}
 			if (env)
 			{
 				free_env(env);
-				get=NULL;
+				env = NULL;
 			}
 			if (get)
 			{
@@ -390,12 +393,16 @@ int	main(int argc, char *argv[], char **envp)
 				get = NULL;
 			}
 			if (pipe)
+			{
 				free_pipe(pipe);
-			exit(0);
+				pipe = NULL;
+			}
+			exit(exit_code);
 		}
 		if (line[0] == '\0')
 		{
 			free_pipe_blocks(pipe_blocs);
+			pipe_blocs = NULL;
 			free(line);
 			continue;
 		}
@@ -416,7 +423,6 @@ int	main(int argc, char *argv[], char **envp)
 		
 		if (pipe_blocs->next)
 		{
-			printf("burda\n");
 			pipe = malloc(sizeof(t_pipe));
 			init_pipe(pipe, pipe_blocs);
 			create_pipe(pipe->count, pipe->fd);
@@ -434,7 +440,6 @@ int	main(int argc, char *argv[], char **envp)
 			else
 			{
 				check_cmd_sys_call(pipe_blocs, &env, get, pipe);
-				
 			}
 		}
 		free_envp(get);
@@ -443,6 +448,7 @@ int	main(int argc, char *argv[], char **envp)
 		if(pipe_blocs->heredoc_fd!=-1)
 			close(pipe_blocs->heredoc_fd);
 		free_pipe_blocks(pipe_blocs);
+		pipe_blocs = NULL;
 		free(line);
 	}
 	free_env(env);
