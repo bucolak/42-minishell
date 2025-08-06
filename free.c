@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/05 14:41:15 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/06 22:44:26 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,23 @@ void free_split(char **str)
 void free_env(t_env *env)
 {
     t_env *tmp;
-    tmp = env;
-    while(tmp)
+    
+    while (env)
     {
         tmp = env->next;
+        
+        // Güvenli free işlemi
         if (env->key)
+        {
             free(env->key);
+            env->key = NULL;
+        }
         if (env->data)
+        {
             free(env->data);
+            env->data = NULL;
+        }
+        
         free(env);
         env = tmp;
     }

@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 23:26:46 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/06 22:27:15 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,17 @@ void	echo_flag_0_and_2_second(char *str, t_general *tmp, int *j)
 	}
 	else
 	{
-		if(str[*j]!='"')
+		if(ft_strcmp(str, "$empty") == 0 || ft_strcmp(str, "$EMPTY") == 0)
+		{
+			// ft_putchar_fd('\n', 1);
+			(*j)+=ft_strlen(str);
+		}
+		else if(str[*j]!='"')
+		{
 			ft_putchar_fd(str[*j], 1);
-		(*j)++;
+			(*j)++;
+		}
+		
 	}
 }
 

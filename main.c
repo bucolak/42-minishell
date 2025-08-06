@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/05 20:20:36 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/06 22:28:42 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,7 @@ int count_m(t_general *tmp, int i, t_env *env)
 	int start;
 	char *str;
 	char *a;
+	
 	c = 0;
 	j = 0;
 	while(tmp->acces_args->args[i]->str[j])
@@ -198,7 +199,7 @@ int count_m(t_general *tmp, int i, t_env *env)
 				j++;
 				start = j;
 				while(tmp->acces_args->args[i]->str[j] && tmp->acces_args->args[i]->str[j] != ' ')
-						j++;
+					j++;
 				a =ft_substr(tmp->acces_args->args[i]->str, start, j-start);
 				if(a)
 					str = get_getenv(env, a);
@@ -218,13 +219,17 @@ void expand_dolar(t_general *list, t_env *env)
 	t_general *tmp;
 	char *new;
 	char *str;
+	new = NULL;
+	str = NULL;
 	char *a;
 	int i;
 	int start;	
 	int l;
 	int j;
 	int k;
-	
+	int flag;
+
+	flag = 0;
 	tmp = list;
 	while(tmp)
 	{
@@ -232,6 +237,24 @@ void expand_dolar(t_general *list, t_env *env)
 		while(tmp->acces_args->args[i])
 		{
 			j = 0;
+			if((ft_strcmp(tmp->acces_args->args[i]->str, "$empty") == 0 || ft_strcmp(tmp->acces_args->args[i]->str, "$EMPTY") == 0) && tmp->acces_args->args[i]->flag == 2)
+			{
+				// Argümanı sil
+				free(tmp->acces_args->args[i]->str);
+				free(tmp->acces_args->args[i]);
+				
+				// Argümanları kaydır
+				l = i;
+				while(tmp->acces_args->args[l + 1]) 
+				{
+					tmp->acces_args->args[l] = tmp->acces_args->args[l+1];
+					l++;
+				}
+				tmp->acces_args->args[l] = NULL;
+				
+				// i'yi artırma, çünkü kaydırma yaptık
+				continue;
+			}
 			new= malloc(sizeof(char) * (count_m(tmp, i, env) +1));
 			k = 0;
 			while(tmp->acces_args->args[i]->str[j])
@@ -247,15 +270,23 @@ void expand_dolar(t_general *list, t_env *env)
 					while(tmp->acces_args->args[i]->str[j] && tmp->acces_args->args[i]->str[j] != ' ')
 						j++;
 					a =ft_substr(tmp->acces_args->args[i]->str, start, j-start);
-					if(a)
-						str = get_getenv(env, a);
-					if (str && str[0] != '\0') 
+					if (a && tmp->acces_args->args[i]->flag != 1)
 					{
+					    flag = 1;
+					    str = get_getenv(env, a);
+					}
+					if (str && str[0] != '\0' && flag == 1) 
+					{	
 					    ft_memcpy(new + k, str, ft_strlen(str));
 					    k += ft_strlen(str);
 					}
-					 if(a)
-                        free(a);
+					else
+					{
+						ft_memcpy(new + k, tmp->acces_args->args[i]->str, ft_strlen(tmp->acces_args->args[i]->str));
+						k+= ft_strlen(tmp->acces_args->args[i]->str);
+					}
+					if(a)
+                    	free(a);
 				}
 				else
 				{
@@ -263,6 +294,7 @@ void expand_dolar(t_general *list, t_env *env)
 					j++;
 				}
 			}
+			
 			new[k]='\0';
 			if(tmp->acces_args->args[i] && tmp->acces_args->args[i]->str)
             {
@@ -411,9 +443,9 @@ int	main(int argc, char *argv[], char **envp)
 		add_history(line);
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
-		print_pipes(pipe_blocs);
 		expand_dolar(pipe_blocs, env);
 		connect_count_malloc(pipe_blocs);
+		// print_pipes(pipe_blocs);
 		full.pipe_blocks = pipe_blocs;
 		if(has_heredoc(pipe_blocs) == 1)
 		{

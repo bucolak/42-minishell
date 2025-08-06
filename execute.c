@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/05 19:35:52 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/06 22:46:03 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,9 +159,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		free_pipe_blocks(pipe_blocs);
 		exit(exit_code);
 	}
-	if(cmd[0] == '$')
+	if(cmd[0] == '$' && pipe_blocs->acces_args->args[0]->flag !=1)
 	{
-			env = get_getenv(envv,cmd+1);
+		env = get_getenv(envv,cmd+1);
 		if(ft_strcmp(cmd, "$") == 0)
 		{
 			ft_putstr_fd("$: command not found\n", 2);
@@ -171,29 +171,32 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			exit(exit_code);
 		}
 		else if(env)
-			cmd = env;
-		else
 		{
-			if(pipe_blocs->acces_args->args[1])
-			{
-				cmd = pipe_blocs->acces_args->args[1]->str;
-				i = 1;
-				while(pipe_blocs->acces_args->args[i])
-				{
-					pipe_blocs->acces_args->args[i-1] = pipe_blocs->acces_args->args[i];
-					i++;
-				}	
-				pipe_blocs->acces_args->args[i-1] = NULL;
-			}
-			else
-			{
-				pipe_blocs->dqm = 0;
-				exit_code = pipe_blocs->dqm;
-				free_pipe_blocks(pipe_blocs);
-				exit(exit_code);
-				exit(pipe_blocs->dqm);
-			}
+			cmd = env;
 		}
+		// else
+		// {
+		// 	if(pipe_blocs->acces_args->args[1])
+		// 	{
+		// 		printf("burda %s\n", pipe_blocs->acces_args->args[1]->str);
+		// 		cmd = pipe_blocs->acces_args->args[1]->str;
+		// 		i = 1;
+		// 		while(pipe_blocs->acces_args->args[i])
+		// 		{
+		// 			pipe_blocs->acces_args->args[i-1] = pipe_blocs->acces_args->args[i];
+		// 			i++;
+		// 		}	
+		// 		pipe_blocs->acces_args->args[i-1] = NULL;
+		// 	}
+		// 	else
+		// 	{
+		// 		pipe_blocs->dqm = 0;
+		// 		exit_code = pipe_blocs->dqm;
+		// 		free_pipe_blocks(pipe_blocs);
+		// 		exit(exit_code);
+		// 		exit(pipe_blocs->dqm);
+		// 	}
+		// }
 	}
 	i = 0;
 	command_found = 0;
@@ -232,32 +235,57 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		
 		i++;
 	}
-	if (!command_found && pipe_blocs->acces_args->args[0]->str[0] != '$')
+	if (!command_found) //BAK: && pipe_blocs->acces_args->args[0]->str[0] != '$' bunu sildim
 	{
 		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
 		free_envp(get);
 		for (int j = 0; paths[j]; j++)
-			free(paths[j]);
+		free(paths[j]);
 		free(paths);
 		free_env(envv);
 		if(pipe)
-			free_pipe(pipe);
+		free_pipe(pipe);
 		exit_code = pipe_blocs->dqm;
 		if (full)
 		{
 			free_pipe_blocks(full->pipe_blocks);
 		}
-			
+		
 		exit(exit_code);
 	}
 	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
 	{
+		printf("burda\n");
 		new = pipe_blocs->acces_args->args[0]->str+1;
-		if(get_getenv(envv, new))
+		// if(get_getenv(envv, new) ) //BAK: burayı değiştiriyorum neden böyle olduğunu da hiç anlayamadım
+		// {
+		// 	printf("burda\n");
+		// 	ft_putstr_fd("bash: ", 2);
+		// 	if(get_getenv(envv, new))
+		// 		ft_putstr_fd(get_getenv(envv, new), 2);
+		// 	ft_putstr_fd(": Is a directory\n", 2);
+			
+		
+			
+		// }
+		// else
+		if(pipe_blocs->acces_args->args[0]->flag !=1 || !get_getenv(envv, new))
 		{
-			ft_putstr_fd("bash: ", 2);
-			ft_putstr_fd(get_getenv(envv, new), 2);
-			ft_putstr_fd(": Is a directory\n", 2);
+			error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
+			free_envp(get);
+			for (int j = 0; paths[j]; j++)
+				free(paths[j]);
+			free(paths);
+			free_env(envv);
+			if(pipe)
+				free_pipe(pipe);
+			exit_code = pipe_blocs->dqm;
+			if (full)
+			{
+				free_pipe_blocks(full->pipe_blocks);
+			}
+			
+			exit(exit_code);
 		}
 		if(get_getenv(envv, new))
 			pipe_blocs->dqm = 126;
@@ -278,6 +306,11 @@ void	fill_env(t_env **env, t_now *get)
 	tmp = *env;
 	while (tmp)
 	{
+		if (!tmp->key || !tmp->data) 
+		{
+            tmp = tmp->next;
+            continue;
+        }
 		get->envp[j] = malloc(ft_strlen(tmp->key) + ft_strlen(tmp->data) + 2);
 		ft_strlcpy(get->envp[j], tmp->key, ft_strlen(tmp->key) + 1);
 		ft_strlcpy(get->envp[j] + ft_strlen(tmp->key), tmp->data,

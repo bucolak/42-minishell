@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/05 20:19:59 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/06 21:50:21 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int count_args(const char *str)
             int start = i;
             while (str[i] && str[i] != quote)
                 i++;
-            if (i > start) // Tırnaklar arasında bir şey varsa
+            if (i >= start) // Tırnaklar arasında bir şey varsa
                 count++;
             if (str[i] == quote)
                 i++;
@@ -147,7 +147,14 @@ void	parse_input(t_general *a)
 				if (a->blocs[i] == '"'  )
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
-					if(tmp_str[0])
+					if(!tmp_str[0] && a->blocs[i+1] == ' ')
+					{
+						free(tmp_str);
+						tmp_str = ft_substr(a->blocs, j-1, 2);
+						a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
+						k++;
+					}
+					else
 					{
 						a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
 						free(tmp_str);
@@ -156,10 +163,9 @@ void	parse_input(t_general *a)
 							a->acces_args->args[k]->s = 0;
 						}
 						k++;
-						
 					}
-					else
-						free(tmp_str);
+					// else
+					// 	free(tmp_str);
 					i++;
 				}
 				else
@@ -205,18 +211,25 @@ void	parse_input(t_general *a)
 				if (a->blocs[i] == '\''  && ((a->blocs[i+1]&&a->blocs[i+1] != '\'') || !a->blocs[i+1]))  
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
-					if(tmp_str[0])
+					if(!tmp_str[0] && a->blocs[i+1] == ' ')
+					{
+						free(tmp_str);
+						tmp_str = ft_substr(a->blocs, j-1, 2);
+						a->acces_args->args[k] = create_arg(tmp_str, 1, 0);
+						k++;
+					}
+					else
 					{
 						a->acces_args->args[k] = create_arg(tmp_str, 1, 0);
 						free(tmp_str);
-						if(a->blocs[i] == '\'' || a->blocs[i] == '"')
+						if((a->blocs[i+1] == '\'' || a->blocs[i+1] == '"' || a->blocs[i+1]!=' ') && a->acces_args->args[k])
 						{
 							a->acces_args->args[k]->s = 0;
 						}
 						k++;
 					}
-					else
-						free(tmp_str);
+					// else
+					// 	free(tmp_str);
 					i++;
 				}
 				else

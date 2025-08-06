@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:45:34 by bucolak           #+#    #+#             */
-/*   Updated: 2025/06/23 23:08:09 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/06 22:43:32 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,40 @@
 
 void remove_env_var(t_env **env, char *var_name)
 {
-	t_env *current = *env;
-	t_env *prev = NULL;
-	size_t name_len = ft_strlen(var_name);
-
-	while (current)
-	{
-		if (ft_strncmp(current->key, var_name, name_len) == 0 
-			&& (current->key[name_len] == '=' || current->key[name_len] == '\0'))
-		{
-			if (prev == NULL)
-				*env = current->next;
-			else
-				prev->next = current->next;
-			free(current->key);
-			free(current->data);
-			free(current);
-			return;
-		}
-		prev = current;
-		current = current->next;
-	}
+    t_env *current = *env;
+    t_env *prev = NULL;
+    size_t name_len = ft_strlen(var_name);
+    
+    if (!env || !*env || !var_name)
+        return;
+    
+    while (current)
+    {
+        if (ft_strncmp(current->key, var_name, name_len) == 0
+            && (current->key[name_len] == '=' || current->key[name_len] == '\0'))
+        {
+            if (prev == NULL)
+                *env = current->next;
+            else
+                prev->next = current->next;
+            
+            // Güvenli free işlemi
+            if (current->key)
+            {
+                free(current->key);
+                current->key = NULL;
+            }
+            if (current->data)
+            {
+                free(current->data);
+                current->data = NULL;
+            }
+            free(current);
+            return;
+        }
+        prev = current;
+        current = current->next;
+    }
 }
 
 void unset_cmd(t_general *list, t_env **env)
