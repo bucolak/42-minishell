@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/29 22:11:05 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/05 19:30:48 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,11 @@ typedef struct s_pipe
 typedef struct s_full
 {
 	t_general *pipe_blocks;
-	t_env **node;
+	t_env *node;
 	t_pipe *pipe;
 	t_now *get;
 }	t_full;
-
+void	print_pipes(t_general *pipe_block);
 char *get_getenv(t_env *env, char *key);
 void					free_split(char **str);
 // apply_malloc.c
@@ -109,12 +109,12 @@ void	parse_input(t_general *a);
 int has_heredoc(t_general *list);
 
 // execute.c
-void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe);
+void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe,t_full *full);
 int						is_built_in(char *str);
 void					fill_env(t_env **env, t_now *get);
-void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe);
+void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe, t_full *full);
 void					handle_redirections(t_general *pipe_blocs);
-void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv);
+void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv, t_full *full);
 // cmd_built_in.c
 void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get);
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks);

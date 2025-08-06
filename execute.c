@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/06 22:46:03 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/07 01:14:37 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	**make_argv(t_pipeafter *acces_args, t_env *env)
 			argv[i]=extend_env(acces_args->args[i]->str+1, env);
 		}
 		else
-			argv[i] = acces_args->args[i]->str;
+		argv[i] = acces_args->args[i]->str;
 	}
 	argv[count] = NULL;
 	return (argv);
@@ -153,7 +153,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			pipe_blocs->acces_args->args[1]->str = ft_itoa(pipe_blocs->dqm);
 		}
  		argv = make_argv(pipe_blocs->acces_args, envv);
-		execve(cmd, argv, get->envp);
+		 execve(cmd, argv, get->envp);
 		pipe_blocs->dqm = 0;
 		exit_code = pipe_blocs->dqm;
 		free_pipe_blocks(pipe_blocs);
@@ -201,6 +201,14 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	i = 0;
 	command_found = 0;
 	args = get_getenv(envv,"PATH");
+	if(!args)
+	{
+		error_msg(1, cmd, 0, pipe_blocs);
+		pipe_blocs->dqm =127;
+		exit_code = pipe_blocs->dqm;
+		free_pipe_blocks(pipe_blocs);
+		exit(exit_code);
+	}
 	paths = ft_split(args, ':');
 	while (paths[i])
 	{
@@ -255,7 +263,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	}
 	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
 	{
-		printf("burda\n");
 		new = pipe_blocs->acces_args->args[0]->str+1;
 		// if(get_getenv(envv, new) ) //BAK: burayı değiştiriyorum neden böyle olduğunu da hiç anlayamadım
 		// {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_built_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/05 20:05:52 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/07 00:20:41 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,6 @@ void	built_in_helper_func_2(t_full *full, int i)
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 						"exit") == 0)
 		exit_cmd(full->pipe_blocks, full->node, full->pipe, full->get);
-	else if (ft_strcmp(full->pipe_blocks->acces_args->args[0]->str,
-						"$?") == 0)
-	{
-		ft_putstr_fd(ft_itoa(full->pipe_blocks->dqm), 2);
-		ft_putstr_fd(": command not found\n", 2);
-		full->pipe_blocks->dqm = 127;
-		exit(full->pipe_blocks->dqm);
-	}
 }
 
 void	built_in_helper_func(t_full *full, int i)
@@ -82,6 +74,15 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 		{
 			cd_cmd(pipe_blocs->acces_args->args, *node, pipe_blocs);
 			break ;
+		}
+		else if (ft_strcmp(full.pipe_blocks->acces_args->args[0]->str,
+						"$?") == 0)
+		{
+			ft_putstr_fd(ft_itoa(full.pipe_blocks->dqm), 2);
+			ft_putstr_fd(": 1command not found\n", 2); //1
+			full.pipe_blocks->dqm = 127;
+			break;;
+			//exit(full->pipe_blocks->dqm);
 		}
 		built_in_helper_func(&full, i);
 		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str,

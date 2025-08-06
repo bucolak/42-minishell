@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/06 21:50:21 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/07 00:41:34 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ void	parse_input(t_general *a)
 				if (a->blocs[i] == '"'  )
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
-					if(!tmp_str[0] && a->blocs[i+1] == ' ')
+					if(!tmp_str[0] && (a->blocs[i+1] == ' ' || !a->blocs[i+1]))
 					{
 						free(tmp_str);
 						tmp_str = ft_substr(a->blocs, j-1, 2);
@@ -211,7 +211,7 @@ void	parse_input(t_general *a)
 				if (a->blocs[i] == '\''  && ((a->blocs[i+1]&&a->blocs[i+1] != '\'') || !a->blocs[i+1]))  
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
-					if(!tmp_str[0] && a->blocs[i+1] == ' ')
+					if(!tmp_str[0] && (a->blocs[i+1] == ' ' || !a->blocs[i+1]))
 					{
 						free(tmp_str);
 						tmp_str = ft_substr(a->blocs, j-1, 2);

@@ -1,7 +1,8 @@
-<
 >
->>
+$HOME
+$USER'$USER'
 42_minishell_tester
+acces_args-
 apply_malloc.c
 apply_malloc.o
 asd
@@ -48,6 +49,7 @@ redirection_second.c
 redirection_second.o
 signals.c
 signals.o
+str
 test_files
 tmp_err_bash
 tmp_err_minishell
@@ -56,10 +58,11 @@ tmp_out_minishell
 unset.c
 unset.o
 valgrind.supp
-<
 >
->>
+$HOME
+$USER'$USER'
 42_minishell_tester
+acces_args-
 apply_malloc.c
 apply_malloc.o
 asd
@@ -106,6 +109,7 @@ redirection_second.c
 redirection_second.o
 signals.c
 signals.o
+str
 test_files
 tmp_err_bash
 tmp_err_minishell
@@ -114,10 +118,11 @@ tmp_out_minishell
 unset.c
 unset.o
 valgrind.supp
-<
 >
->>
+$HOME
+$USER'$USER'
 42_minishell_tester
+acces_args-
 apply_malloc.c
 apply_malloc.o
 asd
@@ -164,6 +169,7 @@ redirection_second.c
 redirection_second.o
 signals.c
 signals.o
+str
 test_files
 tmp_err_bash
 tmp_err_minishell
@@ -172,10 +178,11 @@ tmp_out_minishell
 unset.c
 unset.o
 valgrind.supp
-<
 >
->>
+$HOME
+$USER'$USER'
 42_minishell_tester
+acces_args-
 apply_malloc.c
 apply_malloc.o
 asd
@@ -222,6 +229,7 @@ redirection_second.c
 redirection_second.o
 signals.c
 signals.o
+str
 test_files
 tmp_err_bash
 tmp_err_minishell

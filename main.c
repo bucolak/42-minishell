@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/06 22:28:42 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/07 00:30:41 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -445,7 +445,7 @@ int	main(int argc, char *argv[], char **envp)
 		parse_input(pipe_blocs);
 		expand_dolar(pipe_blocs, env);
 		connect_count_malloc(pipe_blocs);
-		// print_pipes(pipe_blocs);
+		//print_pipes(pipe_blocs);
 		full.pipe_blocks = pipe_blocs;
 		if(has_heredoc(pipe_blocs) == 1)
 		{
