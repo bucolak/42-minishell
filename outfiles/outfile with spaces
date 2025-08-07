@@ -1,8 +1,6 @@
 >
 $HOME
 $USER'$USER'
-42_minishell_tester
-acces_args-
 apply_malloc.c
 apply_malloc.o
 asd
@@ -37,7 +35,6 @@ message.c
 message.o
 minishell
 minishell.h
-minishell_tester
 outfiles
 parser.c
 parser.o
@@ -49,7 +46,6 @@ redirection_second.c
 redirection_second.o
 signals.c
 signals.o
-str
 test_files
 tmp_err_bash
 tmp_err_minishell

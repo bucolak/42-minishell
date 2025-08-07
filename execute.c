@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/07 01:14:37 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/07 17:34:26 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -492,6 +492,12 @@ void expand_dolar_qmark(t_general *list)
 	}
 }
 
+void signal_handler_child(void)
+{
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+}
+
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *pipe, t_full *full)
 {
 	int		status;
@@ -506,6 +512,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 	}
 	if (pid == 0)
 	{
+		signal_handler_child();
 		handle_redirections(pipe_blocs);
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
@@ -522,12 +529,22 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 			free_env(*env);
 			exit_code = pipe_blocs->dqm;
 			free_pipe_blocks(pipe_blocs);
-			exit(exit_code); //buradan önce pipe_blocks'un free edilmesi gerektiğini düşünüyorum ama error'e sebep oluyo
+			exit(exit_code);
 		}
 	}
 	else
 	{
+		signal(SIGINT, SIG_IGN);
+        signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status))
+        {
+            // Eğer sinyal ile sonlandıysa ve sinyal SIGINT (Ctrl+C) ise
+            if (WTERMSIG(status) == SIGINT)
+                write(1, "\n", 1); // Sadece bu durumda newline yazdır
+        }
+		signal(SIGINT, handle_signal);
+        signal(SIGQUIT, SIG_IGN);
 		if (WIFEXITED(status))
 			pipe_blocs->dqm = WEXITSTATUS(status);
 	}

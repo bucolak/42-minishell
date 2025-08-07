@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/06 22:44:26 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/07 16:20:39 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ void free_env(t_env *env)
     while (env)
     {
         tmp = env->next;
-        
-        // Güvenli free işlemi
         if (env->key)
         {
             free(env->key);
@@ -45,7 +43,6 @@ void free_env(t_env *env)
             free(env->data);
             env->data = NULL;
         }
-        
         free(env);
         env = tmp;
     }
@@ -60,7 +57,6 @@ void free_pipe_blocks(t_general *blocks)
     tmp = blocks;
     while (tmp)
     {
-        // Free acces_args and its args
         if (tmp->acces_args)
         {
             if (tmp->acces_args->args)
@@ -81,7 +77,6 @@ void free_pipe_blocks(t_general *blocks)
             if(tmp->acces_args)
                 free(tmp->acces_args);
         }
-        // Free limiter array
         if (tmp->limiter)
         {
             i = 0;
@@ -92,7 +87,6 @@ void free_pipe_blocks(t_general *blocks)
             }
             free(tmp->limiter);
         }
-        // Free blocs string
         if (tmp->blocs)
             free(tmp->blocs);
         next = tmp->next;

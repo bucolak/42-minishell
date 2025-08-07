@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/05 19:30:48 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/07 16:48:43 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ typedef struct s_full
 	t_pipe *pipe;
 	t_now *get;
 }	t_full;
+void remove_env_var(t_env **env, char *var_name);
+void	signal_handler(void);
 void	print_pipes(t_general *pipe_block);
 char *get_getenv(t_env *env, char *key);
 void					free_split(char **str);

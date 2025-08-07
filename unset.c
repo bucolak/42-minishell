@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:45:34 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/06 22:43:32 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/07 16:19:30 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,13 @@ void remove_env_var(t_env **env, char *var_name)
     
     while (current)
     {
-        if (ft_strncmp(current->key, var_name, name_len) == 0
+        if (ft_strcmp(current->key, var_name) == 0
             && (current->key[name_len] == '=' || current->key[name_len] == '\0'))
         {
             if (prev == NULL)
                 *env = current->next;
             else
-                prev->next = current->next;
-            
-            // Güvenli free işlemi
+                prev->next = current->next;            
             if (current->key)
             {
                 free(current->key);
@@ -43,6 +41,7 @@ void remove_env_var(t_env **env, char *var_name)
                 current->data = NULL;
             }
             free(current);
+            current = NULL;
             return;
         }
         prev = current;

@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/07 00:20:41 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/07 17:44:24 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 						"$?") == 0)
 		{
 			ft_putstr_fd(ft_itoa(full.pipe_blocks->dqm), 2);
-			ft_putstr_fd(": 1command not found\n", 2); //1
+			ft_putstr_fd(": command not found\n", 2); //1
 			full.pipe_blocks->dqm = 127;
 			break;;
 			//exit(full->pipe_blocks->dqm);
@@ -99,40 +99,70 @@ void cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks, t_env *env)
 {
 	if (args[1]->str[0] == '$' && (args[1]->flag == 0
 				|| args[1]->flag == 2))
+	{
+		env_name = args[1]->str + 1; // bi sorun çıkarsa buraya bi gözat
+    	chdir(get_getenv(env ,env_name));
+		return ;
+	}
+	// else if(ft_strcmp(args[1], "..") == 0)
+	// {
+	// 	if
+	// }
+	else if(chdir(args[1]->str)==-1)
+	{
+		perror("cd");
+		pipe_blocks->dqm = 1;
+	}
+	while (env)
+	{
+		if (ft_strcmp(env->key, "OLDPWD=") == 0)
 		{
-			env_name = args[1]->str + 1; // bi sorun çıkarsa buraya bi gözat
-    		chdir(get_getenv(env ,env_name));
-			return ;
+			free(env->data);
+			env->data = getcwd(NULL, 0); //BAK!! Fonksiyon otomatik olarak yeterli boyutta bellek allocate eder (malloc ile)
+			break ;
 		}
-		else if(chdir(args[1]->str)==-1)
-		{
-			perror("cd");
-			pipe_blocks->dqm = 1;
-		}
-		while (env)
-		{
-			if (ft_strcmp(env->key, "OLDPWD=") == 0)
-			{
-				free(env->data);
-				env->data = getcwd(NULL, 0); //BAK!! Fonksiyon otomatik olarak yeterli boyutta bellek allocate eder (malloc ile)
-				break ;
-			}
-			env = env->next;
-		}
-		chdir(args[1]->str);
+		env = env->next;
+	}
+	//chdir(args[1]->str);
 }
 
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 {
 	char	*line;
 	char *env_name;
+	t_env *tmp;
+	tmp = env;
 	
 	env_name = NULL;
-	if (!args[1] || ft_strcmp(args[1]->str, "-") == 0)
+	if (!args[1] || ft_strcmp(args[1]->str, "~") == 0)
 	{
 		line = get_getenv(env, "HOME");
 		if (line)
 			chdir(line);
+	}
+	else if(!args[1] || ft_strcmp(args[1]->str, "-") == 0)
+	{
+		if(get_getenv(env, "OLDPWD"))
+		{
+			while(tmp)
+			{
+				if(ft_strcmp(tmp->key,"OLDPWD=") == 0)
+				{
+					if(tmp->data)
+					free(tmp->data);
+					tmp->data = ft_strdup(get_getenv(env, "PWD"));
+					ft_putstr_fd(get_getenv(env, "OLDPWD"), 1);
+					ft_putchar_fd('\n',1);
+					chdir(get_getenv(env, "OLDPWD"));
+				}
+				tmp = tmp->next;
+			}
+		}
+		else
+		{
+			ft_putstr_fd("bash: cd: OLDPWD not set\n", 1);
+			return ;
+		}
 	}
 	else if(args[2])
 	{

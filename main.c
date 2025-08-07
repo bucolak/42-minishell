@@ -6,7 +6,7 @@
 /*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/07 00:30:41 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/07 17:43:57 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,14 +121,10 @@ int	has_redireciton(t_general *pipe_blocks)
 	return (0);
 }
 
-void	signal_handler(void)
+void signal_handler(void)
 {
-	struct sigaction	sa;
-	ft_memset(&sa, 0, sizeof(sa));
-	sa.sa_flags = SA_SIGINFO;
-	sa.sa_handler = handle_signal;
-	sigaction(SIGINT, &sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
+    signal(SIGINT, handle_signal);
+    signal(SIGQUIT, SIG_IGN);
 }
 
 int has_heredoc(t_general *list)
@@ -402,6 +398,7 @@ int	main(int argc, char *argv[], char **envp)
 		get_env(&env, envp);
 		full.node = env;
 		first_run = 0;
+		remove_env_var(&env, "OLDPWD=");
 	}
 	while (1)
 	{
@@ -416,15 +413,15 @@ int	main(int argc, char *argv[], char **envp)
 				free_pipe_blocks(pipe_blocs);
 				pipe_blocs = NULL;
 			}
-			if (env)
-			{
-				free_env(env);
-				env = NULL;
-			}
 			if (get)
 			{
 				free_envp(get);
 				get = NULL;
+			}
+			if (env)
+			{
+				free_env(env);
+				env = NULL;
 			}
 			if (pipe)
 			{
@@ -491,7 +488,6 @@ int	main(int argc, char *argv[], char **envp)
 	}
 	free_env(env);
 	free_envp(get);
-	get = NULL;
 	free_pipe_blocks(pipe_blocs);
 	return 0;
 }
