@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_second.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/30 17:16:03 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/09 17:11:08 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void get_key_2(int *i, int *end, char *str)
 	while (str[*i] && str[*i] != '=')
 		(*i)++;
 	*end = *i;
-	if (str[*i] == '=')
-		*end = *i + 1;
+	// if (str[*i] == '=')
+	// 	*end = *i + 1;
 }
 
 char	*get_key(char *str)
@@ -32,15 +32,6 @@ char	*get_key(char *str)
 
 	i = 0;
 	start = 0;
-	// while (str[i])
-	// {
-	// 	if (str[i] == ' ')
-	// 	{
-	// 		printf("error\n");
-	// 		return (NULL);
-	// 	}
-	// 	i++;
-	// }
 	get_key_2(&i, &end, str);
 	key = ft_substr(str, start, end - start);
 	final_key = ft_strtrim(key, "'\"");
@@ -59,6 +50,8 @@ char	*get_data(char *str)
 		i++;
 	if (str[i] == '=')
 		i++;
+	if (str[i] == '\0') // export a= durumu
+        return ft_strdup("");
 	if ((str[i] == '"' || str[i] == '\''))
 		i++;
 	k = i;
@@ -73,10 +66,17 @@ void print_export_env_2(t_env	*node)
 {
 	if(ft_strcmp(node->key, "=")!=0)
 	{
-		if (node->key && node->data && node->data[0] != '\0')
-			printf("declare -x %s\"%s\"\n", node->key, node->data);
-		else if (node->key)
-			printf("declare -x %s%s\n", node->key, node->data);
+		//   printf("%d\n" , node->has_equal);
+		if(node->data && node->data[0])
+		{
+			printf("declare -x %s=\"%s\"\n", node->key, node->data);
+		}
+		else if(node->has_equal == 1)
+		{
+			printf("declare -x %s=\"\"\n", node->key);
+		}
+		else
+    		printf("declare -x %s\n", node->key);
 	}
 	else
 	{

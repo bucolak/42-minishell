@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/07 17:43:57 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/09 21:17:32 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ void	print_pipes(t_general *pipe_block)
 				{
 					printf("    Arg %d: %s", i + 1,
 							tmp->acces_args->args[i]->str);
-					printf(" (flag: %d)\n", tmp->acces_args->args[i]->flag);
+					printf(" (flag: %d)", tmp->acces_args->args[i]->flag);
+					printf("(s-lag: %d)\n", tmp->acces_args->args[i]->s);
 					i++;
 				}
 			}
@@ -137,7 +138,7 @@ int has_heredoc(t_general *list)
 	while (list->acces_args->args[i])
 	{
 		if (list->acces_args->args[i]->str && 
-			ft_strcmp(list->acces_args->args[i]->str, "<<") == 0)
+			ft_strcmp(list->acces_args->args[i]->str, "<<") == 0 && i!=0)
 			return 1;
 		i++;
 	}
@@ -194,7 +195,7 @@ int count_m(t_general *tmp, int i, t_env *env)
 			{
 				j++;
 				start = j;
-				while(tmp->acces_args->args[i]->str[j] && tmp->acces_args->args[i]->str[j] != ' ')
+				while(tmp->acces_args->args[i]->str[j] && tmp->acces_args->args[i]->str[j] != ' ' && tmp->acces_args->args[i]->str[j] != '$')
 					j++;
 				a =ft_substr(tmp->acces_args->args[i]->str, start, j-start);
 				if(a)
@@ -238,7 +239,6 @@ void expand_dolar(t_general *list, t_env *env)
 				// Argümanı sil
 				free(tmp->acces_args->args[i]->str);
 				free(tmp->acces_args->args[i]);
-				
 				// Argümanları kaydır
 				l = i;
 				while(tmp->acces_args->args[l + 1]) 
@@ -247,8 +247,7 @@ void expand_dolar(t_general *list, t_env *env)
 					l++;
 				}
 				tmp->acces_args->args[l] = NULL;
-				
-				// i'yi artırma, çünkü kaydırma yaptık
+				// i'yi arttırma, çünkü kaydırma yaptık
 				continue;
 			}
 			new= malloc(sizeof(char) * (count_m(tmp, i, env) +1));
@@ -263,7 +262,7 @@ void expand_dolar(t_general *list, t_env *env)
 				{
 					j++;
 					start = j;
-					while(tmp->acces_args->args[i]->str[j] && tmp->acces_args->args[i]->str[j] != ' ')
+					while(tmp->acces_args->args[i]->str[j] && tmp->acces_args->args[i]->str[j] != ' ' && tmp->acces_args->args[i]->str[j] != '$')
 						j++;
 					a =ft_substr(tmp->acces_args->args[i]->str, start, j-start);
 					if (a && tmp->acces_args->args[i]->flag != 1)
@@ -325,7 +324,7 @@ char *get_getenv(t_env *env, char *key)
 	tmp = env;
 	while(tmp)
 	{
-		if(ft_strncmp(key, tmp->key, ft_strlen(key)) == 0 && tmp->key[ft_strlen(key)] == '=')
+		if(ft_strncmp(key, tmp->key, ft_strlen(key)) == 0)
 			return tmp->data;
 		tmp = tmp->next;
 	}
@@ -353,12 +352,12 @@ void connect_count_malloc(t_general *list)
 				new = malloc(sizeof(char) * (c+1));
 				ft_strlcpy(new, tmp->acces_args->args[i]->str, c+1);
                 ft_strlcat(new, tmp->acces_args->args[i+1]->str,c+1);
-				
 				free(tmp->acces_args->args[i+1]->str);
 				free(tmp->acces_args->args[i+1]);
 				
 				free(tmp->acces_args->args[i]->str);
 				tmp->acces_args->args[i]->str = new;
+				tmp->acces_args->args[i]->s = 1;
 				j = i+1;
 				while(tmp->acces_args->args[j])
 				{
@@ -398,7 +397,6 @@ int	main(int argc, char *argv[], char **envp)
 		get_env(&env, envp);
 		full.node = env;
 		first_run = 0;
-		remove_env_var(&env, "OLDPWD=");
 	}
 	while (1)
 	{
@@ -441,13 +439,12 @@ int	main(int argc, char *argv[], char **envp)
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
 		expand_dolar(pipe_blocs, env);
-		connect_count_malloc(pipe_blocs);
 		//print_pipes(pipe_blocs);
+		connect_count_malloc(pipe_blocs);
 		full.pipe_blocks = pipe_blocs;
 		if(has_heredoc(pipe_blocs) == 1)
 		{
 			handle_heredoc(pipe_blocs);
-			
 		}
 		get = malloc(sizeof(t_now));
 		get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));

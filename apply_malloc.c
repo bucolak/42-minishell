@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/05 14:26:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/09 20:36:37 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,6 @@ t_arg *create_arg(char *str, int flag, int type)
     t_arg *arg = malloc(sizeof(t_arg));
     if (!arg)
         return NULL;
-    // if(type == 4)
-    // {
-    //     new =ft_calloc((ft_strlen(str)+1), sizeof(char));
-    //     if (!new)
-    //     {
-    //         free(arg);
-    //         return NULL;
-    //     }
-    //     complete_create_arg(str, new);
-    //     arg->str = new;
-    //     arg->s = 1;
-    //     arg->flag = flag;
-    //     return arg;
-    // }
     arg->str = ft_strdup(str);
     if (!arg->str)
     {
@@ -104,6 +90,7 @@ t_env *create_env_node(void)
     if (!node)
         return NULL;
     node->key = NULL;
+    node->has_equal = 0;
     node->data = NULL;
     node->next = NULL;
     return node;

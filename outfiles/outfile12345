@@ -1,6 +1,10 @@
+""
+<
 >
+>>
 $HOME
 $USER'$USER'
+42_minishell_tester
 apply_malloc.c
 apply_malloc.o
 asd
@@ -23,6 +27,7 @@ execute.c
 execute.o
 exit.c
 exit.o
+file
 free.c
 free.o
 grep
@@ -35,6 +40,7 @@ message.c
 message.o
 minishell
 minishell.h
+minishell_tester
 outfiles
 parser.c
 parser.o

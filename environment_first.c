@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/08/05 20:09:55 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/09 21:20:50 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	get_env_helper_func(int *i, int *j, t_env *tmp, char **envp)
 	}
 	if (envp[*j][*i] == '=')
 	{
-		tmp->key = ft_substr(envp[*j], 0, *i + 1);
+		tmp->key = ft_substr(envp[*j], 0, *i);
 		tmp->data = ft_strdup(envp[*j] + *i + 1);
 	}
 	else
@@ -73,8 +73,15 @@ void	print_env(t_general *list, t_env **node, int i)
 	{
 		if (tmp->key && tmp->data)
 		{
-			if (ft_strchr(tmp->key, '='))
-				printf("%s%s\n", tmp->key, tmp->data);
+			// printf("flag: %d\n", tmp->has_equal);
+			if (tmp->data && tmp->data[0])
+			{
+				printf("%s=%s\n", tmp->key, tmp->data);
+			}
+			else if(tmp->has_equal == 1)
+			{
+				printf("%s=\n", tmp->key);
+			}	
 		}
 		tmp = tmp->next;
 	}
@@ -95,6 +102,7 @@ int	key_cont(char *key)
 	}
 	return (1);
 }
+
 void print_message(char *key, char *data, t_general *list)
 {
 	ft_putstr_fd("bash: export: `", 2);
@@ -103,6 +111,7 @@ void print_message(char *key, char *data, t_general *list)
 	ft_putstr_fd("' : not a valid identifier\n", 2);
 	list->dqm = 1;
 }
+
 void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 {
 	t_env	*last;
@@ -128,7 +137,10 @@ void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 		if(key_cont(key) == 1)
 		{
 			new_node->key = ft_strdup(key);
-			new_node->data = ft_strdup(data);			
+			if(data)
+				new_node->data = ft_strdup(data);			
+			else
+				new_node->data = ft_strdup("");
 			if (*lst == NULL)
 				*lst = new_node;
 			else
@@ -157,7 +169,6 @@ void create_env_2(t_general *list, t_env **env, int i)
 		list->dqm = 0;
 		key = get_key(new);
         data = get_data(new);
-		//printf("%s\n", data);
 		if ((count_dquote(new) % 2 == 0 || count_squote(new)
 		% 2 == 0)) //burda is_repeat fonksiyonu vardı kaldırdım  çünkü şuan böyle gerekti sonra lazım olursa duruma göre bakarız
 				{

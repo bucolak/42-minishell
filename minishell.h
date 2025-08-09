@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/07 16:48:43 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/09 15:49:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,14 @@ typedef struct s_env
 	char				*data;
 	char				*key;
 	struct s_env		*next;
+	int has_equal;
 }						t_env;
 
 typedef struct s_arg
 {
 	char				*str;
 	int					flag;
+	int env_flag;
 	int s;
 }						t_arg;
 
@@ -132,7 +134,7 @@ void					ft_envadd_back(t_env **lst, char *key, char *data,
 void					create_env(t_general *list, t_env **env);
 
 // environment_second.c
-char					*get_key(char *str);
+char	*get_key(char *str);
 char					*get_data(char *str);
 void					print_export_env(t_env **env, t_general *list);
 void					export_cmd_helper_func(t_env **env, t_env **new_env,

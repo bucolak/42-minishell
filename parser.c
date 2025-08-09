@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/07 00:41:34 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/09 19:04:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int count_args(const char *str)
     int i = 0;
     while (str[i])
     {
-        while (str[i] == ' ')
+        while (str[i] && (str[i] == ' ' || str[i] == '\t'))
             i++;
         if (!str[i])
             break;
@@ -84,7 +84,7 @@ int count_args(const char *str)
         else
         {
             count++;
-            while (str[i] && str[i] != ' ' && str[i] != '<' && str[i] != '>' && str[i] != '"' && str[i] != '\'')
+            while (str[i] && str[i] != ' ' && str[i] != '\t' && str[i] != '<' && str[i] != '>' && str[i] != '"' && str[i] != '\'')
                 i++;
         }
     }
@@ -118,7 +118,7 @@ void	parse_input(t_general *a)
 		a->acces_args->args = ft_calloc(count_args(a->blocs)+1, sizeof(t_arg *));
 		while (a->blocs[i])
 		{
-			while (a->blocs[i] == ' ')
+			while (a->blocs[i] == ' ' || a->blocs[i] == '\t')
 				i++;
 			if (!a->blocs[i])
 				break ;
@@ -264,19 +264,35 @@ void	parse_input(t_general *a)
 			else
 			{
 				j = i;
-				while (a->blocs[i] && a->blocs[i] != ' ' && a->blocs[i] != '<'
+				while (a->blocs[i] && a->blocs[i] != ' ' && a->blocs[i] != '\t' && a->blocs[i] != '<'
 					&& a->blocs[i] != '>' && a->blocs[i] != '"' && a->blocs[i] != '\'')
+				{
 					i++;
-				if((a->blocs[i] == '"' && a->blocs[i+1] == '"') ||(a->blocs[i] == '\'' && a->blocs[i+1] == '\''))
+				}
+					
+				if(!a->blocs[i-1] && ((a->blocs[i] == '"' && a->blocs[i+1] == '"') ||(a->blocs[i] == '\'' && a->blocs[i+1] == '\'')))
 				{
 					i+=2;
-					while (a->blocs[i] && a->blocs[i] != ' ' && a->blocs[i] != '<'
+					while (a->blocs[i] && a->blocs[i] != ' ' && a->blocs[i] != '\t' && a->blocs[i] != '<'
 						&& a->blocs[i] != '>' && a->blocs[i] != '"' && a->blocs[i] != '\'')
 						i++;
-						
+				}
+				if ((!a->blocs[i] || a->blocs[i] == ' ' || a->blocs[i] == '<' || a->blocs[i] == '>' || (a->blocs[i] != '"' && a->blocs[i] != '\'')) && a->blocs[i-1] != '"' && a->blocs[i-1] != '\'')
+				{				
+					tmp_str = ft_substr(a->blocs, j,i - j);
+					a->acces_args->args[k] = create_arg(tmp_str, 2, 0);
+					free(tmp_str);
+					cleaned = clean_double_quotes(a->acces_args->args[k]->str);
+					free(a->acces_args->args[k]->str);
+					a->acces_args->args[k]->str = cleaned;
+					if(a->blocs[i] == '\'' || a->blocs[i] == '"' || !a->blocs[i])
+					{
+						a->acces_args->args[k]->s = 0;
 					}
-				if ((!a->blocs[i] || a->blocs[i] == ' ' || a->blocs[i] == '<' || a->blocs[i] == '>' || (a->blocs[i] != '"' || a->blocs[i] != '\'')) && a->blocs[i-1] != '"' && a->blocs[i-1] != '\'')
-				{					
+					k++;
+				}					
+				else
+				{
 					tmp_str = ft_substr(a->blocs, j,i - j);
 					a->acces_args->args[k] = create_arg(tmp_str, 2, 0);
 					free(tmp_str);

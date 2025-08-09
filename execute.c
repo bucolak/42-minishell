@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/07 17:34:26 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/08 19:45:28 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,8 +238,8 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			free_pipe_blocks(pipe_blocs);
 			//exit(exit_code);
 		}
-			free(str);
-			free(end);
+		free(str);
+		free(end);
 		
 		i++;
 	}
@@ -410,17 +410,17 @@ void	handle_redirections(t_general *pipe_blocs)
 	int is_redirect = 0;
 	while(pipe_blocs->acces_args->args[i])
 	{
-		if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0)
+		if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0 && i!=0)
 		{
 			is_redirect = 1;
 			handle_input(pipe_blocs, i);
 		}
-		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0)
+		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0 && i!=0)
 		{
 			is_redirect = 1;
 			handle_output(pipe_blocs, i);
 		}
-		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">>") == 0)
+		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">>") == 0 && i!=0)
 		{
 			is_redirect = 1;
 			handle_append(pipe_blocs, i);
