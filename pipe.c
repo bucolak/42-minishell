@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/05 19:34:38 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/10 10:59:05 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	close_fd(int count, int **fd, int type, int i)
 void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe, t_full *full)
 {
 	int exit_code;
+	handle_redirections(tmp);
 	if (!tmp || !tmp->acces_args || !tmp->acces_args->args || !tmp->acces_args->args[0])
     {
 		if(tmp->heredoc_fd!=-1)
@@ -78,9 +79,9 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe, t_full *f
 		free_pipe_blocks(full->pipe_blocks);
         exit(exit_code);
     }
-	handle_redirections(tmp);
 	if(tmp->acces_args->args[0]->flag !=5)
 	{
+		printf("burda\n");
 		if (is_built_in(tmp->acces_args->args[0]->str) == 1)
 		{
 			check_cmd_built_in(tmp, env, pipe, get);

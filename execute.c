@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/08 19:45:28 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/10 10:50:43 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void handle_append_2(char *last_input, t_general *list, int *fd, int i)
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(last_input, 2);
 		ft_putstr_fd(": Permission denied\n", 2);
-		free_pipe_blocks(list);
 		list->dqm = 1;
+		free_pipe_blocks(list);
 		exit(list->dqm);
 	}
 	if (*fd < 0)
@@ -153,7 +153,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			pipe_blocs->acces_args->args[1]->str = ft_itoa(pipe_blocs->dqm);
 		}
  		argv = make_argv(pipe_blocs->acces_args, envv);
-		 execve(cmd, argv, get->envp);
+		execve(cmd, argv, get->envp);
 		pipe_blocs->dqm = 0;
 		exit_code = pipe_blocs->dqm;
 		free_pipe_blocks(pipe_blocs);
@@ -203,11 +203,33 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	args = get_getenv(envv,"PATH");
 	if(!args)
 	{
-		error_msg(1, cmd, 0, pipe_blocs);
-		pipe_blocs->dqm =127;
-		exit_code = pipe_blocs->dqm;
-		free_pipe_blocks(pipe_blocs);
-		exit(exit_code);
+	    if (ft_strchr(cmd, '/') == NULL && !ft_strstr(get_getenv(envv,"PWD"),"/bin"))
+	    {
+	        error_msg(2, cmd, 1, pipe_blocs);
+	        pipe_blocs->dqm = 127;
+	        exit_code = pipe_blocs->dqm;
+	        free_pipe_blocks(pipe_blocs);
+	        exit(exit_code);
+	    }
+		else
+		{
+			if (access(cmd, X_OK) == 0)  // Command executable mı?
+        	{
+        	    argv = make_argv(pipe_blocs->acces_args, envv);
+        	    execve(cmd, argv, get->envp);  // Direkt cmd kullan
+        	    perror("execve");
+        	    exit(127);
+        	}
+        	else
+        	{
+        	    printf("Command not executable in current directory\n");
+        	    error_msg(2, cmd, 1, pipe_blocs);
+        	    pipe_blocs->dqm = 127;
+        	    exit_code = pipe_blocs->dqm;
+        	    free_pipe_blocks(pipe_blocs);
+        	    exit(exit_code);
+        	}
+		}
 	}
 	paths = ft_split(args, ':');
 	while (paths[i])
@@ -308,20 +330,23 @@ void	fill_env(t_env **env, t_now *get)
 {
 	int		j;
 	t_env	*tmp;
-
 	j = 0;
 	tmp = *env;
 	while (tmp)
 	{
+		int key_len= 0;
+		int data_len=0;
 		if (!tmp->key || !tmp->data) 
-		{
+        {
             tmp = tmp->next;
             continue;
         }
-		get->envp[j] = malloc(ft_strlen(tmp->key) + ft_strlen(tmp->data) + 2);
+		key_len = ft_strlen(tmp->key);
+		data_len = ft_strlen(tmp->data);
+		get->envp[j] = malloc(key_len + data_len + 2);
 		ft_strlcpy(get->envp[j], tmp->key, ft_strlen(tmp->key) + 1);
-		ft_strlcpy(get->envp[j] + ft_strlen(tmp->key), tmp->data,
-				ft_strlen(tmp->data) + 1);
+		  get->envp[j][ft_strlen(tmp->key)] = '=';
+		ft_strlcpy(get->envp[j] + ft_strlen(tmp->key) + 1, tmp->data, ft_strlen(tmp->data) + 1);
 		if (!get->envp[j])
 			return ;
 		tmp = tmp->next;
@@ -408,19 +433,65 @@ void	handle_redirections(t_general *pipe_blocs)
 {
 	int i = 0;
 	int is_redirect = 0;
+	int has_command = 0;
+	while (pipe_blocs->acces_args->args[i])
+    {
+        if (!is_redireciton(pipe_blocs->acces_args->args[i]->str))
+        {
+            has_command = 1;
+            break;
+        }
+        i++;
+    }
+	if (has_command == 0)
+	{
+	    // Redirection var ama komut yok, tüm redirection'ları kontrol et
+	    int j = 0;
+	    while (pipe_blocs->acces_args->args[j])
+	    {
+	        if (ft_strcmp(pipe_blocs->acces_args->args[j]->str, "<") == 0)
+	        {
+	            // Input redirection, dosya bulunamazsa hata ver
+	            if (access(pipe_blocs->acces_args->args[j + 1]->str, F_OK) != 0)
+	            {
+	                ft_putstr_fd("bash: ", 2);
+	                ft_putstr_fd(pipe_blocs->acces_args->args[j + 1]->str, 2);
+	                ft_putstr_fd(": No such file or directory\n", 2);
+	                pipe_blocs->dqm = 1;
+	                return;
+	            }
+	        }
+	        else if (ft_strcmp(pipe_blocs->acces_args->args[j]->str, ">") == 0 || 
+	                 ft_strcmp(pipe_blocs->acces_args->args[j]->str, ">>") == 0)
+	        {
+	            // Output redirection, dosya oluşturulabilir mi kontrol et
+	            if (access(pipe_blocs->acces_args->args[j + 1]->str, W_OK) != 0 && 
+	                access(pipe_blocs->acces_args->args[j + 1]->str, F_OK) == 0)
+	            {
+	                ft_putstr_fd("bash: ", 2);
+	                ft_putstr_fd(pipe_blocs->acces_args->args[j + 1]->str, 2);
+	                ft_putstr_fd(": Permission denied\n", 2);
+	                pipe_blocs->dqm = 1;
+	                return;
+	            }
+	        }
+	        j++;
+	    }
+		return;
+	}
 	while(pipe_blocs->acces_args->args[i])
 	{
-		if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0 && i!=0)
+		if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0 && (pipe_blocs->acces_args->args[i]->flag == 2 || pipe_blocs->acces_args->args[i]->flag == 5))//&& i!=0 bu koşulu sildim
 		{
 			is_redirect = 1;
 			handle_input(pipe_blocs, i);
 		}
-		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0 && i!=0)
+		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0 && (pipe_blocs->acces_args->args[i]->flag == 2 || pipe_blocs->acces_args->args[i]->flag == 5))
 		{
 			is_redirect = 1;
 			handle_output(pipe_blocs, i);
 		}
-		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">>") == 0 && i!=0)
+		else if(ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">>") == 0 && (pipe_blocs->acces_args->args[i]->flag == 2 || pipe_blocs->acces_args->args[i]->flag == 5))
 		{
 			is_redirect = 1;
 			handle_append(pipe_blocs, i);
@@ -435,6 +506,7 @@ int count_malloc(t_general *list, int j)
 {
 	int c;
 	int i;
+	
 	char *str;
 	char *itoa;
 	i = 0;

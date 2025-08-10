@@ -6,14 +6,36 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/08 17:33:14 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/10 09:45:32 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int	cont_n(char *str)
+{
+    int i = 1;
+    if (str[0] != '-' || !str[1])
+        return 0;
+    while (str[i])
+    {
+        if (str[i] != 'n')
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
 void	echo_cmd(t_general *tmp, char *str, int i)
 {
+	int new_line;
+	new_line = 1;
+	while (tmp->acces_args->args[i] && cont_n(tmp->acces_args->args[i]->str) == 1)
+	{
+		new_line =0;
+		i++;
+	}
+    	
 	while (tmp->acces_args->args[i])
 	{
 		if (tmp->acces_args->args[i]->str == NULL)
@@ -28,11 +50,14 @@ void	echo_cmd(t_general *tmp, char *str, int i)
 			else
 				break;
 		}
+		
 		if (tmp->acces_args->args[i]&&(ft_strcmp(tmp->acces_args->args[i]->str, ">>") == 0
 			|| ft_strcmp(tmp->acces_args->args[i]->str, ">") == 0
 			|| ft_strcmp(tmp->acces_args->args[i]->str, "<") == 0
 			|| ft_strcmp(tmp->acces_args->args[i]->str, "<<") == 0))
-			break ;
+			{
+				break ;
+			}
 			
 		str = tmp->acces_args->args[i]->str;
 		if (tmp->acces_args->args[i]->flag == 1)
@@ -47,7 +72,7 @@ void	echo_cmd(t_general *tmp, char *str, int i)
 		}
 		i++;
 	}
-	if (tmp->acces_args->args[1] && ft_strcmp(tmp->acces_args->args[1]->str, "-n") != 0)
+	if (new_line == 1)
 		ft_putchar_fd('\n', 1);
 	tmp->dqm = 0;
 }

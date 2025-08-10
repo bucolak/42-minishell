@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/09 19:04:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/10 06:07:07 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ void	parse_input(t_general *a)
 				if (a->blocs[i] == '"'  )
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
-					if(!tmp_str[0] && (a->blocs[i+1] == ' ' || !a->blocs[i+1]))
+					if(!tmp_str[0] )//BAK:  && (a->blocs[i+1] == ' ' || !a->blocs[i+1]) bu kontrol vardı sildim
 					{
 						free(tmp_str);
 						tmp_str = ft_substr(a->blocs, j-1, 2);

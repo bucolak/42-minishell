@@ -6,11 +6,37 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:30:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/26 13:09:39 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/10 08:23:18 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*ft_strstr(const char *haystack, const char *needle)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	if (!*needle)
+		return ((char *)haystack);
+	while (haystack[i] != '\0')
+	{
+		if (needle[j] == haystack[i])
+		{
+			while (needle[j] == haystack[i + j])
+			{
+				if (needle[j + 1] == '\0')
+					return ((char *)(haystack + i));
+				j++;
+			}
+			j = 0;
+		}
+		i++;
+	}
+	return (NULL);
+}
 
 int	ft_lsttsize(t_env *lst)
 {

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/09 21:17:32 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/10 10:49:31 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ int has_heredoc(t_general *list)
 	while (list->acces_args->args[i])
 	{
 		if (list->acces_args->args[i]->str && 
-			ft_strcmp(list->acces_args->args[i]->str, "<<") == 0 && i!=0)
+			ft_strcmp(list->acces_args->args[i]->str, "<<") == 0 && list->acces_args->args[i]->flag == 2)
 			return 1;
 		i++;
 	}
@@ -275,7 +275,7 @@ void expand_dolar(t_general *list, t_env *env)
 					    ft_memcpy(new + k, str, ft_strlen(str));
 					    k += ft_strlen(str);
 					}
-					else
+					else if(i == 0)
 					{
 						ft_memcpy(new + k, tmp->acces_args->args[i]->str, ft_strlen(tmp->acces_args->args[i]->str));
 						k+= ft_strlen(tmp->acces_args->args[i]->str);
@@ -324,7 +324,7 @@ char *get_getenv(t_env *env, char *key)
 	tmp = env;
 	while(tmp)
 	{
-		if(ft_strncmp(key, tmp->key, ft_strlen(key)) == 0)
+		if(ft_strcmp(key, tmp->key) == 0)
 			return tmp->data;
 		tmp = tmp->next;
 	}
@@ -357,7 +357,7 @@ void connect_count_malloc(t_general *list)
 				
 				free(tmp->acces_args->args[i]->str);
 				tmp->acces_args->args[i]->str = new;
-				tmp->acces_args->args[i]->s = 1;
+				tmp->acces_args->args[i]->s = tmp->acces_args->args[i+1]->s;
 				j = i+1;
 				while(tmp->acces_args->args[j])
 				{
@@ -373,6 +373,34 @@ void connect_count_malloc(t_general *list)
 	}	
 }
  
+void remove_null(t_general *list)
+{
+	t_general *tmp;
+	tmp = list;		//    echo "" "" hi
+	int i = 0;
+	int j;
+	while(tmp)	
+	{
+		i = 0;
+		while(tmp->acces_args->args[i])
+		{
+			if(ft_strcmp(tmp->acces_args->args[i]->str, "\"\"")== 0 && i!=0 )
+			{
+				free(tmp->acces_args->args[i]->str);
+				j = i;
+				while(tmp->acces_args->args[j+1])
+				{
+					tmp->acces_args->args[j] = tmp->acces_args->args[j+1];
+					j++;	
+				}
+				tmp->acces_args->args[j] =NULL;
+			}
+			i++;
+		}
+		tmp = tmp->next;
+	}
+}
+
 int	main(int argc, char *argv[], char **envp)
 {
 	char		*line;
@@ -438,9 +466,10 @@ int	main(int argc, char *argv[], char **envp)
 		add_history(line);
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
+		remove_null(pipe_blocs);
 		expand_dolar(pipe_blocs, env);
-		//print_pipes(pipe_blocs);
 		connect_count_malloc(pipe_blocs);
+		// print_pipes(pipe_blocs);
 		full.pipe_blocks = pipe_blocs;
 		if(has_heredoc(pipe_blocs) == 1)
 		{
@@ -458,16 +487,14 @@ int	main(int argc, char *argv[], char **envp)
 			create_pipe(pipe->count, pipe->fd);
 			full.pipe = pipe;
 			handle_pipe(pipe_blocs, get, &env, pipe,&full);
-			
 			free_pipe(pipe);
             pipe = NULL;
 		}
 		else if (pipe_blocs->acces_args && pipe_blocs->acces_args->args[0])
 		{
-			if ((!has_redireciton(pipe_blocs)
-			&& is_built_in(pipe_blocs->acces_args->args[0]->str)))
+			if (!has_redireciton(pipe_blocs) &&is_built_in(pipe_blocs->acces_args->args[0]->str))
 			{
-				check_cmd_built_in(pipe_blocs, &env, pipe, get);
+			    check_cmd_built_in(pipe_blocs, &env, pipe, get);
 			}
 			else
 			{

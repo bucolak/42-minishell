@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/08/09 21:20:50 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/10 07:05:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	get_env_helper_func(int *i, int *j, t_env *tmp, char **envp)
 {
-	(*i)++;
+	// (*i)++;
 	if (tmp->key)
 	{
 		free(tmp->key);
@@ -28,11 +28,13 @@ void	get_env_helper_func(int *i, int *j, t_env *tmp, char **envp)
 	{
 		tmp->key = ft_substr(envp[*j], 0, *i);
 		tmp->data = ft_strdup(envp[*j] + *i + 1);
+		tmp->has_equal = 1;
 	}
 	else
 	{
 		tmp->key = ft_substr(envp[*j], 0, *i);
 		tmp->data = NULL;
+		tmp->has_equal = 0;
 	}
 }
 
@@ -48,8 +50,11 @@ void	get_env(t_env **node, char **envp)
 	while (envp[j])
 	{
 		i = 0;
-		while (envp[j][i] != '=')
-			get_env_helper_func(&i, &j, tmp, envp);
+		while (envp[j][i] && envp[j][i] != '=')
+		{
+			i++;
+		}
+		get_env_helper_func(&i, &j, tmp, envp);
 		j++;
 		if (envp[j])
 		{
@@ -65,7 +70,10 @@ void	print_env(t_general *list, t_env **node, int i)
 
 	if (list->acces_args->args[i + 1])
 	{
-		printf("Error\n");
+		ft_putstr_fd("env: '", 2);
+		ft_putstr_fd(list->acces_args->args[i + 1]->str,2);
+		ft_putstr_fd("’: No such file or directory\n", 2);
+		list->dqm = 127;
 		return ;
 	}
 	tmp = *node;
@@ -172,7 +180,17 @@ void create_env_2(t_general *list, t_env **env, int i)
 		if ((count_dquote(new) % 2 == 0 || count_squote(new)
 		% 2 == 0)) //burda is_repeat fonksiyonu vardı kaldırdım  çünkü şuan böyle gerekti sonra lazım olursa duruma göre bakarız
 				{
-					ft_envadd_back(env, key, data, list);
+					if(key && key[0])
+					{
+						ft_envadd_back(env, key, data, list);
+					}
+					else
+					{
+						ft_putstr_fd("bash: export: `", 2);
+						ft_putstr_fd(list->acces_args->args[1]->str,2);
+						ft_putstr_fd("': not a valid identifier\n", 2);
+						list->dqm = 1;
+					}
 				}
         free(key);
         free(data);

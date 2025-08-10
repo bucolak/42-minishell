@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/09 21:39:21 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/10 08:40:33 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void	built_in_helper_func(t_full *full, int i)
 		}
 	}
 	built_in_helper_func_2(full, i);
-	free_split(new);
+	//free_split(new);
 }
 
 void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get)
@@ -158,10 +158,12 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 		}
 		i++;
 	}
+	*node = full.node;
 }
 
 void cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks, t_env *env)
 {
+	t_env *tmp = env;
 	if (args[1]->str[0] == '$' && (args[1]->flag == 0
 				|| args[1]->flag == 2))
 	{
@@ -174,15 +176,26 @@ void cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks, t_env *env)
 		perror("cd");
 		pipe_blocks->dqm = 1;
 	}
-	while (env)
+	while (tmp)
 	{
-		if (ft_strcmp(env->key, "OLDPWD=") == 0)
+		if (ft_strcmp(tmp->key, "OLDPWD") == 0)
 		{
-			free(env->data);
-			env->data = getcwd(NULL, 0); //BAK!! Fonksiyon otomatik olarak yeterli boyutta bellek allocate eder (malloc ile)
-			break ;
+			free(tmp->data);
+			tmp->data= ft_strdup(get_getenv(env, "PWD")); //BAK!! Fonksiyon otomatik olarak yeterli boyutta bellek allocate eder (malloc ile)
+			break;
 		}
-		env = env->next;
+		tmp = tmp->next;
+	}
+	 tmp = env;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->key, "PWD") == 0)
+		{
+			free(tmp->data);
+			tmp->data = getcwd(NULL, 0);
+			break;
+		}
+		tmp = tmp->next;
 	}
 }
 
