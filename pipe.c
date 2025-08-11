@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 11:52:33 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 18:10:48 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ void	close_fd(int count, int **fd, int type, int i)
 void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe, t_full *full)
 {
 	int exit_code;
-	handle_redirections(tmp);
+	if(has_redireciton(tmp))
+		handle_redirections(tmp);
 	if (!tmp || !tmp->acces_args || !tmp->acces_args->args || !tmp->acces_args->args[0])
     {
 		if(tmp->heredoc_fd!=-1)

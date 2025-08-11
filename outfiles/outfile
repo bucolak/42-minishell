@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 17:08:14 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 17:36:33 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ typedef struct s_full
 	t_env *node;
 	t_pipe *pipe;
 	t_now *get;
+	char **new;
 }	t_full;
 
 void control_redireciton(t_general *list, t_env *env);
@@ -189,7 +190,7 @@ void					echo_flag_1(t_general *tmp, int i);
 
 // exit.c
 
-void	exit_cmd(t_general *list, t_env *env, t_pipe *pipe, t_now *get);
+void	exit_cmd(t_full *full);
 
 // unset.c
 void					unset_cmd_helper_func(t_env *node, t_env *pre_node,

@@ -24,6 +24,7 @@ exit.c
 exit.o
 free.c
 free.o
+ komutu düzneledni leak var
 libft
 main.c
 main.o
@@ -78,6 +79,7 @@ exit.c
 exit.o
 free.c
 free.o
+ komutu düzneledni leak var
 libft
 main.c
 main.o
@@ -132,6 +134,7 @@ exit.c
 exit.o
 free.c
 free.o
+ komutu düzneledni leak var
 libft
 main.c
 main.o
@@ -186,6 +189,7 @@ exit.c
 exit.o
 free.c
 free.o
+ komutu düzneledni leak var
 libft
 main.c
 main.o
@@ -240,6 +244,7 @@ exit.c
 exit.o
 free.c
 free.o
+ komutu düzneledni leak var
 libft
 main.c
 main.o

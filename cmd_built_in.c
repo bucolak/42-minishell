@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/11 17:06:16 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 18:09:33 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,35 @@ void	built_in_helper_func_2(t_full *full, int i)
 		print_env(full->pipe_blocks, &full->node, i);
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 						"exit") == 0)
-		exit_cmd(full->pipe_blocks, full->node, full->pipe, full->get);
+		exit_cmd(full);
+}
+
+int is_valid_identifier(const char *name) {
+
+	int i;
+	i = 1;
+    if (!name || !*name)
+        return 0;
+    
+    // İlk karakter kontrolü
+    if (!ft_isalpha(*name) && *name != '_')
+        return 0;
+    
+    // Geri kalan karakterler kontrolü
+	while(name[i] && name[i] != '=')
+	{
+		if (!ft_isalnum(name[i]) && name[i] != '_')
+            return 0;
+		i++;
+	}
+    
+    return 1;
 }
 
 void	built_in_helper_func(t_full *full, int i)
 {
 	t_general *tmp =full->pipe_blocks;
 	t_env *env = full->node;
-	char **new;
-	new=NULL;
 	int c = 0;
 	int j;
 	int k;
@@ -49,7 +69,7 @@ void	built_in_helper_func(t_full *full, int i)
 				&& full->pipe_blocks->acces_args->args[i + 1]->str))
 			{
 				k=i+1;
-				if(ft_strcmp(full->pipe_blocks->acces_args->args[i + 1]->str, "=")==0)
+				if(is_valid_identifier(full->pipe_blocks->acces_args->args[i + 1]->str) == 0)
 				{
 					ft_putstr_fd("bash: export: ", 2);
 					ft_putstr_fd("`=': not a valid identifier\n", 2);
@@ -72,8 +92,9 @@ void	built_in_helper_func(t_full *full, int i)
 						}
 						k++;
 					}
-					new = malloc(sizeof(char *) * (c+1));
-					if(!new)
+					if(c>0)
+						full->new = malloc(sizeof(char *) * (c+1));
+					if(!full->new)
 						return ;
 					tmp =full->pipe_blocks;
 					k = 0;
@@ -88,18 +109,18 @@ void	built_in_helper_func(t_full *full, int i)
 							{
 							    equals_index++;
 							}
-							new[j++] = ft_substr(tmp->acces_args->args[k]->str, 0, equals_index);
+							full->new[j++] = ft_substr(tmp->acces_args->args[k]->str, 0, equals_index);
 						}
 						k++;
 					}
-					new[j] = '\0';
+					full->new[j] = NULL;
 					create_env(full->pipe_blocks, &full->node);
 					while(env)
 					{
 						k = 0;
-						while(new[k])
+						while(full->new[k])
 						{
-							if(ft_strcmp(new[k], env->key) == 0)
+							if(ft_strcmp(full->new[k], env->key) == 0)
 							{
 								env->has_equal = 1;
 							}
@@ -127,6 +148,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 	full.node = *node;
 	full.get = get;
 	full.pipe = pipe;
+	full.new = NULL;
 	i = 0;
 	while (pipe_blocs->acces_args->args[i])
 	{

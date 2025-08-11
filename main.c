@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 16:58:46 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 17:32:03 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -510,6 +510,7 @@ int	main(int argc, char *argv[], char **envp)
 	pipe = NULL;
 	pipe_blocs = NULL;
 	get = NULL;
+	full.new=NULL;
 	env = create_env_node();
 	if (first_run)
 	{
