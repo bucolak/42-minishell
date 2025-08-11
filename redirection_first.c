@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/10 10:50:12 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 12:32:49 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	handle_output(t_general *list, int i)
         		exit(exit_code);
 			}
 			if(last_fd !=-1)
-				close(last_fd);
+			close(last_fd);
 			last_fd = fd;
 		}
 		else

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/10 10:49:31 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:05:19 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,10 @@ int	has_redireciton(t_general *pipe_blocks)
 	i = 0;
 	while (pipe_blocks->acces_args->args[i])
 	{
-		if (ft_strcmp(pipe_blocks->acces_args->args[i]->str, "<") == 0
+		if ((ft_strcmp(pipe_blocks->acces_args->args[i]->str, "<") == 0
 			|| ft_strcmp(pipe_blocks->acces_args->args[i]->str, "<<") == 0
 			|| ft_strcmp(pipe_blocks->acces_args->args[i]->str, ">") == 0
-			|| ft_strcmp(pipe_blocks->acces_args->args[i]->str, ">>") == 0)
+			|| ft_strcmp(pipe_blocks->acces_args->args[i]->str, ">>") == 0) && (pipe_blocks->acces_args->args[i]->flag == 5 || pipe_blocks->acces_args->args[i]->flag == 2))
 			return (1);
 		i++;
 	}
@@ -234,6 +234,11 @@ void expand_dolar(t_general *list, t_env *env)
 		while(tmp->acces_args->args[i])
 		{
 			j = 0;
+			if(i>0 && tmp->acces_args->args[i-1] && ft_strcmp(tmp->acces_args->args[i-1]->str, "<<") == 0 && (tmp->acces_args->args[i-1]->flag == 5 || tmp->acces_args->args[i-1]->flag == 2))
+			{
+				i++;
+				continue;
+			}
 			if((ft_strcmp(tmp->acces_args->args[i]->str, "$empty") == 0 || ft_strcmp(tmp->acces_args->args[i]->str, "$EMPTY") == 0) && tmp->acces_args->args[i]->flag == 2)
 			{
 				// Argümanı sil
@@ -352,6 +357,8 @@ void connect_count_malloc(t_general *list)
 				new = malloc(sizeof(char) * (c+1));
 				ft_strlcpy(new, tmp->acces_args->args[i]->str, c+1);
                 ft_strlcat(new, tmp->acces_args->args[i+1]->str,c+1);
+				// if(tmp->acces_args->args[i+1] &&is_redireciton(tmp->acces_args->args[i+1]->str) == 1 && tmp->acces_args->args[i+1]->flag !=5)
+				// 	tmp->acces_args->args[i+1]->flag = 6; //BAK: burayı değiştirdim çünkü export T=">>" bu komut için
 				free(tmp->acces_args->args[i+1]->str);
 				free(tmp->acces_args->args[i+1]);
 				
@@ -469,7 +476,7 @@ int	main(int argc, char *argv[], char **envp)
 		remove_null(pipe_blocs);
 		expand_dolar(pipe_blocs, env);
 		connect_count_malloc(pipe_blocs);
-		// print_pipes(pipe_blocs);
+		//print_pipes(pipe_blocs);
 		full.pipe_blocks = pipe_blocs;
 		if(has_heredoc(pipe_blocs) == 1)
 		{

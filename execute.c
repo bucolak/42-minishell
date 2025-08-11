@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/10 10:50:43 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 13:04:27 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void handle_append_2(char *last_input, t_general *list, int *fd, int i)
 {
+	int exit_code;
 	last_input = list->acces_args->args[i]->str;
 	*fd = open(last_input, O_CREAT | O_WRONLY | O_APPEND,
 			0644);
@@ -29,15 +30,17 @@ void handle_append_2(char *last_input, t_general *list, int *fd, int i)
 		ft_putstr_fd(last_input, 2);
 		ft_putstr_fd(": Permission denied\n", 2);
 		list->dqm = 1;
+		exit_code = list->dqm;
 		free_pipe_blocks(list);
-		exit(list->dqm);
+		exit(exit_code);
 	}
 	if (*fd < 0)
 	{
 		error_msg(i, list->acces_args->args[i]->str, 0, list);
 		list->dqm = 1;
+		exit_code = list->dqm;
 		free_pipe_blocks(list);
-		exit(list->dqm);
+		exit(exit_code);
 	}
 }
 
@@ -46,7 +49,7 @@ void	handle_append(t_general *list, int i)
 	int	fd;
 	char *last_input;
 	int last_fd;
-
+	int exit_code;
 	last_fd = -1;
 	last_input = NULL;
 	fd = -1;
@@ -63,8 +66,9 @@ void	handle_append(t_general *list, int i)
 		else
 		{
 			error_msg(2, NULL, 3, list);
+			exit_code = list->dqm;
 			free_pipe_blocks(list);
-			exit(list->dqm) ;
+			exit(exit_code);
 		}
 	}
 	if(last_fd!=-1)
@@ -441,6 +445,11 @@ void	handle_redirections(t_general *pipe_blocs)
             has_command = 1;
             break;
         }
+		else if(is_redireciton(pipe_blocs->acces_args->args[i]->str) && i == 0)
+			{
+				has_command = 0;
+				break;
+			}
         i++;
     }
 	if (has_command == 0)
@@ -451,33 +460,33 @@ void	handle_redirections(t_general *pipe_blocs)
 	    {
 	        if (ft_strcmp(pipe_blocs->acces_args->args[j]->str, "<") == 0)
 	        {
-	            // Input redirection, dosya bulunamazsa hata ver
+	           
 	            if (access(pipe_blocs->acces_args->args[j + 1]->str, F_OK) != 0)
 	            {
 	                ft_putstr_fd("bash: ", 2);
 	                ft_putstr_fd(pipe_blocs->acces_args->args[j + 1]->str, 2);
 	                ft_putstr_fd(": No such file or directory\n", 2);
 	                pipe_blocs->dqm = 1;
-	                return;
+					exit(pipe_blocs->dqm);
 	            }
 	        }
 	        else if (ft_strcmp(pipe_blocs->acces_args->args[j]->str, ">") == 0 || 
 	                 ft_strcmp(pipe_blocs->acces_args->args[j]->str, ">>") == 0)
 	        {
-	            // Output redirection, dosya oluşturulabilir mi kontrol et
-	            if (access(pipe_blocs->acces_args->args[j + 1]->str, W_OK) != 0 && 
-	                access(pipe_blocs->acces_args->args[j + 1]->str, F_OK) == 0)
+	            int fd = open(pipe_blocs->acces_args->args[j + 1]->str, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	            if (fd<0)
 	            {
 	                ft_putstr_fd("bash: ", 2);
 	                ft_putstr_fd(pipe_blocs->acces_args->args[j + 1]->str, 2);
 	                ft_putstr_fd(": Permission denied\n", 2);
 	                pipe_blocs->dqm = 1;
-	                return;
+	                exit(pipe_blocs->dqm);
 	            }
+				close(fd);
 	        }
 	        j++;
 	    }
-		return;
+		exit(pipe_blocs->dqm);
 	}
 	while(pipe_blocs->acces_args->args[i])
 	{
@@ -499,7 +508,7 @@ void	handle_redirections(t_general *pipe_blocs)
 		i++;
 	}
 	if(is_redirect == 1)
-		renew_block2(pipe_blocs);
+		renew_block2(pipe_blocs);	
 }
 
 int count_malloc(t_general *list, int j)
@@ -585,7 +594,12 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 	if (pid == 0)
 	{
 		signal_handler_child();
-		handle_redirections(pipe_blocs);
+		if(has_redireciton(pipe_blocs))
+		{
+			handle_redirections(pipe_blocs);
+			handle_heredoc(pipe_blocs);
+			
+		}
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
 			check_cmd_built_in(pipe_blocs, env, pipe, get);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/10 08:40:33 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 13:11:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,6 @@ void	built_in_helper_func(t_full *full, int i)
 						k++;
 					}
 					new[j] = '\0';
-					j = 0;
-					while(new[j])
-					{
-						// printf("new : %s\n", new[j]);
-						j++;
-					}
-					k = 0;
 					create_env(full->pipe_blocks, &full->node);
 					while(env)
 					{
