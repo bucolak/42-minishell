@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/10 09:35:32 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 17:08:14 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_env
 {
 	char				*data;
 	char				*key;
+	int f;
 	struct s_env		*next;
 	int has_equal;
 }						t_env;
@@ -95,6 +96,9 @@ typedef struct s_full
 	t_pipe *pipe;
 	t_now *get;
 }	t_full;
+
+void control_redireciton(t_general *list, t_env *env);
+int is_flag_6(t_general *list, t_env *env);
 int	has_redireciton(t_general *pipe_blocks);
 char	*ft_strstr(const char *haystack, const char *needle);
 void remove_env_var(t_env **env, char *var_name);
@@ -159,7 +163,7 @@ int						is_numeric(char *str);
 int						is_repeated(t_env **node, char *ky, char *dt);
 
 // redirection_first.c
-int						is_redireciton(char *str);
+int	is_redireciton(char *str);
 void					renew_block2(t_general *list);
 void					renew_else_block(t_arg ***new, t_general *tmp, int *i,
 							int *j);

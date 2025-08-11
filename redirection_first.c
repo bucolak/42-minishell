@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 12:32:49 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 16:21:21 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	renew_block2(t_general *list)
 	i = 0;
 	while (tmp->acces_args->args[i])
 	{
-		if (is_redireciton(tmp->acces_args->args[i]->str) == 1)
+		if (is_redireciton(tmp->acces_args->args[i]->str) == 1 && (tmp->acces_args->args[i]->flag ==5 || tmp->acces_args->args[i]->flag ==2))
 			i += 2;
 		else
 		{

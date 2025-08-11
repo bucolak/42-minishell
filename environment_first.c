@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/08/11 14:05:25 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 15:06:53 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,14 +144,12 @@ void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 	{
 		if(key_cont(key) == 1)
 		{
-			// printf("burda\n");
 			new_node->key = ft_strdup(key);
 			if(data)
 				new_node->data = ft_strdup(data);			
 			else
 				new_node->data = ft_strdup("");
 
-			//  printf("data: %s\n", new_node->data);
 			if (*lst == NULL)
 				*lst = new_node;
 			else

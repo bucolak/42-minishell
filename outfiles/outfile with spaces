@@ -1,11 +1,7 @@
-<
 >
->>
 42_minishell_tester
-acces_args-
 apply_malloc.c
 apply_malloc.o
-args[i-1]
 asd
 cmd_built_in.c
 cmd_built_in.o
@@ -28,9 +24,7 @@ exit.c
 exit.o
 free.c
 free.o
-grep
 libft
-lol
 main.c
 main.o
 Makefile

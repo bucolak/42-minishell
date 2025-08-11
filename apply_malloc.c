@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/09 20:36:37 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 17:03:44 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ t_arg *create_arg(char *str, int flag, int type)
         return NULL;
     }
     arg->flag = flag;
+    arg->env_flag = 0;
     arg->s = 1;
     return arg;
 }

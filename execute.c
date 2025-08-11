@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/11 13:04:27 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 16:58:40 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -440,12 +440,12 @@ void	handle_redirections(t_general *pipe_blocs)
 	int has_command = 0;
 	while (pipe_blocs->acces_args->args[i])
     {
-        if (!is_redireciton(pipe_blocs->acces_args->args[i]->str))
+        if (!is_redireciton(pipe_blocs->acces_args->args[i]->str) && pipe_blocs->acces_args->args[i]->flag!=5 )
         {
             has_command = 1;
             break;
         }
-		else if(is_redireciton(pipe_blocs->acces_args->args[i]->str) && i == 0)
+		else if(is_redireciton(pipe_blocs->acces_args->args[i]->str) && i == 0 && (pipe_blocs->acces_args->args[i]->flag ==5 || pipe_blocs->acces_args->args[i]->flag ==2))
 			{
 				has_command = 0;
 				break;
@@ -594,11 +594,10 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env **env, t_now *get, t_pipe *
 	if (pid == 0)
 	{
 		signal_handler_child();
-		if(has_redireciton(pipe_blocs))
+		if(has_redireciton(pipe_blocs)== 1 && is_flag_6(pipe_blocs, *env) == 0)
 		{
 			handle_redirections(pipe_blocs);
-			handle_heredoc(pipe_blocs);
-			
+			handle_heredoc(pipe_blocs);	
 		}
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{

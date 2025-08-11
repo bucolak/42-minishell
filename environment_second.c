@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/09 17:11:08 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 14:47:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ char	*get_key(char *str)
 	start = 0;
 	get_key_2(&i, &end, str);
 	key = ft_substr(str, start, end - start);
+	
 	final_key = ft_strtrim(key, "'\"");
 	free(key);
 	return (final_key);

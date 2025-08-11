@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/11 13:11:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/11 17:06:16 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	built_in_helper_func(t_full *full, int i)
 	t_general *tmp =full->pipe_blocks;
 	t_env *env = full->node;
 	char **new;
+	new=NULL;
 	int c = 0;
 	int j;
 	int k;
