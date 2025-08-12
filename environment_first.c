@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/08/11 15:06:53 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 18:26:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	get_env_helper_func(int *i, int *j, t_env *tmp, char **envp)
 	}
 }
 
-void	get_env(t_env **node, char **envp)
+void	get_env(t_env *node, char **envp)
 {
 	static int	j;
 	int			i;
@@ -46,7 +46,7 @@ void	get_env(t_env **node, char **envp)
 
 	j = 0;
 	i = 0;
-	tmp = *node;
+	tmp = node;
 	while (envp[j])
 	{
 		i = 0;
@@ -64,7 +64,7 @@ void	get_env(t_env **node, char **envp)
 	}
 }
 
-void	print_env(t_general *list, t_env **node, int i)
+void	print_env(t_general *list, t_env *node, int i)
 {
 	t_env	*tmp;
 
@@ -76,7 +76,7 @@ void	print_env(t_general *list, t_env **node, int i)
 		list->dqm = 127;
 		return ;
 	}
-	tmp = *node;
+	tmp = node;
 	while (tmp)
 	{
 		if (tmp->key && tmp->data)
@@ -120,12 +120,12 @@ void print_message(char *key, char *data, t_general *list)
 	list->dqm = 1;
 }
 
-void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
+void	ft_envadd_back(t_env *lst, char *key, char *data, t_general *list)
 {
 	t_env	*last;
 	t_env	*new_node;
 	t_env	*tmp;
-	tmp = *lst;
+	tmp = lst;
     while (tmp)
     {
 		if (ft_strcmp(tmp->key, key) == 0)
@@ -150,11 +150,11 @@ void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 			else
 				new_node->data = ft_strdup("");
 
-			if (*lst == NULL)
-				*lst = new_node;
+			if (lst == NULL)
+				lst = new_node;
 			else
 			{
-				last = *lst;
+				last = lst;
 				while (last->next)
 					last = last->next;
 				last->next = new_node;
@@ -166,7 +166,7 @@ void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 	}
 }
 
-void create_env_2(t_general *list, t_env **env, int i)
+void create_env_2(t_general *list, t_env *env, int i)
 {
 	char	*new;
 	char	*key;
@@ -196,7 +196,7 @@ void create_env_2(t_general *list, t_env **env, int i)
         free(key);
         free(data);
 	}
-	if(list->acces_args->args[i+1] && ft_strcmp((*env)->key, " =")==0)
+	if(list->acces_args->args[i+1] && ft_strcmp((env)->key, " =")==0)
 	{
 		free(new);
 		ft_putstr_fd("bash: export: ", 2);
@@ -204,7 +204,7 @@ void create_env_2(t_general *list, t_env **env, int i)
 	}
 }
 
-void	create_env(t_general *list, t_env **env)
+void	create_env(t_general *list, t_env *env)
 {
 	int		i;
 	

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:06:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/10 09:45:32 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 19:22:56 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	initalized_echo(t_general *list)
 	i = 1;
 	tmp = list;
 	str = NULL;
-	if (!tmp->acces_args->args[1] || ft_strcmp(tmp->acces_args->args[1]->str, "''") == 0 || ft_strcmp(tmp->acces_args->args[1]->str, "\"\"") == 0)
+	if (!tmp->acces_args->args[1])
 	{
 		ft_putchar_fd('\n', 1);
 		return ;

@@ -6,13 +6,13 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/11 18:09:33 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 18:44:22 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	built_in_helper_func_2(t_full *full, int i)
+void	built_in_helper_func_2(t_full *full, int i, t_env *env)
 {
 	if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 					"pwd") == 0)
@@ -22,12 +22,12 @@ void	built_in_helper_func_2(t_full *full, int i)
 		{
 			if(!full->pipe_blocks->acces_args->args[i + 1])
 				return;
-			unset_cmd(full->pipe_blocks, &full->node);
+			unset_cmd(full->pipe_blocks, &env);
 		}
 		
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 						"env") == 0)
-		print_env(full->pipe_blocks, &full->node, i);
+		print_env(full->pipe_blocks, full->node, i);
 	else if (ft_strcmp(full->pipe_blocks->acces_args->args[i]->str,
 						"exit") == 0)
 		exit_cmd(full);
@@ -55,7 +55,7 @@ int is_valid_identifier(const char *name) {
     return 1;
 }
 
-void	built_in_helper_func(t_full *full, int i)
+void	built_in_helper_func(t_full *full, int i, t_env *envv)
 {
 	t_general *tmp =full->pipe_blocks;
 	t_env *env = full->node;
@@ -114,7 +114,7 @@ void	built_in_helper_func(t_full *full, int i)
 						k++;
 					}
 					full->new[j] = NULL;
-					create_env(full->pipe_blocks, &full->node);
+					create_env(full->pipe_blocks, full->node);
 					while(env)
 					{
 						k = 0;
@@ -132,20 +132,20 @@ void	built_in_helper_func(t_full *full, int i)
 			}
 		else
 		{
-			print_export_env(&full->node, full->pipe_blocks);
+			print_export_env(full->node, full->pipe_blocks);
 		}
 	}
-	built_in_helper_func_2(full, i);
+	built_in_helper_func_2(full, i, envv);
 	//free_split(new);
 }
 
-void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get)
+void	check_cmd_built_in(t_general *pipe_blocs, t_env *node, t_pipe *pipe, t_now *get)
 {
 	int	i;
 	t_full full;
 	
 	full.pipe_blocks = pipe_blocs;
-	full.node = *node;
+	full.node = node;
 	full.get = get;
 	full.pipe = pipe;
 	full.new = NULL;
@@ -154,7 +154,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 	{
 		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "cd") == 0)
 		{
-			cd_cmd(pipe_blocs->acces_args->args, *node, pipe_blocs);
+			cd_cmd(pipe_blocs->acces_args->args, node, pipe_blocs);
 			break ;
 		}
 		else if (ft_strcmp(full.pipe_blocks->acces_args->args[0]->str,
@@ -165,7 +165,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 			full.pipe_blocks->dqm = 127;
 			break;
 		}
-		built_in_helper_func(&full, i);
+		built_in_helper_func(&full, i, node);
 		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str,
 						"echo") == 0)
 		{
@@ -174,7 +174,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 		}
 		i++;
 	}
-	*node = full.node;
+	node = full.node;
 }
 
 void cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks, t_env *env)
@@ -196,8 +196,9 @@ void cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks, t_env *env)
 	{
 		if (ft_strcmp(tmp->key, "OLDPWD") == 0)
 		{
-			free(tmp->data);
-			tmp->data= ft_strdup(get_getenv(env, "PWD")); //BAK!! Fonksiyon otomatik olarak yeterli boyutta bellek allocate eder (malloc ile)
+			if(tmp->data)
+				free(tmp->data);
+			tmp->data= ft_strdup(get_getenv(env, "PWD"));
 			break;
 		}
 		tmp = tmp->next;
@@ -207,7 +208,8 @@ void cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks, t_env *env)
 	{
 		if (ft_strcmp(tmp->key, "PWD") == 0)
 		{
-			free(tmp->data);
+			if(tmp->data)
+				free(tmp->data);
 			tmp->data = getcwd(NULL, 0);
 			break;
 		}
@@ -231,8 +233,8 @@ void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 	}
 	else if(ft_strcmp(args[1]->str, "-") == 0)
 	{
-		char *old_pwd = get_getenv(env, "OLDPWD");
-		char *pwd = get_getenv(env, "PWD");
+		char *old_pwd = ft_strdup(get_getenv(env, "OLDPWD"));
+		char *pwd = ft_strdup(get_getenv(env, "PWD"));
 		char *new_oldpwd = ft_strdup(pwd);
 		while(tmp)
 		{
@@ -250,9 +252,14 @@ void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 			}
 			tmp = tmp->next;
 		}
+		if(pwd)
+			free(pwd);
+		if(old_pwd)
+			free(old_pwd);
 		ft_putstr_fd(new_oldpwd, 1);
 		ft_putchar_fd('\n',1);
-		chdir(get_getenv(env, "OLDPWD"));
+		if(get_getenv(env, "OLDPWD"))
+			chdir(get_getenv(env, "OLDPWD"));
 	}
 	else if(args[2])
 	{

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 17:04:02 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 20:31:43 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	parse_input(t_general *a)
 			{
 				j = ++i;
 				while (a->blocs[i] && a->blocs[i] != '"')
-					i++;
+				i++;
 				if (a->blocs[i] == '"'  )
 				{
 					tmp_str = ft_substr(a->blocs, j, i- j);
@@ -152,6 +152,8 @@ void	parse_input(t_general *a)
 						free(tmp_str);
 						tmp_str = ft_substr(a->blocs, j-1, 2);
 						a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
+						if(a->blocs[i+1] && a->blocs[i+1] != ' ')
+							a->acces_args->args[k]->s = 0;
 						k++;
 					}
 					else
@@ -164,8 +166,6 @@ void	parse_input(t_general *a)
 						}
 						k++;
 					}
-					// else
-					// 	free(tmp_str);
 					i++;
 				}
 				else
@@ -269,7 +269,6 @@ void	parse_input(t_general *a)
 				{
 					i++;
 				}
-					
 				if(!a->blocs[i-1] && ((a->blocs[i] == '"' && a->blocs[i+1] == '"') ||(a->blocs[i] == '\'' && a->blocs[i+1] == '\'')))
 				{
 					i+=2;

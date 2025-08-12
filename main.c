@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 17:32:03 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 21:12:55 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ int has_heredoc(t_general *list)
 	while (list->acces_args->args[i])
 	{
 		if (list->acces_args->args[i]->str && 
-			ft_strcmp(list->acces_args->args[i]->str, "<<") == 0 && list->acces_args->args[i]->flag == 2)
+			ft_strcmp(list->acces_args->args[i]->str, "<<") == 0 && (list->acces_args->args[i]->flag == 2 || list->acces_args->args[i]->flag == 5))
 			return 1;
 		i++;
 	}
@@ -386,7 +386,7 @@ void connect_count_malloc(t_general *list)
 		i = 0;
 		while(tmp->acces_args->args[i])
 		{
-			if(tmp->acces_args->args[i]->s == 0 && tmp->acces_args->args[i+1])
+			if(tmp->acces_args->args[i]->s == 0 && tmp->acces_args->args[i+1] && ft_strcmp(tmp->acces_args->args[i]->str, "''")!=0 && ft_strcmp(tmp->acces_args->args[i]->str, "\"\"")!=0)
 			{
 				c = ft_strlen(tmp->acces_args->args[i]->str) + ft_strlen(tmp->acces_args->args[i+1]->str);
 				new = malloc(sizeof(char) * (c+1));
@@ -395,15 +395,13 @@ void connect_count_malloc(t_general *list)
 				if(tmp->acces_args->args[i+1] &&is_redireciton(tmp->acces_args->args[i+1]->str) == 1 && tmp->acces_args->args[i+1]->flag !=5 && tmp->acces_args->args[i+1]->s == 0)
 				{
 					tmp->acces_args->args[i]->flag = 6;
-					
-					
 				}
+				tmp->acces_args->args[i]->s = tmp->acces_args->args[i+1]->s;
 				free(tmp->acces_args->args[i+1]->str);
 				free(tmp->acces_args->args[i+1]);
 				
 				free(tmp->acces_args->args[i]->str);
 				tmp->acces_args->args[i]->str = new;
-				tmp->acces_args->args[i]->s = tmp->acces_args->args[i+1]->s;
 				j = i+1;
 				while(tmp->acces_args->args[j])
 				{
@@ -419,28 +417,63 @@ void connect_count_malloc(t_general *list)
 	}	
 }
  
+int count_remove_null(char *str)
+{
+	int c;	
+	int j;
+
+	c = 0;
+	j = 0;
+	while(str[j])
+	{
+		if((str[j] == '"' && str[j+1] && str[j+1] == '"' && ((j>0 && str[j-1]) || str[j+1])) || (str[j] == '\'' && str[j+1] && str[j+1] == '\'' && ((j>0 && str[j-1]) || str[j+1])))
+		{
+			j+=2;
+		}
+		else
+		{
+			c++;
+			j++;
+		}
+	}
+	return c+1;
+}
+
 void remove_null(t_general *list)
 {
 	t_general *tmp;
-	tmp = list;		//    echo "" "" hi
+	tmp = list;	
+	char *str;
+	char *new;	//    echo "" "" hi
 	int i = 0;
 	int j;
+	int k;
 	while(tmp)	
 	{
 		i = 0;
 		while(tmp->acces_args->args[i])
 		{
-			if(ft_strcmp(tmp->acces_args->args[i]->str, "\"\"")== 0 && i!=0 )
+			j = 0;
+			k = 0;
+			str = tmp->acces_args->args[i]->str;
+			new =malloc(sizeof(char) * count_remove_null(str));
+			if(!new)
+				return ;
+			while(tmp->acces_args->args[i]->str[j])
 			{
-				free(tmp->acces_args->args[i]->str);
-				j = i;
-				while(tmp->acces_args->args[j+1])
+				if(((str[j] == '"' && str[j+1] && str[j+1] == '"' && ((j>0 && str[j-1]) || str[j+2]))) || ((str[j] == '\'' && str[j+1] && str[j+1] == '\'' && ((j>0 && str[j-1]) || str[j+2]))))
 				{
-					tmp->acces_args->args[j] = tmp->acces_args->args[j+1];
-					j++;	
+					j+=2;
 				}
-				tmp->acces_args->args[j] =NULL;
+				else
+				{
+					new[k++] = str[j++];
+				}
 			}
+			new[k] = '\0';
+			if(tmp->acces_args->args[i]->str)
+				free(tmp->acces_args->args[i]->str);
+			tmp->acces_args->args[i]->str = new;
 			i++;
 		}
 		tmp = tmp->next;
@@ -479,7 +512,6 @@ void control_redireciton(t_general *list, t_env *env)
 				{
 					if(ft_strncmp(str, tenv->key, ft_strlen(tenv->key)) == 0)
 					{
-						printf("bbbbb\n");
 						tenv->f = 3;
 						break;
 					}
@@ -510,11 +542,15 @@ int	main(int argc, char *argv[], char **envp)
 	pipe = NULL;
 	pipe_blocs = NULL;
 	get = NULL;
+	full.get = NULL;
+	full.node = NULL;
+	full.pipe=NULL;
+	full.pipe_blocks = NULL;
 	full.new=NULL;
 	env = create_env_node();
 	if (first_run)
 	{
-		get_env(&env, envp);
+		get_env(env, envp);
 		full.node = env;
 		first_run = 0;
 	}
@@ -525,12 +561,6 @@ int	main(int argc, char *argv[], char **envp)
 		line = readline("Our_shell% ");
 		if (!line)
 		{
-			if (pipe_blocs)
-			{
-				exit_code = pipe_blocs->dqm;
-				free_pipe_blocks(pipe_blocs);
-				pipe_blocs = NULL;
-			}
 			if (get)
 			{
 				free_envp(get);
@@ -546,6 +576,14 @@ int	main(int argc, char *argv[], char **envp)
 				free_pipe(pipe);
 				pipe = NULL;
 			}
+			if(pipe_blocs->heredoc_fd!=-1)
+				close(pipe_blocs->heredoc_fd);
+			if (pipe_blocs)
+			{
+				exit_code = pipe_blocs->dqm;
+				free_pipe_blocks(pipe_blocs);
+				pipe_blocs = NULL;
+			}
 			exit(exit_code);
 		}
 		if (line[0] == '\0')
@@ -558,12 +596,12 @@ int	main(int argc, char *argv[], char **envp)
 		add_history(line);
 		pipe_parse(&pipe_blocs, line);
 		parse_input(pipe_blocs);
-		remove_null(pipe_blocs);
 		expand_dolar(pipe_blocs, env);
 		connect_count_malloc(pipe_blocs);
+		remove_null(pipe_blocs);
 		control_redireciton(pipe_blocs, env);
-		//print_pipes(pipe_blocs);
 		full.pipe_blocks = pipe_blocs;
+		//print_pipes(pipe_blocs);
 		if(has_heredoc(pipe_blocs) == 1)
 		{
 			handle_heredoc(pipe_blocs);
@@ -571,7 +609,7 @@ int	main(int argc, char *argv[], char **envp)
 		get = malloc(sizeof(t_now));
 		get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
 		
-		fill_env(&env, get);
+		fill_env(env, get);
 		full.get = get;
 		if (pipe_blocs->next)
 		{
@@ -579,7 +617,7 @@ int	main(int argc, char *argv[], char **envp)
 			init_pipe(pipe, pipe_blocs);
 			create_pipe(pipe->count, pipe->fd);
 			full.pipe = pipe;
-			handle_pipe(pipe_blocs, get, &env, pipe,&full);
+			handle_pipe(pipe_blocs, get, env, pipe,&full);
 			free_pipe(pipe);
             pipe = NULL;
 		}
@@ -587,11 +625,11 @@ int	main(int argc, char *argv[], char **envp)
 		{
 			if (!has_redireciton(pipe_blocs) &&is_built_in(pipe_blocs->acces_args->args[0]->str))
 			{
-				check_cmd_built_in(pipe_blocs, &env, pipe, get);
+				check_cmd_built_in(pipe_blocs, env, pipe, get);
 			}
 			else
 			{
-				check_cmd_sys_call(pipe_blocs, &env, get, pipe,&full);
+				check_cmd_sys_call(pipe_blocs, env, get, pipe,&full);
 			}
 		}
 		free_envp(get);

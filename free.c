@@ -3,20 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/07 16:20:39 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/12 14:24:26 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+
 void free_split(char **str)
 {
     int i;
     if(!str)
-        return ;
+    return ;
     i = 0;
     while(str[i])
     {
@@ -65,17 +66,17 @@ void free_pipe_blocks(t_general *blocks)
                 while (tmp->acces_args->args[i])
                 {
                     if (tmp->acces_args->args[i]->str)
-                        free(tmp->acces_args->args[i]->str);
+                    free(tmp->acces_args->args[i]->str);
                     if(tmp->acces_args->args[i])
-                        free(tmp->acces_args->args[i]);
+                    free(tmp->acces_args->args[i]);
                     tmp->acces_args->args[i] = NULL;
                     i++;
                 }
                 if(tmp->acces_args->args)
-                    free(tmp->acces_args->args);
+                free(tmp->acces_args->args);
             }
             if(tmp->acces_args)
-                free(tmp->acces_args);
+            free(tmp->acces_args);
         }
         if (tmp->limiter)
         {
@@ -88,7 +89,7 @@ void free_pipe_blocks(t_general *blocks)
             free(tmp->limiter);
         }
         if (tmp->blocs)
-            free(tmp->blocs);
+        free(tmp->blocs);
         next = tmp->next;
         free(tmp);
         tmp = next;
@@ -112,7 +113,7 @@ void free_pipe(t_pipe *pipe)
 void free_envp(t_now *get)
 {
     if (!get)
-        return;
+    return;
     int i = 0;
     while (get->envp[i])
     {
@@ -121,4 +122,14 @@ void free_envp(t_now *get)
     }
     free(get->envp);
     free(get);
+}
+
+void cleanup(t_full *full)
+{
+    if(full->get)
+        free_envp(full->get);
+    if(full->pipe)
+        free_pipe(full->pipe);
+    if(full->new)
+        free_split(full->new);
 }

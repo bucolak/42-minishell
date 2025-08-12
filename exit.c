@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 17:50:01 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 15:49:34 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	exit_cont(t_full *full)
 		full->pipe_blocks->dqm = a;
 		printf("exit\n");
 		exit_code = full->pipe_blocks->dqm;
+		cleanup(full);
 		free_pipe_blocks(full->pipe_blocks);
 		free_env(full->node);
 		exit(exit_code);
@@ -40,10 +41,9 @@ void	exit_cont(t_full *full)
 		ft_putstr_fd(": numeric argument required\n", 2);
 		full->pipe_blocks->dqm = 2;
 		exit_code = full->pipe_blocks->dqm;
-		free_env(full->node);
-		free_envp(full->get);
-		if(full->new)
-			free_split(full->new);
+		cleanup(full);
+		if(full->node)
+			free_env(full->node);
 		free_pipe_blocks(full->pipe_blocks);
 		exit(exit_code);
 	}

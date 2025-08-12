@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 14:47:30 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 18:20:15 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void print_export_env_2(t_env	*node)
 	}
 }
 
-void	print_export_env(t_env **env, t_general *list)
+void	print_export_env(t_env *env, t_general *list)
 {
 	t_env	**new_env;
 	t_env	*node;
@@ -95,7 +95,7 @@ void	print_export_env(t_env **env, t_general *list)
 
 	new_env = export_cmd(env);
 	i = 0;
-	len = ft_lsttsize(*env);
+	len = ft_lsttsize(env);
 	while (i < len)
 	{
 		node = new_env[i];
@@ -107,13 +107,13 @@ void	print_export_env(t_env **env, t_general *list)
 	list->dqm = 0;
 }
 
-void	export_cmd_helper_func(t_env **env, t_env **new_env, t_env *swap,
+void	export_cmd_helper_func(t_env *env, t_env **new_env, t_env *swap,
 		int *j)
 {
 	int	i;
 	int	len;
 
-	len = ft_lsttsize(*env);
+	len = ft_lsttsize(env);
 	i = 0;
 	while (i < len - 1)
 	{
@@ -132,7 +132,7 @@ void	export_cmd_helper_func(t_env **env, t_env **new_env, t_env *swap,
 	}
 }
 
-t_env	**export_cmd(t_env **env)
+t_env	**export_cmd(t_env *env)
 {
 	int		i;
 	int		j;
@@ -142,10 +142,10 @@ t_env	**export_cmd(t_env **env)
 	t_env	*swap;
 
 	swap = NULL;
-	len = ft_lsttsize(*env);
+	len = ft_lsttsize(env);
 	i = 0;
 	new_env = malloc(sizeof(t_env *) * len);
-	tmp = *env;
+	tmp = env;
 	while (i < len)
 	{
 		new_env[i] = tmp;

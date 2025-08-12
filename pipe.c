@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 18:10:48 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 19:11:03 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,18 +63,19 @@ void	close_fd(int count, int **fd, int type, int i)
 	}
 }
 
-void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe, t_full *full)
+void	direct_cmd(t_general *tmp, t_now *get, t_env *env, t_pipe *pipe, t_full *full)
 {
 	int exit_code;
 	if(has_redireciton(tmp))
-		handle_redirections(tmp);
+	{
+		handle_redirections(tmp, full);
+	}
 	if (!tmp || !tmp->acces_args || !tmp->acces_args->args || !tmp->acces_args->args[0])
     {
 		if(tmp->heredoc_fd!=-1)
 			close(tmp->heredoc_fd);
-		free_env(*env);
-		free_envp(get);
-		free_pipe(pipe);
+		free_env(env);
+		cleanup(full);
 		tmp->dqm = 127;
 		exit_code = tmp->dqm;
 		free_pipe_blocks(full->pipe_blocks);
@@ -86,14 +87,19 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env **env, t_pipe *pipe, t_full *f
 		{
 			check_cmd_built_in(tmp, env, pipe, get);
 			exit_code = tmp->dqm;
-			free_pipe_blocks(tmp);
+			cleanup(full);
+			free_env(env);
+			if(tmp->heredoc_fd!=-1)
+				close(tmp->heredoc_fd);
+			free_pipe_blocks(full->pipe_blocks);
         	exit(exit_code);
 		}
 		else
 		{
-			execute_command(tmp, get,pipe, *env,full);
+			execute_command(tmp, get,pipe, env,full);
+			if(tmp->heredoc_fd!=-1)
+				close(tmp->heredoc_fd);
 		}
-		
 	}
 }
 
@@ -124,7 +130,7 @@ void	direct_and_close_fd(int count, int **fd, int i, int type)
 	}
 }
 
-void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe, t_full *full)
+void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *full)
 {
 	t_general *tmp ;
 	tmp = list;
@@ -132,28 +138,34 @@ void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe, t_full 
 	int		i;
 	pipe->tmp = list;
 	i = 0;
+	close_heredoc_fd(full->pipe_blocks);
     while (tmp) 
 	{
-        if (has_heredoc(tmp)) 
-            handle_heredoc(tmp);
+		if (has_heredoc(tmp)) 
+		{
+			handle_heredoc(tmp);
+		}
         tmp = tmp->next;
     }
 	while (i < pipe->count)
 	{
 		pipe->pid[i] = fork();
+		close_heredoc_fd(full->pipe_blocks);
 		if (pipe->pid[i] == 0)
 		{
 			if (i == 0)
-				direct_and_close_fd(pipe->count, pipe->fd, i, 0);
+			direct_and_close_fd(pipe->count, pipe->fd, i, 0);
 			else if (i == pipe->count - 1)
-				direct_and_close_fd(pipe->count, pipe->fd, i, 1);
+			direct_and_close_fd(pipe->count, pipe->fd, i, 1);
 			else
-				end_block(pipe->count, i, pipe->fd);
+			end_block(pipe->count, i, pipe->fd);
 			direct_cmd(pipe->tmp, get, env, pipe, full);
 		}
 		i++;
-		if (pipe->tmp)
+		if (pipe->tmp->next)
+		{
 			pipe->tmp = pipe->tmp->next;
+		}
 	}
 	close_fd(pipe->count, pipe->fd, 0, i);
 	int last_status = 0;
@@ -165,4 +177,5 @@ void	handle_pipe(t_general *list, t_now *get, t_env **env, t_pipe *pipe, t_full 
 	}
 	if (WIFEXITED(status))
 		list->dqm = WEXITSTATUS(last_status);
+	close_heredoc_fd(full->pipe_blocks);
 }

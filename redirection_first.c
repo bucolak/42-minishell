@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/11 16:21:21 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 16:46:59 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	renew_block2(t_general *list)
 	//free(new);
 }
 
-void	handle_output(t_general *list, int i)
+void	handle_output(t_general *list, int i, t_full *full)
 {
 	int	fd;
 	char *last_input;
@@ -88,7 +88,8 @@ void	handle_output(t_general *list, int i)
 			{
 				error_msg(2, last_input, 0, list);
 				exit_code = list->dqm;
-				free_pipe_blocks(list);
+				cleanup(full);
+				free_pipe_blocks(full->pipe_blocks);
         		exit(exit_code);
 			}
 			if (access(last_input, W_OK) != 0)
@@ -98,7 +99,8 @@ void	handle_output(t_general *list, int i)
 				ft_putstr_fd(": Permission denied\n", 2);
 				list->dqm = 1;
 				exit_code = list->dqm;
-				free_pipe_blocks(list);
+				cleanup(full);
+				free_pipe_blocks(full->pipe_blocks);
         		exit(exit_code);
 			}
 			if (fd < 0)
@@ -106,7 +108,8 @@ void	handle_output(t_general *list, int i)
 				error_msg(i, list->acces_args->args[i]->str, 0, list);
 				list->dqm = 1;
 				exit_code = list->dqm;
-				free_pipe_blocks(list);
+				cleanup(full);
+				free_pipe_blocks(full->pipe_blocks);
         		exit(exit_code);
 			}
 			if(last_fd !=-1)
@@ -117,7 +120,8 @@ void	handle_output(t_general *list, int i)
 		{
 			error_msg(2, NULL, 3, list);
 			exit_code = list->dqm;
-			free_pipe_blocks(list);
+			cleanup(full);
+			free_pipe_blocks(full->pipe_blocks);
         	exit(exit_code);
 		}
 	}
@@ -128,7 +132,7 @@ void	handle_output(t_general *list, int i)
 	}
 }
 
-void	handle_input(t_general *list, int i)
+void	handle_input(t_general *list, int i, t_full *full )
 {
 	int	fd;
 	char *last_input;
@@ -147,7 +151,10 @@ void	handle_input(t_general *list, int i)
 				{
 					error_msg(2, last_input, 0, list);
 					exit_code = list->dqm;
-					free_pipe_blocks(list);
+					cleanup(full);
+					if(full->node)
+						free_env(full->node);
+					free_pipe_blocks(full->pipe_blocks);
         			exit(exit_code);
 				}
 				if (access(last_input, R_OK) != 0)

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:30:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/10 08:23:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 18:26:45 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,9 @@ int is_numeric(char *str)
     return 1;
 }
 
-int is_repeated(t_env **node, char *ky, char *dt)
+int is_repeated(t_env *node, char *ky, char *dt)
 {
-    t_env *tmp = *node;
+    t_env *tmp = node;
     while(tmp)
     {
         if(ft_strcmp(ky, tmp->key) == 0)

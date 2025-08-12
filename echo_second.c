@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/10 06:27:50 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/12 20:48:38 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	echo_flag_0_and_2_second_2(char *str, t_env *env, int j, int *k)
 	}
 }
 
-void	echo_flag_0_and_2_second(char *str, t_general *tmp, int *j)
+void	echo_flag_0_and_2_second(char *str, t_general *tmp, int *j, int i)
 {
 	if (str[*j] == '$' && str[*j + 1] == '?')
 	{
@@ -55,6 +55,15 @@ void	echo_flag_0_and_2_second(char *str, t_general *tmp, int *j)
 		{
 			// ft_putchar_fd('\n', 1);
 			(*j)+=ft_strlen(str);
+		}
+		else if(str[*j] == '"' && str[*j+1] && str[*j+1] == '"' && tmp->acces_args->args[i+1])
+		{
+			ft_putchar_fd(' ', 1);
+			(*j) += 2;
+		}
+		else if(str[*j] == '"' && str[*j+1] && str[*j+1] == '"' && !tmp->acces_args->args[i+1])
+		{
+			(*j) += 2;
 		}
 		else if(str[*j]!='"')
 		{
@@ -72,7 +81,7 @@ void	echo_flag_0_and_2(char *str, t_general *tmp, int i)
     j = 0;
     while (str[j])
     {
-        echo_flag_0_and_2_second(str, tmp, &j);
+        echo_flag_0_and_2_second(str, tmp, &j, i);
     }
 
 		if(tmp->acces_args->args[i+1])
@@ -90,11 +99,24 @@ void	echo_flag_1(t_general *tmp, int i)
     str = tmp->acces_args->args[i]->str;
     while (str[j])
     {
-        ft_putchar_fd(str[j], 1);
-        j++;
+		if((str[j] == '\'' && str[j+1] && str[j+1] == '\'') && (!str[j-1] || str[j-1] == '\'') && tmp->acces_args->args[i+1])
+		{
+			ft_putchar_fd(' ', 1);
+			j+=2;
+		}
+		else if((str[j] == '\'' && str[j+1] && str[j+1] == '\'') && (!str[j-1] || str[j-1] == '\'') && !tmp->acces_args->args[i+1])
+		{
+			j+=2;
+		}
+		else
+		{
+			ft_putchar_fd(str[j], 1);
+        	j++;
+		}
+        
     }
     if (tmp->acces_args->args[i]->s == 1)
-        {
+    {
 		if(tmp->acces_args->args[i+1])
         	ft_putchar_fd(' ', 1);
 	}

@@ -1,8 +1,14 @@
+""
+<
 >
+>>
 42_minishell_tester
+a
 apply_malloc.c
 apply_malloc.o
 asd
+a.txt
+b
 cmd_built_in.c
 cmd_built_in.o
 count_quote.c
@@ -24,7 +30,6 @@ exit.c
 exit.o
 free.c
 free.o
- komutu düzneledni leak var
 libft
 main.c
 main.o
