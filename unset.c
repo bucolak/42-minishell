@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:45:34 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/12 18:43:33 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 20:58:38 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void remove_env_var(t_env **env, char *var_name)
     t_env *prev = NULL;
     size_t name_len = ft_strlen(var_name);
     
-    if (env || !*env || !var_name)
+    if (!env || !*env || !var_name)
         return;
     
     while (current)

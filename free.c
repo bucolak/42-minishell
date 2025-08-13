@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/12 14:24:26 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 20:49:03 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,4 +132,6 @@ void cleanup(t_full *full)
         free_pipe(full->pipe);
     if(full->new)
         free_split(full->new);
+    if(full->node)
+        free_env(full->node);
 }

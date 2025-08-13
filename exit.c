@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:13:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/12 15:49:34 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 20:54:31 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	exit_cmd(t_full *full)
 		else
 		{
 			printf("exit\n");
-			full->pipe_blocks->dqm = 0;
+			// full->pipe_blocks->dqm = 0;
 			exit_code = full->pipe_blocks->dqm;
 			if(full->pipe_blocks->heredoc_fd != -1)
 				close(full->pipe_blocks->heredoc_fd);

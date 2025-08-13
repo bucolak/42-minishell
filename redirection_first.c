@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/13 17:55:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 20:50:38 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,8 +152,6 @@ void	handle_input(t_general *list, int i, t_full *full )
 					error_msg(2, last_input, 0, list);
 					exit_code = list->dqm;
 					cleanup(full);
-					if(full->node)
-						free_env(full->node);
 					free_pipe_blocks(full->pipe_blocks);
         			exit(exit_code);
 				}
@@ -164,6 +162,7 @@ void	handle_input(t_general *list, int i, t_full *full )
 					ft_putstr_fd(": Permission denied\n", 2);
 					list->dqm = 1;
 					exit_code = list->dqm;
+					cleanup(full);
 					free_pipe_blocks(list);
         			exit(exit_code);
 				}
@@ -173,6 +172,7 @@ void	handle_input(t_general *list, int i, t_full *full )
 					error_msg(i, list->acces_args->args[i]->str, 0, list);
 					list->dqm = 1;
 					exit_code = list->dqm;
+					cleanup(full);
 					free_pipe_blocks(list);
         			exit(exit_code);
 				}
@@ -184,6 +184,7 @@ void	handle_input(t_general *list, int i, t_full *full )
 			{
 				error_msg(2, NULL, 3, list);
                 exit_code = list->dqm;
+				cleanup(full);
 				free_pipe_blocks(list);
         		exit(exit_code);
 			}

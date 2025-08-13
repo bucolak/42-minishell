@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/13 17:55:09 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 20:48:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,15 +246,16 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	        error_msg(2, cmd, 1, pipe_blocs);
 	        pipe_blocs->dqm = 127;
 	        exit_code = pipe_blocs->dqm;
+			cleanup(full);
 	        free_pipe_blocks(pipe_blocs);
 	        exit(exit_code);
 	    }
 		else
 		{
-			if (access(cmd, X_OK) == 0)  // Command executable mı?
+			if (access(cmd, X_OK) == 0)
         	{
         	    argv = make_argv(pipe_blocs->acces_args, envv);
-        	    execve(cmd, argv, get->envp);  // Direkt cmd kullan
+        	    execve(cmd, argv, get->envp);
         	    perror("execve");
         	    exit(127);
         	}
@@ -264,6 +265,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
         	    error_msg(2, cmd, 1, pipe_blocs);
         	    pipe_blocs->dqm = 127;
         	    exit_code = pipe_blocs->dqm;
+				cleanup(full);
         	    free_pipe_blocks(pipe_blocs);
         	    exit(exit_code);
         	}
