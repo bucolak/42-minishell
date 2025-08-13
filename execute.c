@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/12 19:07:38 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 17:55:09 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	char	*args;
 	char	**paths;
 	char	*str;
-	char *new;
 	char	*end;
 	int		command_found;
 	char	**argv;
@@ -277,9 +276,15 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
 		if (access(end, X_OK) == 0)
 		{
-			close_heredoc_fd(full->pipe_blocks);
+			//close_heredoc_fd(full->pipe_blocks);
 			command_found = 1;
 			argv = make_argv(pipe_blocs->acces_args, envv);
+			if (pipe_blocs->heredoc_fd != -1) 
+			{
+			    dup2(pipe_blocs->heredoc_fd, 0);
+			    close(pipe_blocs->heredoc_fd);
+			    pipe_blocs->heredoc_fd = -1;
+			}
 			execve(end, argv, get->envp);
 			perror("execve\n");
 			free(argv);
@@ -302,7 +307,10 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	}
 	if (!command_found) //BAK: && pipe_blocs->acces_args->args[0]->str[0] != '$' bunu sildim
 	{
-		error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
+		if(pipe_blocs->acces_args->args[0]->str[0] == '$' && pipe_blocs->acces_args->args[0]->flag!=2)
+			error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
+		else
+			error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
 		free_envp(get);
 		for (int j = 0; paths[j]; j++)
 		free(paths[j]);
@@ -317,29 +325,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		}
 		
 		exit(exit_code);
-	}
-	else if(pipe_blocs->acces_args->args[0]->str[0] == '$')
-	{
-		new = pipe_blocs->acces_args->args[0]->str+1;
-		if(pipe_blocs->acces_args->args[0]->flag !=1 || !get_getenv(envv, new))
-		{
-			error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
-			free_envp(get);
-			for (int j = 0; paths[j]; j++)
-				free(paths[j]);
-			free(paths);
-			free_env(envv);
-			if(pipe)
-				free_pipe(pipe);
-			exit_code = pipe_blocs->dqm;
-			if (full)
-				free_pipe_blocks(full->pipe_blocks);
-			exit(exit_code);
-		}
-		if(get_getenv(envv, new))
-			pipe_blocs->dqm = 126;
-		else
-			pipe_blocs->dqm = 0;
 	}
 	for (int j = 0; paths[j]; j++)
 		free(paths[j]);
@@ -622,6 +607,12 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 		{
 			handle_heredoc(pipe_blocs);	
 			handle_redirections(pipe_blocs, full);
+		}
+		if (pipe_blocs->heredoc_fd != -1) 
+		{
+		    dup2(pipe_blocs->heredoc_fd, 0);
+		    close(pipe_blocs->heredoc_fd);
+		    pipe_blocs->heredoc_fd = -1;
 		}
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/12 19:11:03 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 12:55:27 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,6 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env *env, t_pipe *pipe, t_full *fu
 	}
 	if (!tmp || !tmp->acces_args || !tmp->acces_args->args || !tmp->acces_args->args[0])
     {
-		if(tmp->heredoc_fd!=-1)
-			close(tmp->heredoc_fd);
 		free_env(env);
 		cleanup(full);
 		tmp->dqm = 127;
@@ -90,15 +88,16 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env *env, t_pipe *pipe, t_full *fu
 			cleanup(full);
 			free_env(env);
 			if(tmp->heredoc_fd!=-1)
+			{
 				close(tmp->heredoc_fd);
+				tmp->heredoc_fd = -1;
+			}
 			free_pipe_blocks(full->pipe_blocks);
         	exit(exit_code);
 		}
 		else
 		{
 			execute_command(tmp, get,pipe, env,full);
-			if(tmp->heredoc_fd!=-1)
-				close(tmp->heredoc_fd);
 		}
 	}
 }
@@ -138,7 +137,6 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
 	int		i;
 	pipe->tmp = list;
 	i = 0;
-	close_heredoc_fd(full->pipe_blocks);
     while (tmp) 
 	{
 		if (has_heredoc(tmp)) 
@@ -150,9 +148,15 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
 	while (i < pipe->count)
 	{
 		pipe->pid[i] = fork();
-		close_heredoc_fd(full->pipe_blocks);
+		 close_heredoc_fd(full->pipe_blocks);
 		if (pipe->pid[i] == 0)
 		{
+			if (pipe->tmp->heredoc_fd != -1) 
+			{
+			    dup2(pipe->tmp->heredoc_fd, 0);
+			    close(pipe->tmp->heredoc_fd);
+			    pipe->tmp->heredoc_fd = -1;
+			}
 			if (i == 0)
 			direct_and_close_fd(pipe->count, pipe->fd, i, 0);
 			else if (i == pipe->count - 1)

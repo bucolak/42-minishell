@@ -1,14 +1,9 @@
-""
-<
 >
->>
+$HOME
 42_minishell_tester
-a
 apply_malloc.c
 apply_malloc.o
 asd
-a.txt
-b
 cmd_built_in.c
 cmd_built_in.o
 count_quote.c
@@ -57,4 +52,5 @@ tmp_out_bash
 tmp_out_minishell
 unset.c
 unset.o
+valgrind_output.txt
 valgrind.supp

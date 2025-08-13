@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/12 21:12:55 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 18:46:05 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,41 +175,6 @@ void	create_pipe(int count, int **fd)
 	}
 }
 
-int count_m(t_general *tmp, int i, t_env *env)
-{
-	int j;
-	int c;
-	int start;
-	char *str;
-	char *a;
-	
-	c = 0;
-	j = 0;
-	while(tmp->acces_args->args[i]->str[j])
-	{
-		if(tmp->acces_args->args[i]->str[j] == '$' && 
-            tmp->acces_args->args[i]->str[j+1] && 
-            tmp->acces_args->args[i]->str[j+1] != '?' && 
-            tmp->acces_args->args[i]->flag != 1 &&
-			tmp->acces_args->args[i]->str[j+1] != ' ')
-			{
-				j++;
-				start = j;
-				while(tmp->acces_args->args[i]->str[j] && tmp->acces_args->args[i]->str[j] != ' ' && tmp->acces_args->args[i]->str[j] != '$')
-					j++;
-				a =ft_substr(tmp->acces_args->args[i]->str, start, j-start);
-				if(a)
-					str = get_getenv(env, a);
-				if(str)
-					c += ft_strlen(str);
-				free(a);
-			}
-			else
-				c++;
-		j++;
-	}
-	return c;
-}
 
 int is_flag_6(t_general *list, t_env *env)
 {
@@ -241,6 +206,57 @@ int is_flag_6(t_general *list, t_env *env)
 	return 0;
 }
 
+int count_m(t_general *tmp, int i, t_env *env)
+{
+	int j;
+	int c;
+	int start;
+	char *str;
+	char *a;
+	
+	c = 0;
+	j = 0;
+	while(tmp->acces_args->args[i]->str[j])
+	{
+		if(tmp->acces_args->args[i]->str[j] == '$' && 
+			tmp->acces_args->args[i]->str[j+1] && 
+			tmp->acces_args->args[i]->str[j+1] != '?' && 
+			tmp->acces_args->args[i]->flag != 1 &&
+			tmp->acces_args->args[i]->str[j+1] != ' ')
+			{
+				j++;
+				start = j;
+				while(tmp->acces_args->args[i]->str[j] && 
+					(ft_isalnum(tmp->acces_args->args[i]->str[j]) || 
+					 tmp->acces_args->args[i]->str[j] == '_'))
+				{
+					j++;
+				}
+				a =ft_substr(tmp->acces_args->args[i]->str, start, j-start);
+				if (a && tmp->acces_args->args[i]->flag != 1 && tmp->acces_args->args[i]->flag != 6)
+				{
+				    str = get_getenv(env, a);
+					if (str && str[0]) 
+					{	
+						c += ft_strlen(str);
+					}
+					else if(!str)
+					{
+						if(tmp->acces_args->args[i]->flag==0)
+						{
+							c+= ft_strlen(tmp->acces_args->args[i]->str);
+						}
+					}
+				}
+				free(a);
+			}
+			else
+				c++;
+		j++;
+	}
+	return c;
+}
+
 void expand_dolar(t_general *list, t_env *env)
 {
 	t_general *tmp;
@@ -255,8 +271,8 @@ void expand_dolar(t_general *list, t_env *env)
 	int j;
 	int k;
 	int flag;
-
-	flag = 0;
+	
+	(void)flag;
 	tmp = list;
 	while(tmp)
 	{
@@ -267,22 +283,6 @@ void expand_dolar(t_general *list, t_env *env)
 			if(i>0 && tmp->acces_args->args[i-1] && ft_strcmp(tmp->acces_args->args[i-1]->str, "<<") == 0 && (tmp->acces_args->args[i-1]->flag == 5 || tmp->acces_args->args[i-1]->flag == 2))
 			{
 				i++;
-				continue;
-			}
-			if((ft_strcmp(tmp->acces_args->args[i]->str, "$empty") == 0 || ft_strcmp(tmp->acces_args->args[i]->str, "$EMPTY") == 0) && tmp->acces_args->args[i]->flag == 2)
-			{
-				// Argümanı sil
-				free(tmp->acces_args->args[i]->str);
-				free(tmp->acces_args->args[i]);
-				// Argümanları kaydır
-				l = i;
-				while(tmp->acces_args->args[l + 1]) 
-				{
-					tmp->acces_args->args[l] = tmp->acces_args->args[l+1];
-					l++;
-				}
-				tmp->acces_args->args[l] = NULL;
-				// i'yi arttırma, çünkü kaydırma yaptık
 				continue;
 			}
 			new= malloc(sizeof(char) * (count_m(tmp, i, env) +1));
@@ -297,28 +297,29 @@ void expand_dolar(t_general *list, t_env *env)
 				{
 					j++;
 					start = j;
-					while(tmp->acces_args->args[i]->str[j] && tmp->acces_args->args[i]->str[j] != ' ' && tmp->acces_args->args[i]->str[j] != '$')
+					while(tmp->acces_args->args[i]->str[j] && 
+						(ft_isalnum(tmp->acces_args->args[i]->str[j]) || 
+						 tmp->acces_args->args[i]->str[j] == '_'))
+				  	{
 						j++;
+				  	}
 					a =ft_substr(tmp->acces_args->args[i]->str, start, j-start);
 					if (a && tmp->acces_args->args[i]->flag != 1 && tmp->acces_args->args[i]->flag != 6)
 					{
-					    flag = 1;
 					    str = get_getenv(env, a);
-					}
-					// if(is_flag_6(str, env))
-					// {
-					// 	error_msg(2, is_flag_6(str, env), 1, tmp);
-					// 	return ;
-					// }
-					if (str && str[0] != '\0' && flag == 1) 
-					{	
-					    ft_memcpy(new + k, str, ft_strlen(str));
-					    k += ft_strlen(str);
-					}
-					else if(i == 0)
-					{
-						ft_memcpy(new + k, tmp->acces_args->args[i]->str, ft_strlen(tmp->acces_args->args[i]->str));
-						k+= ft_strlen(tmp->acces_args->args[i]->str);
+						if (str && str[0]) 
+						{	
+						    ft_memcpy(new + k, str, ft_strlen(str));
+						    k += ft_strlen(str);
+						}
+						else if(!str)
+						{
+							if(tmp->acces_args->args[i]->flag==0)
+							{
+								ft_memcpy(new + k, tmp->acces_args->args[i]->str, ft_strlen(tmp->acces_args->args[i]->str));
+								k+= ft_strlen(tmp->acces_args->args[i]->str);
+							}
+						}
 					}
 					if(a)
                     	free(a);
@@ -388,10 +389,20 @@ void connect_count_malloc(t_general *list)
 		{
 			if(tmp->acces_args->args[i]->s == 0 && tmp->acces_args->args[i+1] && ft_strcmp(tmp->acces_args->args[i]->str, "''")!=0 && ft_strcmp(tmp->acces_args->args[i]->str, "\"\"")!=0)
 			{
+				if(is_redireciton(tmp->acces_args->args[i]->str) == 1 && tmp->acces_args->args[i]->flag!=0 && tmp->acces_args->args[i]->flag!=1 &&  is_redireciton(tmp->acces_args->args[i+1]->str) == 0 && (tmp->acces_args->args[i+1]->flag==0 || tmp->acces_args->args[i+1]->flag==1))
+				{
+					i++;
+					continue;
+				}
+					
 				c = ft_strlen(tmp->acces_args->args[i]->str) + ft_strlen(tmp->acces_args->args[i+1]->str);
 				new = malloc(sizeof(char) * (c+1));
 				ft_strlcpy(new, tmp->acces_args->args[i]->str, c+1);
                 ft_strlcat(new, tmp->acces_args->args[i+1]->str,c+1);
+				if((ft_strcmp(new, "<<") == 0 || ft_strcmp(new, ">>") == 0) &&  ((tmp->acces_args->args[i]->flag != 5 && tmp->acces_args->args[i]->flag != 2 ) || (tmp->acces_args->args[i+1]->flag != 5 && tmp->acces_args->args[i+1]->flag != 2 )))
+				{
+					tmp->acces_args->args[i]->flag = 0;
+				}
 				if(tmp->acces_args->args[i+1] &&is_redireciton(tmp->acces_args->args[i+1]->str) == 1 && tmp->acces_args->args[i+1]->flag !=5 && tmp->acces_args->args[i+1]->s == 0)
 				{
 					tmp->acces_args->args[i]->flag = 6;
@@ -426,7 +437,7 @@ int count_remove_null(char *str)
 	j = 0;
 	while(str[j])
 	{
-		if((str[j] == '"' && str[j+1] && str[j+1] == '"' && ((j>0 && str[j-1]) || str[j+1])) || (str[j] == '\'' && str[j+1] && str[j+1] == '\'' && ((j>0 && str[j-1]) || str[j+1])))
+		if((str[j] == '"' && str[j+1] && str[j+1] == '"' && ((j>0 && str[j-1]) || str[j+2])) || (str[j] == '\'' && str[j+1] && str[j+1] == '\'' && ((j>0 && str[j-1]) || str[j+2])))
 		{
 			j+=2;
 		}
@@ -600,12 +611,8 @@ int	main(int argc, char *argv[], char **envp)
 		connect_count_malloc(pipe_blocs);
 		remove_null(pipe_blocs);
 		control_redireciton(pipe_blocs, env);
-		full.pipe_blocks = pipe_blocs;
 		//print_pipes(pipe_blocs);
-		if(has_heredoc(pipe_blocs) == 1)
-		{
-			handle_heredoc(pipe_blocs);
-		}
+		full.pipe_blocks = pipe_blocs;
 		get = malloc(sizeof(t_now));
 		get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));
 		
@@ -635,8 +642,6 @@ int	main(int argc, char *argv[], char **envp)
 		free_envp(get);
 		get = NULL;
 		last_dqm = pipe_blocs->dqm;
-		if(pipe_blocs->heredoc_fd!=-1)
-			close(pipe_blocs->heredoc_fd);
 		free_pipe_blocks(pipe_blocs);
 		pipe_blocs = NULL;
 		free(line);

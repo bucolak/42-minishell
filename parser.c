@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/12 20:31:43 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/13 17:08:50 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,12 +131,12 @@ void	parse_input(t_general *a)
 				tmp_str = ft_substr(a->blocs, i, len);
 				a->acces_args->args[k] = create_arg(tmp_str,5, 0);
 				free(tmp_str);
+				i += len;
 				if(a->blocs[i] == '\'' || a->blocs[i] == '"')
 				{
 					a->acces_args->args[k]->s = 0;
 				}
 				k++;
-				i += len;
 				continue ;
 			}
 			else if (a->blocs[i] == '"')
@@ -152,6 +152,7 @@ void	parse_input(t_general *a)
 						free(tmp_str);
 						tmp_str = ft_substr(a->blocs, j-1, 2);
 						a->acces_args->args[k] = create_arg(tmp_str, 0, 0);
+						free(tmp_str);
 						if(a->blocs[i+1] && a->blocs[i+1] != ' ')
 							a->acces_args->args[k]->s = 0;
 						k++;
