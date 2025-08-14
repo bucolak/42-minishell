@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_first.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/08/12 18:26:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/15 00:22:57 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,14 +81,17 @@ void	print_env(t_general *list, t_env *node, int i)
 	{
 		if (tmp->key && tmp->data)
 		{
-			// printf("flag: %d\n", tmp->has_equal);
 			if (tmp->data && tmp->data[0])
 			{
-				printf("%s=%s\n", tmp->key, tmp->data);
+				ft_putstr_fd(tmp->key, 1);
+				ft_putstr_fd("=", 1);
+				ft_putstr_fd(tmp->data, 1);
+				ft_putchar_fd('\n', 1);
 			}
 			else if(tmp->has_equal == 1)
 			{
-				printf("%s=\n", tmp->key);
+				ft_putstr_fd(tmp->key, 1);
+				ft_putstr_fd("=\n", 1);
 			}	
 		}
 		tmp = tmp->next;
@@ -120,12 +123,12 @@ void print_message(char *key, char *data, t_general *list)
 	list->dqm = 1;
 }
 
-void	ft_envadd_back(t_env *lst, char *key, char *data, t_general *list)
+void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
 {
 	t_env	*last;
 	t_env	*new_node;
 	t_env	*tmp;
-	tmp = lst;
+	tmp = *lst;
     while (tmp)
     {
 		if (ft_strcmp(tmp->key, key) == 0)
@@ -150,11 +153,11 @@ void	ft_envadd_back(t_env *lst, char *key, char *data, t_general *list)
 			else
 				new_node->data = ft_strdup("");
 
-			if (lst == NULL)
-				lst = new_node;
+			if (*lst == NULL)
+				*lst = new_node;
 			else
 			{
-				last = lst;
+				last = *lst;
 				while (last->next)
 					last = last->next;
 				last->next = new_node;
@@ -166,7 +169,7 @@ void	ft_envadd_back(t_env *lst, char *key, char *data, t_general *list)
 	}
 }
 
-void create_env_2(t_general *list, t_env *env, int i)
+void create_env_2(t_general *list, t_env **env, int i)
 {
 	char	*new;
 	char	*key;
@@ -196,7 +199,7 @@ void create_env_2(t_general *list, t_env *env, int i)
         free(key);
         free(data);
 	}
-	if(list->acces_args->args[i+1] && ft_strcmp((env)->key, " =")==0)
+	if(list->acces_args->args[i+1] && ft_strcmp((*env)->key, " =")==0)
 	{
 		free(new);
 		ft_putstr_fd("bash: export: ", 2);
@@ -204,7 +207,7 @@ void create_env_2(t_general *list, t_env *env, int i)
 	}
 }
 
-void	create_env(t_general *list, t_env *env)
+void	create_env(t_general *list, t_env **env)
 {
 	int		i;
 	

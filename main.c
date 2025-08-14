@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/13 20:20:37 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/15 00:31:46 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -644,7 +644,7 @@ int	main(int argc, char *argv[], char **envp)
 		{
 			if (!has_redireciton(pipe_blocs) &&is_built_in(pipe_blocs->acces_args->args[0]->str))
 			{
-				check_cmd_built_in(pipe_blocs, env, pipe, get);
+				check_cmd_built_in(pipe_blocs, &env, pipe, get);
 			}
 			else
 			{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/13 17:55:22 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/14 23:42:02 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
 void					handle_redirections(t_general *pipe_blocs, t_full *full);
 void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv, t_full *full);
 // cmd_built_in.c
-void	check_cmd_built_in(t_general *pipe_blocs, t_env *node, t_pipe *pipe, t_now *get);
+void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get);
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks);
 void	pwd_cmd(char **ar, t_general *list, t_env *env);
 
@@ -137,9 +137,9 @@ void					get_env_helper_func(int *i, int *j, t_env *tmp,
 							char **envp);
 void					get_env(t_env *node, char **envp);
 void					print_env(t_general *list, t_env *node, int i);
-void					ft_envadd_back(t_env *lst, char *key, char *data,
+void					ft_envadd_back(t_env **lst, char *key, char *data,
 							t_general *list);
-void					create_env(t_general *list, t_env *env);
+void					create_env(t_general *list, t_env **env);
 
 // environment_second.c
 char	*get_key(char *str);
@@ -192,7 +192,7 @@ void					echo_flag_1(t_general *tmp, int i);
 
 // exit.c
 
-void	exit_cmd(t_full *full);
+void	exit_cmd(t_full *full, t_general *list);
 
 // unset.c
 void					unset_cmd_helper_func(t_env *node, t_env *pre_node,

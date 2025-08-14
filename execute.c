@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/13 20:48:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/15 00:32:43 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,18 @@ void handle_append_2(t_full *full, t_general *list , int *fd, int i)
 	if(access(list->acces_args->args[i]->str, F_OK) != 0)
 	{
 		error_msg(2, list->acces_args->args[i]->str, 0, list);
-		if(full->node)
-			free_env(full->node);
 		cleanup(full);
 		free_pipe_blocks(full->pipe_blocks);
 		exit(list->dqm);
 	}
 	if (access(list->acces_args->args[i]->str, W_OK) != 0)
 	{
+		// ft_putstr_fd("burda\n", 1);
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(list->acces_args->args[i]->str, 2);
 		ft_putstr_fd(": Permission denied\n", 2);
 		list->dqm = 1;
 		exit_code = list->dqm;
-		if(full->node)
-			free_env(full->node);
 		cleanup(full);
 		free_pipe_blocks(full->pipe_blocks);
 		exit(exit_code);
@@ -618,7 +615,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 		}
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
-			check_cmd_built_in(pipe_blocs, env, pipe, get);
+			check_cmd_built_in(pipe_blocs, &env, pipe, get);
 			exit_code = pipe_blocs->dqm;
 			cleanup(full);
 			if(env)

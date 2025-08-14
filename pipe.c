@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/13 12:55:27 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/14 23:52:23 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,13 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env *env, t_pipe *pipe, t_full *fu
 	{
 		if (is_built_in(tmp->acces_args->args[0]->str) == 1)
 		{
-			check_cmd_built_in(tmp, env, pipe, get);
+			if (pipe->tmp->heredoc_fd != -1) 
+			{
+			    dup2(pipe->tmp->heredoc_fd, 0);
+			    close(pipe->tmp->heredoc_fd);
+			    pipe->tmp->heredoc_fd = -1;
+			}
+			check_cmd_built_in(tmp, &env, pipe, get);
 			exit_code = tmp->dqm;
 			cleanup(full);
 			free_env(env);
@@ -148,7 +154,7 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
 	while (i < pipe->count)
 	{
 		pipe->pid[i] = fork();
-		 close_heredoc_fd(full->pipe_blocks);
+		close_heredoc_fd(full->pipe_blocks);
 		if (pipe->pid[i] == 0)
 		{
 			if (pipe->tmp->heredoc_fd != -1) 
@@ -158,11 +164,11 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
 			    pipe->tmp->heredoc_fd = -1;
 			}
 			if (i == 0)
-			direct_and_close_fd(pipe->count, pipe->fd, i, 0);
+				direct_and_close_fd(pipe->count, pipe->fd, i, 0);
 			else if (i == pipe->count - 1)
-			direct_and_close_fd(pipe->count, pipe->fd, i, 1);
+				direct_and_close_fd(pipe->count, pipe->fd, i, 1);
 			else
-			end_block(pipe->count, i, pipe->fd);
+				end_block(pipe->count, i, pipe->fd);
 			direct_cmd(pipe->tmp, get, env, pipe, full);
 		}
 		i++;
