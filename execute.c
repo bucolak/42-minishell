@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/15 00:32:43 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/18 18:14:53 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		end = ft_strjoin(str, pipe_blocs->acces_args->args[0]->str);
 		if (access(end, X_OK) == 0)
 		{
-			//close_heredoc_fd(full->pipe_blocks);
 			command_found = 1;
 			argv = make_argv(pipe_blocs->acces_args, envv);
 			if (pipe_blocs->heredoc_fd != -1) 
@@ -601,7 +600,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 	}
 	if (pid == 0)
 	{
-		signal_handler_child();
+		// signal_handler_child();
 		if(has_redireciton(pipe_blocs)== 1 && is_flag_6(pipe_blocs, env) == 0)
 		{
 			handle_heredoc(pipe_blocs);	
@@ -613,26 +612,25 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 		    close(pipe_blocs->heredoc_fd);
 		    pipe_blocs->heredoc_fd = -1;
 		}
-		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
+		if(!pipe_blocs->next || (pipe_blocs->next && has_redireciton(pipe_blocs) == 1))
 		{
-			check_cmd_built_in(pipe_blocs, &env, pipe, get);
-			exit_code = pipe_blocs->dqm;
-			cleanup(full);
-			if(env)
-				free_env(env);
-			free_pipe_blocks(full->pipe_blocks);
-			exit(exit_code);
-		}
-		else
-		{
-			expand_dolar_qmark(pipe_blocs);
-			execute_command(pipe_blocs, get, pipe, env, full);
-			cleanup(full);
-			if(env)
-				free_env(env);
-			exit_code = pipe_blocs->dqm;
-			free_pipe_blocks(full->pipe_blocks);
-			exit(exit_code);
+			if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
+			{
+					check_cmd_built_in(pipe_blocs, &env, pipe, get);
+					exit_code = pipe_blocs->dqm;
+					cleanup(full);
+					free_pipe_blocks(full->pipe_blocks);
+					exit(exit_code);
+			}
+			else
+			{
+				expand_dolar_qmark(pipe_blocs);
+				execute_command(pipe_blocs, get, pipe, env, full);
+				cleanup(full);
+				exit_code = pipe_blocs->dqm;
+				free_pipe_blocks(full->pipe_blocks);
+				exit(exit_code);
+			}
 		}
 	}
 	else
@@ -640,11 +638,14 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 		signal(SIGINT, SIG_IGN);
         signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
-		if (WIFSIGNALED(status))
+		if (WIFEXITED(status))
         {
             // Eğer sinyal ile sonlandıysa ve sinyal SIGINT (Ctrl+C) ise
-            if (WTERMSIG(status) == SIGINT)
+            if (WEXITSTATUS(status) == 130)
+			{
                 write(1, "\n", 1); // Sadece bu durumda newline yazdır
+				pipe_blocs->dqm = 130;
+			}
         }
 		signal(SIGINT, handle_signal);
         signal(SIGQUIT, SIG_IGN);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/13 20:23:03 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/18 17:26:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ void	echo_flag_0_and_2_second(char *str, t_general *tmp, int *j, int i)
 	int start;
 	if (str[*j] == '$' && str[*j + 1] && str[*j + 1] == '?')
 	{
-		ft_putstr_fd(ft_itoa(tmp->dqm), 1);
+		new = ft_itoa(tmp->dqm);
+		ft_putstr_fd(new, 1);
+		free(new);
 		tmp->dqm = 0;
 			*j += 2;
 	}

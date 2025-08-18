@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/13 12:35:37 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/18 18:34:09 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,23 +98,38 @@ void	fill_limiter(t_general *list)
 	list->limiter[j] = NULL;
 }
 
+void signal_handler_heredoc(int signo)
+{
+	if(signo == SIGINT)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+        rl_replace_line("", 0);
+        //rl_redisplay();
+		 exit(130);
+	}
+}
+
 void	handle_heredoc(t_general *list)
 {
 	int		i;
 	int		fd[2];
 	int j;
+	int s = 0;
 	char	*line;
 	t_general *tmp;
 	tmp = list;
 	while (tmp)
 	{
 		fill_limiter(tmp);
+		s++;
 		i = 0;
 		j = 0;
 		while (tmp->acces_args->args[i])
 		{
 			if (ft_strcmp(tmp->acces_args->args[i]->str, "<<") == 0)
 			{
+				tmp->flag_heredoc = 1;
 				if (!tmp->acces_args->args[i + 1])
 				{
 					ft_putstr_fd("bash: syntax error near unexpected token `newline'\n",
@@ -124,6 +139,8 @@ void	handle_heredoc(t_general *list)
 				pipe(fd);
 				while (1)
 				{
+					signal(SIGINT,signal_handler_heredoc);
+					signal(SIGQUIT, SIG_DFL);
 					line = readline("heredoc > ");
 					if (!line || ft_strcmp(line, tmp->limiter[j]) == 0)
 					{

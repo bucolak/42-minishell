@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/14 23:42:02 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/17 15:57:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_general
 	t_pipeafter			*acces_args;
 	struct s_general	*next;
 	int					heredoc_fd;
+	int flag_heredoc;
 }						t_general;
 
 typedef struct s_now
@@ -97,6 +98,7 @@ typedef struct s_full
 	t_now *get;
 	char **new;
 }	t_full;
+
 void close_heredoc_fd(t_general *list);
 void cleanup(t_full *full);
 void control_redireciton(t_general *list, t_env *env);

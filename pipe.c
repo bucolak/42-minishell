@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/14 23:52:23 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/18 18:34:23 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,45 +66,43 @@ void	close_fd(int count, int **fd, int type, int i)
 void	direct_cmd(t_general *tmp, t_now *get, t_env *env, t_pipe *pipe, t_full *full)
 {
 	int exit_code;
+	
 	if(has_redireciton(tmp))
 	{
 		handle_redirections(tmp, full);
 	}
 	if (!tmp || !tmp->acces_args || !tmp->acces_args->args || !tmp->acces_args->args[0])
     {
-		free_env(env);
 		cleanup(full);
 		tmp->dqm = 127;
 		exit_code = tmp->dqm;
+		close_heredoc_fd(tmp);
 		free_pipe_blocks(full->pipe_blocks);
         exit(exit_code);
     }
-	if(tmp->acces_args->args[0]->flag !=5)
+	if (is_built_in(tmp->acces_args->args[0]->str) == 1)
 	{
-		if (is_built_in(tmp->acces_args->args[0]->str) == 1)
+		if (tmp->heredoc_fd != -1) 
 		{
-			if (pipe->tmp->heredoc_fd != -1) 
-			{
-			    dup2(pipe->tmp->heredoc_fd, 0);
-			    close(pipe->tmp->heredoc_fd);
-			    pipe->tmp->heredoc_fd = -1;
-			}
-			check_cmd_built_in(tmp, &env, pipe, get);
-			exit_code = tmp->dqm;
-			cleanup(full);
-			free_env(env);
-			if(tmp->heredoc_fd!=-1)
-			{
-				close(tmp->heredoc_fd);
-				tmp->heredoc_fd = -1;
-			}
-			free_pipe_blocks(full->pipe_blocks);
-        	exit(exit_code);
+			dup2(tmp->heredoc_fd, 0);
+		    close(tmp->heredoc_fd);
+		    tmp->heredoc_fd = -1;
 		}
-		else
-		{
-			execute_command(tmp, get,pipe, env,full);
-		}
+		check_cmd_built_in(tmp, &env, pipe, get);
+		exit_code = tmp->dqm;
+		cleanup(full);
+		close_heredoc_fd(tmp);
+		free_pipe_blocks(full->pipe_blocks);
+    	exit(exit_code);
+	}
+	else
+	{
+		execute_command(tmp, get,pipe, env,full);
+		exit_code = tmp->dqm;
+		cleanup(full);
+		close_heredoc_fd(tmp);
+		free_pipe_blocks(full->pipe_blocks);
+    	exit(exit_code);
 	}
 }
 
@@ -137,38 +135,34 @@ void	direct_and_close_fd(int count, int **fd, int i, int type)
 
 void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *full)
 {
-	t_general *tmp ;
-	tmp = list;
 	int status;
 	int		i;
 	pipe->tmp = list;
 	i = 0;
-    while (tmp) 
-	{
-		if (has_heredoc(tmp)) 
-		{
-			handle_heredoc(tmp);
-		}
-        tmp = tmp->next;
-    }
+	handle_heredoc(pipe->tmp);
 	while (i < pipe->count)
 	{
 		pipe->pid[i] = fork();
-		close_heredoc_fd(full->pipe_blocks);
 		if (pipe->pid[i] == 0)
 		{
-			if (pipe->tmp->heredoc_fd != -1) 
+			if(has_heredoc(pipe->tmp)==1)
 			{
-			    dup2(pipe->tmp->heredoc_fd, 0);
-			    close(pipe->tmp->heredoc_fd);
-			    pipe->tmp->heredoc_fd = -1;
+				if (pipe->tmp->heredoc_fd != -1) 
+				{
+			    	dup2(pipe->tmp->heredoc_fd, 0);
+			    	close(pipe->tmp->heredoc_fd);
+			    	pipe->tmp->heredoc_fd = -1;
+				}
 			}
-			if (i == 0)
-				direct_and_close_fd(pipe->count, pipe->fd, i, 0);
-			else if (i == pipe->count - 1)
-				direct_and_close_fd(pipe->count, pipe->fd, i, 1);
 			else
-				end_block(pipe->count, i, pipe->fd);
+			{
+				if (i == 0)
+					direct_and_close_fd(pipe->count, pipe->fd, i, 0);
+				else if (i == pipe->count - 1)
+					direct_and_close_fd(pipe->count, pipe->fd, i, 1);
+				else
+					end_block(pipe->count, i, pipe->fd);
+			}
 			direct_cmd(pipe->tmp, get, env, pipe, full);
 		}
 		i++;

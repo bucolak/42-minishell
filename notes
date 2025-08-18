@@ -1,0 +1,2 @@
+ls << d | << s | echo hi | cat <<g
+echo hi >>k|echo hye >> ş

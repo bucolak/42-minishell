@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_built_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/14 23:45:07 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/17 14:54:18 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,11 @@ void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *list)
 		}
 	}
 	built_in_helper_func_2(full, i, envv, list);
+	if (full->new)
+    {
+        free_split(full->new);
+        full->new = NULL;
+    }
 }
 
 void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get)

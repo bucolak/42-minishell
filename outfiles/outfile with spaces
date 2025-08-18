@@ -1,4 +1,7 @@
+""
+<
 >
+>>
 $HOME
 42_minishell_tester
 apply_malloc.c
@@ -33,6 +36,7 @@ message.o
 minishell
 minishell.h
 minishell_tester
+notes
 outfiles
 parser.c
 parser.o
