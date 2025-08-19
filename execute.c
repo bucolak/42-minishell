@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/19 20:17:31 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 21:05:42 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -583,7 +583,7 @@ void expand_dolar_qmark(t_general *list)
 void signal_handler_child(int a)
 {
 	(void)a;
-	write(1,"\n",1);
+	//write(1,"\n",1);
     // signal(SIGINT, SIG_DFL);
     // signal(SIGQUIT, SIG_DFL);
 }
@@ -620,12 +620,11 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 		{
 			if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 			{
-				
-					check_cmd_built_in(pipe_blocs, &env, pipe, get);
-					exit_code = pipe_blocs->dqm;
-					cleanup(full);
-					free_pipe_blocks(full->pipe_blocks);
-					exit(exit_code);
+				check_cmd_built_in(pipe_blocs, &env, pipe, get);
+				exit_code = pipe_blocs->dqm;
+				cleanup(full);
+				free_pipe_blocks(full->pipe_blocks);
+				exit(exit_code);
 			}
 			else
 			{
@@ -640,7 +639,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 	}
 	else
 	{
-		signal(SIGINT, SIG_IGN);
+		signal(SIGINT, signal_handler_child);
 		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status) || WIFSIGNALED(status))
@@ -652,7 +651,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 				pipe_blocs->dqm = 130;
 			}
         }
-		signal(SIGINT, handle_signal);
+		// signal(SIGINT, handle_signal);
         signal(SIGQUIT, SIG_IGN);
 		if (WIFEXITED(status))
 			pipe_blocs->dqm = WEXITSTATUS(status);
