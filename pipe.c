@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/19 19:17:30 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 20:20:15 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
             // Eğer sinyal ile sonlandıysa ve sinyal SIGINT (Ctrl+C) ise
             if (WIFSIGNALED(status))
 			{
-                write(1, "\n", 1); // Sadece bu durumda newline yazdır
+                // write(1, "\n", 1); // Sadece bu durumda newline yazdır
 				pipe->tmp->dqm = 130;
 				break;
 			}

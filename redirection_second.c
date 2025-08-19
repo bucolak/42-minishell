@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/19 19:22:25 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 20:20:05 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,10 +198,10 @@ void	handle_heredoc(t_general *list, t_full *full)
 						// close(tmp->heredoc_fd);
 						tmp->heredoc_fd = -1;
     			        write(1, "\n", 1);
-						rl_on_new_line();
-        				rl_replace_line("", 0);
-						if(!list->next)
-        					rl_redisplay();
+						// rl_on_new_line();
+        				// rl_replace_line("", 0);
+						// if(!list->next)
+        				// 	rl_redisplay();
         				signal(SIGINT, handle_signal);
 						tmp->dqm = 130;
 						return;
