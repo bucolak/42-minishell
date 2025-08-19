@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/17 15:59:56 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 17:15:51 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ t_general *create_general_node(int dqm)
     node->acces_args->args=NULL;
     node->flag_heredoc = 0;
     node->heredoc_fd = -1;
+    node->a = 0;
     node->blocs = NULL;
     node->limiter = NULL;
     node->next = NULL;

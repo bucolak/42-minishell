@@ -6,11 +6,13 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/18 18:34:09 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 19:22:25 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static volatile int f =0 ;
 
 void	remove_heredoc(t_general *list)
 {
@@ -101,16 +103,25 @@ void	fill_limiter(t_general *list)
 void signal_handler_heredoc(int signo)
 {
 	if(signo == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
+    {
+        write(1, "\n", 1);
+        rl_on_new_line();
         rl_replace_line("", 0);
-        //rl_redisplay();
-		 exit(130);
-	}
+		exit(130);
+    }
 }
 
-void	handle_heredoc(t_general *list)
+void signal_handler_heredoc2(int signo)
+{
+	if(signo == SIGINT)
+    {
+        rl_on_new_line();
+        rl_replace_line("", 0);
+		exit(130);
+    }
+}
+
+void	handle_heredoc(t_general *list, t_full *full)
 {
 	int		i;
 	int		fd[2];
@@ -118,9 +129,11 @@ void	handle_heredoc(t_general *list)
 	int s = 0;
 	char	*line;
 	t_general *tmp;
+	(void)full;
+	// int exit_code;
 	tmp = list;
-	while (tmp)
-	{
+	// while(tmp)
+	// {
 		fill_limiter(tmp);
 		s++;
 		i = 0;
@@ -132,38 +145,78 @@ void	handle_heredoc(t_general *list)
 				tmp->flag_heredoc = 1;
 				if (!tmp->acces_args->args[i + 1])
 				{
-					ft_putstr_fd("bash: syntax error near unexpected token `newline'\n",
-							2);
+					ft_putstr_fd("bash: syntax error near unexpected token `newline'\n", 2);
 					return ;
 				}
 				pipe(fd);
-				while (1)
+				signal(SIGINT, SIG_IGN);
+				pid_t pid = fork();
+				if(pid == 0)
 				{
-					signal(SIGINT,signal_handler_heredoc);
-					signal(SIGQUIT, SIG_DFL);
-					line = readline("heredoc > ");
-					if (!line || ft_strcmp(line, tmp->limiter[j]) == 0)
+					signal(SIGINT, SIG_DFL);
+        			signal(SIGQUIT, SIG_DFL);
+					while (1)
 					{
+						line = readline("heredoc > ");
+						if (!line || ft_strcmp(line, tmp->limiter[j]) == 0)
+						{
+							free(line);
+							close(fd[1]);
+							//cleanup(full);
+							// full->pipe_blocks->dqm = 0;
+							// exit_code = full->pipe_blocks->dqm;
+							// if(full->pipe_blocks)
+							// 	free_pipe_blocks(full->pipe_blocks);
+							exit(0);
+						}
+						ft_putstr_fd(line, fd[1]);
+						ft_putstr_fd("\n", fd[1]);
 						free(line);
-						break ;
 					}
-					ft_putstr_fd(line, fd[1]);
-					ft_putstr_fd("\n", fd[1]);
-					free(line);
+					close(fd[1]);
+					j++;
+					if (!tmp->limiter[j])
+					{
+						tmp->heredoc_fd = dup(fd[0]);
+					}
+					close(fd[0]);
+					i += 2;
+					continue ;
 				}
-				close(fd[1]);
-				j++;
-				if (!tmp->limiter[j])
-				{
-					tmp->heredoc_fd = dup(fd[0]);
-				}
-				close(fd[0]);
-				i += 2;
-				continue ;
+				else
+    			{
+					// PARENT
+    			    int status;
+    			    close(fd[1]);
+    			    waitpid(pid, &status, 0);
+					signal(SIGINT, handle_signal);
+    			    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+    			    {
+						tmp->a = 1;
+    			        close(fd[0]);
+						remove_heredoc(tmp);
+						// close(tmp->heredoc_fd);
+						tmp->heredoc_fd = -1;
+    			        write(1, "\n", 1);
+						rl_on_new_line();
+        				rl_replace_line("", 0);
+						if(!list->next)
+        					rl_redisplay();
+        				signal(SIGINT, handle_signal);
+						tmp->dqm = 130;
+						return;
+    			    }
+    			    else
+    			    {
+    			        // heredoc başarılı
+						signal(SIGINT, handle_signal);
+    			        tmp->heredoc_fd = fd[0];
+    			    }
+    			}
 			}
 			i++;
 		}
 		remove_heredoc(tmp);
-		tmp = tmp->next;
-	}
+	// 	tmp = tmp->next;
+	// }	
 }

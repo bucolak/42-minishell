@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/18 18:14:53 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 19:20:32 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -580,10 +580,12 @@ void expand_dolar_qmark(t_general *list)
 	}
 }
 
-void signal_handler_child(void)
+void signal_handler_child(int a)
 {
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
+	(void)a;
+	write(1,"\n",1);
+    // signal(SIGINT, SIG_DFL);
+    // signal(SIGQUIT, SIG_DFL);
 }
 
 void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *pipe, t_full *full)
@@ -592,6 +594,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 	pid_t	pid;
 	status = 0;
 	int exit_code;
+	handle_heredoc(pipe_blocs, full);
 	pid = fork();
 	if (pipe_blocs->next)
 	{
@@ -600,10 +603,9 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 	}
 	if (pid == 0)
 	{
-		// signal_handler_child();
+		signal(SIGINT, SIG_DFL);
 		if(has_redireciton(pipe_blocs)== 1 && is_flag_6(pipe_blocs, env) == 0)
 		{
-			handle_heredoc(pipe_blocs);	
 			handle_redirections(pipe_blocs, full);
 		}
 		if (pipe_blocs->heredoc_fd != -1) 
@@ -616,6 +618,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 		{
 			if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 			{
+				
 					check_cmd_built_in(pipe_blocs, &env, pipe, get);
 					exit_code = pipe_blocs->dqm;
 					cleanup(full);
@@ -636,12 +639,12 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 	else
 	{
 		signal(SIGINT, SIG_IGN);
-        signal(SIGQUIT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
+		if (WIFEXITED(status) || WIFSIGNALED(status))
         {
             // Eğer sinyal ile sonlandıysa ve sinyal SIGINT (Ctrl+C) ise
-            if (WEXITSTATUS(status) == 130)
+            if (WIFSIGNALED(status))
 			{
                 write(1, "\n", 1); // Sadece bu durumda newline yazdır
 				pipe_blocs->dqm = 130;

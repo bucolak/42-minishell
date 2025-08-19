@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/18 18:34:23 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 19:17:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,14 +137,26 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
 {
 	int status;
 	int		i;
+	t_general *tmp;
 	pipe->tmp = list;
+	tmp = list;
 	i = 0;
-	handle_heredoc(pipe->tmp);
-	while (i < pipe->count)
+	while(tmp)
 	{
+		if(has_heredoc(tmp)==1)
+		{
+			handle_heredoc(tmp,full);
+		}	
+		if(tmp->a == 1)
+			return ;
+		tmp = tmp->next;
+	}
+	while (i < pipe->count)
+	{	
 		pipe->pid[i] = fork();
 		if (pipe->pid[i] == 0)
 		{
+			signal(SIGINT, SIG_DFL);
 			if(has_heredoc(pipe->tmp)==1)
 			{
 				if (pipe->tmp->heredoc_fd != -1) 
@@ -172,14 +184,28 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
 		}
 	}
 	close_fd(pipe->count, pipe->fd, 0, i);
-	int last_status = 0;
+	// int last_status = 0;
 	for (int j = 0; j < pipe->count; j++)
 	{
+		signal(SIGINT, SIG_IGN);
+        signal(SIGQUIT, SIG_IGN);
 		waitpid(pipe->pid[j], &status, 0);
-		if (j == pipe->count - 1)
-			last_status = status;
+		if (WIFEXITED(status) || WIFSIGNALED(status))
+        {
+            // Eğer sinyal ile sonlandıysa ve sinyal SIGINT (Ctrl+C) ise
+            if (WIFSIGNALED(status))
+			{
+                write(1, "\n", 1); // Sadece bu durumda newline yazdır
+				pipe->tmp->dqm = 130;
+				break;
+			}
+        }
+		signal(SIGINT, handle_signal);
+        signal(SIGQUIT, SIG_IGN);
+		// if (j == pipe->count - 1)
+		// 	last_status = status;
 	}
-	if (WIFEXITED(status))
-		list->dqm = WEXITSTATUS(last_status);
+	// if (WIFEXITED(status))
+	// 	list->dqm = WEXITSTATUS(last_status);
 	close_heredoc_fd(full->pipe_blocks);
 }

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/17 15:57:30 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 17:18:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_general
 	char				*blocs;
 	char				**limiter;
 	t_pipeafter			*acces_args;
+	int a;
 	struct s_general	*next;
 	int					heredoc_fd;
 	int flag_heredoc;
@@ -99,6 +100,7 @@ typedef struct s_full
 	char **new;
 }	t_full;
 
+void signal_handler_heredoc(int signo);
 void close_heredoc_fd(t_general *list);
 void cleanup(t_full *full);
 void control_redireciton(t_general *list, t_env *env);
@@ -178,7 +180,7 @@ void	handle_output(t_general *list, int i, t_full *full);
 void	handle_append(t_general *list, int i, t_full *full);
 
 // redirection_second.c
-void					handle_heredoc(t_general *list);
+void					handle_heredoc(t_general *list, t_full *full);
 
 // echo_first.c
 void	echo_flag_4_second(char *str, t_general *tmp, int *j);
