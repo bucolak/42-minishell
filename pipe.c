@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/19 20:57:39 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/20 14:14:00 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
 		}
 	}
 	close_fd(pipe->count, pipe->fd, 0, i);
-	// int last_status = 0;
+	int last_status = 0;
 	for (int j = 0; j < pipe->count; j++)
 	{
 		signal(SIGINT, SIG_IGN);
@@ -202,8 +202,10 @@ void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *
         }
 		signal(SIGINT, handle_signal);
         signal(SIGQUIT, SIG_IGN);
-		// if (j == pipe->count - 1)
-		// 	last_status = status;
+		if (j == pipe->count - 1)
+			last_status = status;
+		if (WIFEXITED(status))
+	 		list->dqm = WEXITSTATUS(last_status);
 	}
 	// if (WIFEXITED(status))
 	// 	list->dqm = WEXITSTATUS(last_status);

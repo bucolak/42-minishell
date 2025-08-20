@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/19 16:52:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/19 17:18:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ void	handle_output(t_general *list, int i, t_full *full);
 void	handle_append(t_general *list, int i, t_full *full);
 
 // redirection_second.c
-void					handle_heredoc(t_general *list, int f);
+void					handle_heredoc(t_general *list, t_full *full);
 
 // echo_first.c
 void	echo_flag_4_second(char *str, t_general *tmp, int *j);

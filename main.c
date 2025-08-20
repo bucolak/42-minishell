@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/19 21:02:23 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/20 14:56:32 by buket            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+volatile int signal_ec = 0;
 
 int	is_in_quotes(const char *line, int pos)
 {
@@ -547,6 +549,18 @@ void control_redireciton(t_general *list, t_env *env)
 	}
 }
 
+void	handle_signal(int signo)
+{
+    if(signo == SIGINT)
+    {
+		signal_ec = 1;
+        write(1, "\n", 1);
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+    }
+}
+
 int	main(int argc, char *argv[], char **envp)
 {
 	char		*line;
@@ -582,6 +596,12 @@ int	main(int argc, char *argv[], char **envp)
 		signal_handler();
 		pipe_blocs = create_general_node(last_dqm);
 		line = readline("Our_shell% ");
+		if(signal_ec == 1)
+		{
+			last_dqm = 130;
+			pipe_blocs->dqm = 130;
+			signal_ec = 0;
+		}
 		if (!line)
 		{
 			if (get)
@@ -653,6 +673,11 @@ int	main(int argc, char *argv[], char **envp)
 		}
 		free_envp(get);
 		get = NULL;
+		// if(signal_ec == 1)
+		// {
+		// 	pipe_blocs->dqm = 130;
+		// 	signal_ec = 0;
+		// }
 		last_dqm = pipe_blocs->dqm;
 		free_pipe_blocks(pipe_blocs);
 		pipe_blocs = NULL;
