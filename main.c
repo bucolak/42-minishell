@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/20 14:56:32 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/21 15:48:47 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -673,11 +673,6 @@ int	main(int argc, char *argv[], char **envp)
 		}
 		free_envp(get);
 		get = NULL;
-		// if(signal_ec == 1)
-		// {
-		// 	pipe_blocs->dqm = 130;
-		// 	signal_ec = 0;
-		// }
 		last_dqm = pipe_blocs->dqm;
 		free_pipe_blocks(pipe_blocs);
 		pipe_blocs = NULL;

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/17 14:54:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/21 13:58:53 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,9 @@ void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *list)
 			{
 				k=i+1;
 				if(is_valid_identifier(tmp->acces_args->args[i + 1]->str) == 0)
-				{
-					ft_putstr_fd("bash: export: ", 2);
-					ft_putstr_fd("`=': not a valid identifier\n", 2);
 					tmp->dqm=1;
-				}
-				else
-				{
+				// else
+				// {
 					while(tmp->acces_args->args[k])
 					{
 						j = 0;
@@ -128,7 +124,7 @@ void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *list)
 						}	
 						env = env->next;
 					}
-				}
+				// }
 			}
 		else
 		{

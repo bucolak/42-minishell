@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_first.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buket <buket@student.42.fr>                +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/08/15 00:22:57 by buket            ###   ########.fr       */
+/*   Updated: 2025/08/21 13:58:31 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ void print_message(char *key, char *data, t_general *list)
 {
 	ft_putstr_fd("bash: export: `", 2);
 	ft_putstr_fd(key, 2);
+	ft_putstr_fd("=", 2);
 	ft_putstr_fd(data, 2);
 	ft_putstr_fd("' : not a valid identifier\n", 2);
 	list->dqm = 1;
