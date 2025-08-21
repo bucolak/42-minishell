@@ -6,13 +6,13 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/21 15:48:47 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/21 20:02:57 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile int signal_ec = 0;
+int signal_ec = 0;
 
 int	is_in_quotes(const char *line, int pos)
 {
@@ -619,8 +619,10 @@ int	main(int argc, char *argv[], char **envp)
 				free_pipe(pipe);
 				pipe = NULL;
 			}
+			close_heredoc_fd(pipe_blocs);
 			if(pipe_blocs->heredoc_fd!=-1)
 				close(pipe_blocs->heredoc_fd);
+				
 			if (pipe_blocs)
 			{
 				exit_code = pipe_blocs->dqm;

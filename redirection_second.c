@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/21 16:39:25 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/21 21:08:15 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,11 @@ void	fill_limiter(t_general *list)
 
 void signal_handler_heredoc(int signo)
 {
-	if(signo == SIGINT)
-    {
-        write(1, "\n", 1);
-        rl_on_new_line();
-        rl_replace_line("", 0);
-		exit(130);
-    }
+	if (signo == SIGINT)
+	{
+		write(1, "\n", 1);
+		signal_ec = 1;
+	}
 }
 
 void signal_handler_heredoc2(int signo)
@@ -116,8 +114,9 @@ void signal_handler_heredoc2(int signo)
 		write(1, "\n", 1);
         rl_on_new_line();
         rl_replace_line("", 0);
-		//rl_redisplay();
-		exit(130);
+		rl_redisplay();
+		signal_ec=1;
+		//exit(130);
     }
 }
 
@@ -150,11 +149,28 @@ void	handle_heredoc(t_general *list, t_full *full)
 				pid_t pid = fork();
 				if(pid == 0)
 				{
-					signal(SIGINT, SIG_DFL);
+					close(fd[0]);
+					if (full && full->pipe && full->pipe->fd)
+				{
+					int ci = 0;
+					while (ci < full->pipe->count - 1)
+					{
+						close(full->pipe->fd[ci][0]);
+						close(full->pipe->fd[ci][1]);
+						ci++;
+					}
+				}
+					signal(SIGINT, signal_handler_heredoc);
         			signal(SIGQUIT, SIG_DFL);
 					while (1)
 					{
 						line = readline("heredoc > ");
+
+						if(signal_ec==1)
+						{
+							cleanup(full);
+							exit(130);
+						}
 						
 						if (!line) // Ctrl+D durumu
                     	{
@@ -182,36 +198,32 @@ void	handle_heredoc(t_general *list, t_full *full)
 					{
 						tmp->heredoc_fd = dup(fd[0]);
 					}
-					close(fd[0]);
 					i += 2;
 					continue ;
 				}
-				else
+    			int status;
+				j++;
+    			close(fd[1]);
+    			waitpid(pid, &status, 0);
+				signal(SIGINT, handle_signal);
+				signal(SIGQUIT, SIG_IGN);
+    			if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
     			{
-					// PARENT
-    			    int status;
-					j++;
-    			    close(fd[1]);
-    			    waitpid(pid, &status, 0);
+					tmp->a = 1;
+    			    close(fd[0]);
+					remove_heredoc(tmp);
+					tmp->heredoc_fd = -1;
+    			    write(1, "\n", 1);
+					//free_split(full->pipe_blocks->limiter);
+        			signal(SIGINT, handle_signal);
+					tmp->dqm = 130;
+					return ;
+    			}
+    			else
+    			{
+    			    // heredoc başarılı
 					signal(SIGINT, handle_signal);
-					signal(SIGQUIT, SIG_IGN);
-    			    if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-    			    {
-						tmp->a = 1;
-    			        close(fd[0]);
-						remove_heredoc(tmp);
-						tmp->heredoc_fd = -1;
-    			        write(1, "\n", 1);
-        				signal(SIGINT, handle_signal);
-						tmp->dqm = 130;
-						return ;
-    			    }
-    			    else
-    			    {
-    			        // heredoc başarılı
-						signal(SIGINT, handle_signal);
-    			        tmp->heredoc_fd = fd[0];
-    			    }
+    			    tmp->heredoc_fd = fd[0];
     			}
 			}
 			i++;

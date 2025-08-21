@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/21 15:50:32 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/21 20:53:41 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,10 @@ typedef struct s_full
 	t_now *get;
 	char **new;
 }	t_full;
+
+extern int signal_ec;
+
+void free_for_heredoc(t_full *full);
 
 void signal_handler_heredoc(int signo);
 void close_heredoc_fd(t_general *list);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/21 16:00:21 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/21 18:41:21 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -641,8 +641,6 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 			}
 		}
 	}
-	else
-	{
 		signal(SIGINT, signal_handler_child);
 		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &status, 0);
@@ -659,7 +657,6 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
         signal(SIGQUIT, SIG_IGN);
 		if (WIFEXITED(status))
 			pipe_blocs->dqm = WEXITSTATUS(status);
-	}
 }
 
 // INFO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
