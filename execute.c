@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/22 17:42:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 19:27:37 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,20 @@ void handle_append_2(t_full *full, t_general *list , int *fd, int i)
 	{
 		error_msg(2, list->acces_args->args[i]->str, 0, list);
 		cleanup(full);
-		free_pipe_blocks(full->pipe_blocks);
+		if(full->pipe_blocks)
+			free_pipe_blocks(full->pipe_blocks);
 		exit(list->dqm);
 	}
 	if (access(list->acces_args->args[i]->str, W_OK) != 0)
 	{
-		// ft_putstr_fd("burda\n", 1);
 		ft_putstr_fd("bash: ", 2);
 		ft_putstr_fd(list->acces_args->args[i]->str, 2);
 		ft_putstr_fd(": Permission denied\n", 2);
 		list->dqm = 1;
 		exit_code = list->dqm;
 		cleanup(full);
-		free_pipe_blocks(full->pipe_blocks);
+		if(full->pipe_blocks)
+			free_pipe_blocks(full->pipe_blocks);
 		exit(exit_code);
 	}
 	if (*fd < 0)
@@ -44,44 +45,11 @@ void handle_append_2(t_full *full, t_general *list , int *fd, int i)
 		if(full->node)
 			free_env(full->node);
 		cleanup(full);
-		free_pipe_blocks(full->pipe_blocks);
+		if(full->pipe_blocks)
+			free_pipe_blocks(full->pipe_blocks);
 		exit(exit_code);
 	}
 }
-
-// void handle_append_2(char *last_input, t_full *full , int *fd, int i)
-// {
-// 	int exit_code;
-// 	printf("burda6\n");
-// 	last_input = full->pipe_blocks->acces_args->args[i]->str;
-// 	printf("burda7\n");
-// 	*fd = open(last_input, O_CREAT | O_WRONLY | O_APPEND,
-// 			0644);
-// 	if(access(last_input, F_OK) != 0)
-// 	{
-// 		error_msg(2, last_input, 0, full->pipe_blocks);
-// 		free_pipe_blocks(full->pipe_blocks);
-// 		exit(full->pipe_blocks->dqm);
-// 	}
-// 	if (access(last_input, W_OK) != 0)
-// 	{
-// 		ft_putstr_fd("bash: ", 2);
-// 		ft_putstr_fd(last_input, 2);
-// 		ft_putstr_fd(": Permission denied\n", 2);
-// 		full->pipe_blocks->dqm = 1;
-// 		exit_code = full->pipe_blocks->dqm;
-// 		free_pipe_blocks(full->pipe_blocks);
-// 		exit(exit_code);
-// 	}
-// 	if (*fd < 0)
-// 	{
-// 		error_msg(i, full->pipe_blocks->acces_args->args[i]->str, 0, full->pipe_blocks);
-// 		full->pipe_blocks->dqm = 1;
-// 		exit_code = full->pipe_blocks->dqm;
-// 		free_pipe_blocks(full->pipe_blocks);
-// 		exit(exit_code);
-// 	}
-// }
 
 void	handle_append(t_general *list, int i, t_full *full)
 {
@@ -107,7 +75,8 @@ void	handle_append(t_general *list, int i, t_full *full)
 			if(full->node)
 			free_env(full->node);
 			cleanup(full);
-			free_pipe_blocks(list);
+			if(full->pipe_blocks)
+				free_pipe_blocks(full->pipe_blocks);
 			exit(exit_code);
 		}
 	}
@@ -161,7 +130,7 @@ void close_heredoc_fd(t_general *list)
 	}
 }
 
-void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *envv,t_full *full)
+void	execute_command(t_general *pipe_blocs, t_now *get, t_env *envv,t_full *full)
 {
 	int		i;
 	char	*args;
@@ -175,7 +144,7 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 	struct stat sb;
 	int exit_code;
 	cmd = pipe_blocs->acces_args->args[0]->str;
-	if (ft_strchr(cmd, '/')) 
+	if (ft_strchr(cmd, '/') || cmd[0] == '.') 
 	{
 		if(stat(cmd, &sb) == 0 && S_ISDIR(sb.st_mode))
 		{
@@ -184,7 +153,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			ft_putstr_fd(": Is a directory\n", 2);
 			pipe_blocs->dqm = 126;
 			exit_code = pipe_blocs->dqm;
-			free_pipe_blocks(pipe_blocs);
+			cleanup(full);
+			if(full->pipe_blocks)
+				free_pipe_blocks(full->pipe_blocks);
 			exit(exit_code);
 		}
 		else if (access(cmd, F_OK) != 0) 
@@ -192,7 +163,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			error_msg(2, cmd, 0, pipe_blocs);
 			pipe_blocs->dqm = 127;
 			exit_code = pipe_blocs->dqm;
-			free_pipe_blocks(pipe_blocs);
+			cleanup(full);
+			if(full->pipe_blocks)
+				free_pipe_blocks(full->pipe_blocks);
 			exit(exit_code);
 		} 
 		else if (access(cmd, X_OK) != 0) 
@@ -202,7 +175,9 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			ft_putstr_fd(": Permission denied\n", 2);
 			pipe_blocs->dqm = 126;
 			exit_code = pipe_blocs->dqm;
-			free_pipe_blocks(pipe_blocs);
+			cleanup(full);
+			if(full->pipe_blocks)
+				free_pipe_blocks(full->pipe_blocks);
 			exit(exit_code);
 		}
 		if (pipe_blocs->acces_args->args[1] && ft_strcmp(pipe_blocs->acces_args->args[1]->str, "$?") == 0 && pipe_blocs->acces_args->args[1]->flag != 1)
@@ -212,10 +187,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 		}
  		argv = make_argv(pipe_blocs->acces_args, envv);
 		execve(cmd, argv, get->envp);
-		pipe_blocs->dqm = 0;
-		exit_code = pipe_blocs->dqm;
-		free_pipe_blocks(pipe_blocs);
-		exit(exit_code);
 	}
 	if(cmd[0] == '$' && pipe_blocs->acces_args->args[0]->flag !=1)
 	{
@@ -225,48 +196,29 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			ft_putstr_fd("$: command not found\n", 2);
 			pipe_blocs->dqm = 127;
 			exit_code = pipe_blocs->dqm;
-			free_pipe_blocks(pipe_blocs);
+			cleanup(full);
+			if(full->pipe_blocks)
+				free_pipe_blocks(full->pipe_blocks);
 			exit(exit_code);
 		}
 		else if(env)
-		{
 			cmd = env;
-		}
 	}
 	i = 0;
 	command_found = 0;
 	args = get_getenv(envv,"PATH");
 	if(!args)
 	{
-	    if (ft_strchr(cmd, '/') == NULL && !ft_strstr(get_getenv(envv,"PWD"),"/bin"))
+		if (ft_strchr(cmd, '/') == NULL && !ft_strstr(get_getenv(envv,"PWD"),"/bin"))
 	    {
-	        error_msg(2, cmd, 1, pipe_blocs);
+			error_msg(2, cmd, 1, pipe_blocs);
 	        pipe_blocs->dqm = 127;
 	        exit_code = pipe_blocs->dqm;
 			cleanup(full);
-	        free_pipe_blocks(pipe_blocs);
+	       if(full->pipe_blocks)
+				free_pipe_blocks(full->pipe_blocks);
 	        exit(exit_code);
 	    }
-		else
-		{
-			if (access(cmd, X_OK) == 0)
-        	{
-        	    argv = make_argv(pipe_blocs->acces_args, envv);
-        	    execve(cmd, argv, get->envp);
-        	    perror("execve");
-        	    exit(127);
-        	}
-        	else
-        	{
-        	    printf("Command not executable in current directory\n");
-        	    error_msg(2, cmd, 1, pipe_blocs);
-        	    pipe_blocs->dqm = 127;
-        	    exit_code = pipe_blocs->dqm;
-				cleanup(full);
-        	    free_pipe_blocks(pipe_blocs);
-        	    exit(exit_code);
-        	}
-		}
 	}
 	paths = ft_split(args, ':');
 	while (paths[i])
@@ -284,19 +236,6 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			    pipe_blocs->heredoc_fd = -1;
 			}
 			execve(end, argv, get->envp);
-			perror("execve\n");
-			free(argv);
-			free(str);
-			free(end);
-			// paths'i temizle
-			for (int j = 0; paths[j]; j++)
-				free(paths[j]);
-			free(paths);
-			free_pipe(pipe);
-			pipe_blocs->dqm = 0;
-			exit_code = pipe_blocs->dqm;
-			free_pipe_blocks(pipe_blocs);
-			//exit(exit_code);
 		}
 		free(str);
 		free(end);
@@ -309,24 +248,14 @@ void	execute_command(t_general *pipe_blocs, t_now *get, t_pipe *pipe, t_env *env
 			error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
 		else
 			error_msg(2, pipe_blocs->acces_args->args[0]->str, 1, pipe_blocs);
-		free_envp(get);
-		for (int j = 0; paths[j]; j++)
-		free(paths[j]);
-		free(paths);
-		free_env(envv);
-		if(pipe)
-		free_pipe(pipe);
+		free_split(paths);
+		cleanup(full);
 		exit_code = pipe_blocs->dqm;
-		if (full)
-		{
+		if (full->pipe_blocks)
 			free_pipe_blocks(full->pipe_blocks);
-		}
-		
 		exit(exit_code);
 	}
-	for (int j = 0; paths[j]; j++)
-		free(paths[j]);
-	free(paths);
+	free_split(paths);
 }
 
 void	fill_env(t_env *env, t_now *get)
@@ -394,41 +323,6 @@ void	check_redirection_args2(t_general *pipe_blocs, int *i)
 	{
 		error_msg(2, pipe_blocs->acces_args->args[*i]->str, 0, pipe_blocs);
 		exit(1);
-	}
-}
-
-void	check_redirection_args(t_general *pipe_blocs)
-{
-	int	i;
-	int exit_code;
-	i = 0;
-	while (pipe_blocs->acces_args->args[i])
-	{
-		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<<") == 0)
-		{
-			if (!pipe_blocs->acces_args->args[i + 1])
-			{
-				error_msg(2, NULL, 3, pipe_blocs);
-				exit_code = pipe_blocs->dqm;
-				free_pipe_blocks(pipe_blocs);
-				exit(exit_code);
-				
-			}
-		}
-		else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "<") == 0)
-			check_redirection_args2(pipe_blocs, &i);
-		else if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, ">") == 0)
-		{
-			i++;
-			if (!pipe_blocs->acces_args->args[i])
-			{
-				error_msg(2, NULL, 3, pipe_blocs);
-				exit_code = pipe_blocs->dqm;
-				free_pipe_blocks(pipe_blocs);
-				exit(exit_code);
-			}
-		}
-		i++;
 	}
 }
 
@@ -616,8 +510,9 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 	{
 		if(pipe_blocs->a == 1)
 		{
-			// cleanup(full);
-			// free_pipe_blocks(full->pipe_blocks);
+			cleanup(full);
+			if(full->pipe_blocks)
+				free_pipe_blocks(full->pipe_blocks);
 			exit(130);
 		}
 		signal(SIGINT, SIG_DFL);
@@ -644,7 +539,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 			else
 			{
 				expand_dolar_qmark(pipe_blocs);
-				execute_command(pipe_blocs, get, pipe, env, full);
+				execute_command(pipe_blocs, get, env, full);
 				cleanup(full);
 				exit_code = pipe_blocs->dqm;
 				free_pipe_blocks(full->pipe_blocks);

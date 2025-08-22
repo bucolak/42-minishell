@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/18 17:26:30 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 18:29:08 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	echo_flag_0_and_2(char *str, t_general *tmp, int i)
         echo_flag_0_and_2_second(str, tmp, &j, i);
     }
 
-		if(tmp->acces_args->args[i+1])
+		if(tmp->acces_args->args[i+1] && ft_strcmp(tmp->acces_args->args[i]->str, "\"\"") != 0)
 		{
         	ft_putchar_fd(' ', 1);
 		}

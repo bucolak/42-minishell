@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/21 17:41:37 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 19:19:36 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	direct_cmd(t_general *tmp, t_now *get, t_env *env, t_pipe *pipe, t_full *fu
 	}
 	else
 	{
-		execute_command(tmp, get,pipe, env,full);
+		execute_command(tmp, get, env,full);
 		exit_code = tmp->dqm;
 		cleanup(full);
 		close_heredoc_fd(tmp);
