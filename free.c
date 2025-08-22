@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/21 16:40:28 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 15:10:42 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,21 @@ void free_envp(t_now *get)
     free(get);
 }
 
+static void	close_all_open_fds(void)
+{
+	int	fd;
+
+	fd = 3;
+	while (fd < 1024)
+	{
+		close(fd);
+		fd++;
+	}
+}
+
 void cleanup(t_full *full)
 {
+    close_all_open_fds();
     if(full->get)
     {
         free_envp(full->get);

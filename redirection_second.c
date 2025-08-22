@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/21 21:08:15 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 15:10:03 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,26 +98,34 @@ void	fill_limiter(t_general *list)
 	list->limiter[j] = NULL;
 }
 
+void	free_heredoc(t_full *full)
+{
+	static t_full	*temp_full;
+
+	if (full)
+	{
+		temp_full = full;
+	}
+	else
+	{
+		cleanup(temp_full);
+		if(temp_full->pipe_blocks)
+			free_pipe_blocks(temp_full->pipe_blocks);
+		exit(130);
+	}
+}
 void signal_handler_heredoc(int signo)
 {
 	if (signo == SIGINT)
 	{
 		write(1, "\n", 1);
-		signal_ec = 1;
-	}
-}
-
-void signal_handler_heredoc2(int signo)
-{
-	if(signo == SIGINT)
-    {
-		write(1, "\n", 1);
-        rl_on_new_line();
+		rl_on_new_line();
         rl_replace_line("", 0);
 		rl_redisplay();
-		signal_ec=1;
-		//exit(130);
-    }
+		signal_ec = 1;
+		free_heredoc(NULL);
+		exit(130);
+	}
 }
 
 void	handle_heredoc(t_general *list, t_full *full)
@@ -149,6 +157,7 @@ void	handle_heredoc(t_general *list, t_full *full)
 				pid_t pid = fork();
 				if(pid == 0)
 				{
+					free_heredoc(full);
 					close(fd[0]);
 					if (full && full->pipe && full->pipe->fd)
 				{
