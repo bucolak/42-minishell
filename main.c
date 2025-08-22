@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/22 18:28:43 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 21:51:19 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ int is_flag_6(t_general *list, t_env *env)
 		while(tmp->acces_args->args[i])
 		{
 			tenv = env;
-			if(is_redireciton(tmp->acces_args->args[i]->str) == 1 && (tmp->acces_args->args[i]->flag ==5 || tmp->acces_args->args[i]->flag == 2))
+			if(is_redirection(tmp->acces_args->args[i]->str) == 1 && (tmp->acces_args->args[i]->flag ==5 || tmp->acces_args->args[i]->flag == 2))
 			{
 				while(tenv)
 				{
@@ -403,7 +403,7 @@ void connect_count_malloc(t_general *list)
 		{
 			if(tmp->acces_args->args[i]->s == 0 && tmp->acces_args->args[i+1] && ft_strcmp(tmp->acces_args->args[i]->str, "''")!=0 && ft_strcmp(tmp->acces_args->args[i]->str, "\"\"")!=0)
 			{
-				if(is_redireciton(tmp->acces_args->args[i]->str) == 1 && tmp->acces_args->args[i]->flag!=0 && tmp->acces_args->args[i]->flag!=1 &&  is_redireciton(tmp->acces_args->args[i+1]->str) == 0 && (tmp->acces_args->args[i+1]->flag==0 || tmp->acces_args->args[i+1]->flag==1))
+				if(is_redirection(tmp->acces_args->args[i]->str) == 1 && tmp->acces_args->args[i]->flag!=0 && tmp->acces_args->args[i]->flag!=1 &&  is_redirection(tmp->acces_args->args[i+1]->str) == 0 && (tmp->acces_args->args[i+1]->flag==0 || tmp->acces_args->args[i+1]->flag==1))
 				{
 					i++;
 					continue;
@@ -417,7 +417,7 @@ void connect_count_malloc(t_general *list)
 				{
 					tmp->acces_args->args[i]->flag = 0;
 				}
-				if(tmp->acces_args->args[i+1] &&is_redireciton(tmp->acces_args->args[i+1]->str) == 1 && tmp->acces_args->args[i+1]->flag !=5 && tmp->acces_args->args[i+1]->s == 0)
+				if(tmp->acces_args->args[i+1] &&is_redirection(tmp->acces_args->args[i+1]->str) == 1 && tmp->acces_args->args[i+1]->flag !=5 && tmp->acces_args->args[i+1]->s == 0)
 				{
 					tmp->acces_args->args[i]->flag = 6;
 				}
@@ -659,7 +659,7 @@ int	main(int argc, char *argv[], char **envp)
 			init_pipe(pipe, pipe_blocs);
 			create_pipe(pipe->count, pipe->fd);
 			full.pipe = pipe;
-			handle_pipe(pipe_blocs, get, env, pipe,&full);
+			handle_pipe(pipe_blocs, env, pipe,&full);
 			free_pipe(pipe);
             pipe = NULL;
 		}
@@ -671,7 +671,7 @@ int	main(int argc, char *argv[], char **envp)
 			}
 			else
 			{
-				check_cmd_sys_call(pipe_blocs, env, get, pipe,&full);
+				check_cmd_sys_call(pipe_blocs, env, pipe,&full);
 			}
 		}
 		free_envp(get);

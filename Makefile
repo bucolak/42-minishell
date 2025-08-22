@@ -13,10 +13,12 @@ SRC = main.c \
 	  echo_second.c \
 	  exit.c \
 	  unset.c \
-	  pipe.c \
 	  signals.c \
 	  parser.c	\
-	  free.c
+	  free.c \
+	  redirection_third.c \
+	  pipe_first.c \
+	  pipe_second.c
 
 CC = gcc 
 

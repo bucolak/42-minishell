@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/22 19:19:16 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 21:46:32 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,11 @@ typedef struct s_full
 }	t_full;
 
 extern int signal_ec;
-
+void	direct_and_close_fd(int count, int **fd, int i, int type);
+void	clean_and_exit(t_full *full, int ec);
+void	close_fd(int count, int **fd, int type, int i);
+void	end_block(int count, int i, int **fd);
+void	wait_child(t_pipe *pipe, t_general *list);
 void free_for_heredoc(t_full *full);
 void	close_all_open_fds(void);
 void signal_handler_heredoc(int signo);
@@ -129,12 +133,12 @@ void	parse_input(t_general *a);
 int has_heredoc(t_general *list);
 
 // execute.c
-void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *pipe,t_full *full);
+void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_pipe *pipe,t_full *full);
 int						is_built_in(char *str);
 void					fill_env(t_env *env, t_now *get);
-void	handle_pipe(t_general *list, t_now *get, t_env *env, t_pipe *pipe, t_full *full);
+void	handle_pipe(t_general *list, t_env *env, t_pipe *pipe, t_full *full);
 void					handle_redirections(t_general *pipe_blocs, t_full *full);
-void	execute_command(t_general *pipe_blocs, t_now *get, t_env *envv, t_full *full);
+void	execute_command(t_general *pipe_blocs, t_now *get, t_env *envv,t_full *full);
 // cmd_built_in.c
 void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get);
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks);
@@ -174,7 +178,7 @@ int						is_numeric(char *str);
 int						is_repeated(t_env *node, char *ky, char *dt);
 
 // redirection_first.c
-int	is_redireciton(char *str);
+int	is_redirection(char *str);
 void					renew_block2(t_general *list);
 void					renew_else_block(t_arg ***new, t_general *tmp, int *i,
 							int *j);
