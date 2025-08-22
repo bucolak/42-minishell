@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/22 15:10:03 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 17:56:42 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,9 @@ void signal_handler_heredoc(int signo)
 	if (signo == SIGINT)
 	{
 		write(1, "\n", 1);
-		rl_on_new_line();
-        rl_replace_line("", 0);
-		rl_redisplay();
+		// rl_on_new_line();
+        // rl_replace_line("", 0);
+		// rl_redisplay();
 		signal_ec = 1;
 		free_heredoc(NULL);
 		exit(130);
@@ -159,28 +159,21 @@ void	handle_heredoc(t_general *list, t_full *full)
 				{
 					free_heredoc(full);
 					close(fd[0]);
-					if (full && full->pipe && full->pipe->fd)
-				{
-					int ci = 0;
-					while (ci < full->pipe->count - 1)
-					{
-						close(full->pipe->fd[ci][0]);
-						close(full->pipe->fd[ci][1]);
-						ci++;
-					}
-				}
+					// if (full && full->pipe && full->pipe->fd)
+					// {
+					// 	int ci = 0;
+					// 	while (ci < full->pipe->count - 1)
+					// 	{
+					// 		close(full->pipe->fd[ci][0]);
+					// 		close(full->pipe->fd[ci][1]);
+					// 		ci++;
+					// 	}
+					// }
 					signal(SIGINT, signal_handler_heredoc);
-        			signal(SIGQUIT, SIG_DFL);
+        			signal(SIGQUIT, SIG_IGN);
 					while (1)
 					{
 						line = readline("heredoc > ");
-
-						if(signal_ec==1)
-						{
-							cleanup(full);
-							exit(130);
-						}
-						
 						if (!line) // Ctrl+D durumu
                     	{
                     	    close(fd[1]);
@@ -216,22 +209,22 @@ void	handle_heredoc(t_general *list, t_full *full)
     			waitpid(pid, &status, 0);
 				signal(SIGINT, handle_signal);
 				signal(SIGQUIT, SIG_IGN);
-    			if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+    			if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
     			{
 					tmp->a = 1;
     			    close(fd[0]);
 					remove_heredoc(tmp);
 					tmp->heredoc_fd = -1;
-    			    write(1, "\n", 1);
+    			    // write(1, "\n", 1);
 					//free_split(full->pipe_blocks->limiter);
-        			signal(SIGINT, handle_signal);
+        			//signal(SIGINT, handle_signal);
 					tmp->dqm = 130;
 					return ;
     			}
     			else
     			{
     			    // heredoc başarılı
-					signal(SIGINT, handle_signal);
+					//signal(SIGINT, handle_signal);
     			    tmp->heredoc_fd = fd[0];
     			}
 			}

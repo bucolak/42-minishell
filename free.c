@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:12:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/22 15:10:42 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 17:58:13 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void free_envp(t_now *get)
     free(get);
 }
 
-static void	close_all_open_fds(void)
+void	close_all_open_fds(void)
 {
 	int	fd;
 
@@ -144,7 +144,7 @@ void cleanup(t_full *full)
         free_envp(full->get);
         full->get = NULL;
     }
-    if(full->pipe)
+    if(full->pipe_blocks->next && full->pipe)
     {
         free_pipe(full->pipe);
         full->pipe=NULL;

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/21 20:02:57 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 17:57:49 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -629,6 +629,7 @@ int	main(int argc, char *argv[], char **envp)
 				free_pipe_blocks(pipe_blocs);
 				pipe_blocs = NULL;
 			}
+			close_all_open_fds();
 			exit(exit_code);
 		}
 		if (line[0] == '\0')

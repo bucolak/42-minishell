@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/21 18:41:21 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/22 17:42:18 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -594,7 +594,18 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_now *get, t_pipe *p
 	pid_t	pid;
 	status = 0;
 	int exit_code;
-	handle_heredoc(pipe_blocs, full);
+	t_general *tmp;
+	tmp = pipe_blocs;
+	while(tmp)
+	{
+		if(has_heredoc(tmp)==1)
+		{
+			handle_heredoc(tmp,full);
+		}	
+		if(tmp->a == 1)
+			return ;
+		tmp = tmp->next;
+	}
 	pid = fork();
 	if (pipe_blocs->next)
 	{
