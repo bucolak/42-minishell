@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 17:24:46 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 19:41:50 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -533,7 +533,8 @@ void	remove_null(t_general *list)
 			new[k] = '\0';
 			if (tmp->acces_args->args[i]->str)
 				free(tmp->acces_args->args[i]->str);
-			tmp->acces_args->args[i]->str = new;
+			tmp->acces_args->args[i]->str = ft_strdup(new);
+			free(new);
 			i++;
 		}
 		tmp = tmp->next;
@@ -683,7 +684,7 @@ int	main(int argc, char *argv[], char **envp)
 		connect_count_malloc(pipe_blocs);
 		remove_null(pipe_blocs);
 		control_redireciton(pipe_blocs, env);
-		// print_pipes(pipe_blocs);
+		//print_pipes(pipe_blocs);
 		full.pipe_blocks = pipe_blocs;
 		get = malloc(sizeof(t_now));
 		get->envp = malloc(sizeof(char *) * (ft_lsttsize(env) + 1));

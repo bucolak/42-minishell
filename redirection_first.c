@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_first.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/22 20:23:11 by seerel           ###   ########.fr       */
+/*   Updated: 2025/08/23 20:00:15 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,11 @@ static void	process_args_array(t_arg **new, t_general *tmp)
 		if (is_redirection(tmp->acces_args->args[i]->str) == 1
 			&& (tmp->acces_args->args[i]->flag == 5
 				|| tmp->acces_args->args[i]->flag == 2))
-			i += 2;
+				{
+					free(tmp->acces_args->args[i]->str);
+					free(tmp->acces_args->args[i+1]->str);
+					i += 2;
+				}
 		else
 		{
 			renew_else_block(&new, tmp, &i, &j);
@@ -81,5 +85,7 @@ void	renew_block2(t_general *list)
 	arg_count = count_redirection_args(list);
 	new = ft_calloc(sizeof(t_arg *), (arg_count + 1));
 	process_args_array(new, list);
+	if(list->acces_args->args)
+		free(list->acces_args->args);
 	list->acces_args->args = new;
 }
