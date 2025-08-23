@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/23 18:51:23 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:19:25 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,128 +28,120 @@ int	is_built_in(char *str)
 	return (0);
 }
 
-void	built_in_helper_func_2(t_full *full, int i, t_env **env,
-		t_general *list)
+void	built_in_helper_func_2(t_full *full, int i, t_env **env, t_general *list)
 {
-	if (ft_strcmp(list->acces_args->args[i]->str, "pwd") == 0)
+	if (ft_strcmp(list->acces_args->args[i]->str,
+					"pwd") == 0)
 		pwd_cmd(&list->acces_args->args[i]->str, list, *env);
 	else if (ft_strcmp(list->acces_args->args[i]->str, "unset") == 0)
-	{
-		if (!list->acces_args->args[i + 1])
-			return ;
-		unset_cmd(list, env);
-		full->node = *env;
-	}
+		{
+			if(!list->acces_args->args[i + 1])
+				return;
+			unset_cmd(list, env);
+			full->node = *env;
+		}
+		
 	else if (ft_strcmp(list->acces_args->args[i]->str, "env") == 0)
 		print_env(list, *env, i);
 	else if (ft_strcmp(list->acces_args->args[i]->str, "exit") == 0)
 		exit_cmd(full, list);
 }
 
-int	is_valid_identifier(const char *name)
-{
-	int	i;
+int is_valid_identifier(const char *name) {
 
+	int i;
 	i = 1;
-	if (!name || !*name)
-		return (0);
-	if (!ft_isalpha(*name) && *name != '_')
+    if (!name || !*name)
+        return 0;
+    
+    if (!ft_isalpha(*name) && *name != '_')
 	{
-		return (0);
+        return 0;
 	}
-	while (name[i] && name[i] != '=')
+    
+	while(name[i] && name[i] != '=')
 	{
 		if (!ft_isalnum(name[i]) && name[i] != '_')
 		{
-			return (0);
+			 return 0;
 		}
+           
 		i++;
 	}
-	return (1);
+    
+    return 1;
 }
 
 void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *list)
 {
-	t_general	*tmp;
-	t_env		*env;
-	int			c;
-	int			j;
-	int			k;
-	int			equals_index;
-
-	tmp = list;
-	env = full->node;
-	c = 0;
-	if (ft_strcmp(tmp->acces_args->args[i]->str, "export") == 0)
+	t_general *tmp =list;
+	t_env *env = full->node;
+	int c = 0;
+	int j;
+	int k;
+	if (ft_strcmp(tmp->acces_args->args[i]->str,
+						"export") == 0)
 	{
-		if ((list->acces_args->args[i + 1] && tmp->acces_args->args[i
-				+ 1]->str))
-		{
-			k = i + 1;
-			if (is_valid_identifier(tmp->acces_args->args[i + 1]->str) == 0)
+		if ((list->acces_args->args[i + 1] && tmp->acces_args->args[i + 1]->str))
 			{
-				ft_putstr_fd("bash: export: `", 2);
-				ft_putstr_fd(tmp->acces_args->args[i + 1]->str, 2);
-				ft_putstr_fd("' : not a valid identifier\n", 2);
-				list->dqm = 1;
-				return ;
-			}
-			// else
-			// {
-			while (tmp->acces_args->args[k])
-			{
-				j = 0;
-				while (tmp->acces_args->args[k]->str[j])
-				{
-					if (tmp->acces_args->args[k]->str[j] == '=')
+				k=i+1;
+				if(is_valid_identifier(tmp->acces_args->args[i + 1]->str) == 0)
+					tmp->dqm=1;
+				// else
+				// {
+					while(tmp->acces_args->args[k])
 					{
-						tmp->acces_args->args[k]->env_flag = 1;
-						break ;
+						j = 0;
+						while(tmp->acces_args->args[k]->str[j])
+						{
+							if(tmp->acces_args->args[k]->str[j]=='=')
+							{
+								tmp->acces_args->args[k]->env_flag = 1;
+								break;
+							}
+							c++;
+							j++;
+						}
+						k++;
 					}
-					c++;
-					j++;
-				}
-				k++;
-			}
-			if (c > 0)
-				full->new = malloc(sizeof(char *) * (c + 1));
-			if (!full->new)
-				return ;
-			tmp = list;
-			k = 0;
-			j = 0;
-			while (tmp->acces_args->args[k])
-			{
-				if (tmp->acces_args->args[k]->env_flag == 1)
-				{
-					equals_index = 0;
-					while (tmp->acces_args->args[k]->str[equals_index]
-						&& tmp->acces_args->args[k]->str[equals_index] != '=')
+					if(c>0)
+						full->new = malloc(sizeof(char *) * (c+1));
+					if(!full->new)
+						return ;
+					tmp =list;
+					k = 0;
+					j = 0;
+					while(tmp->acces_args->args[k])
 					{
-						equals_index++;
+
+						if(tmp->acces_args->args[k]->env_flag == 1)
+						{
+							int equals_index = 0;
+							while (tmp->acces_args->args[k]->str[equals_index] && tmp->acces_args->args[k]->str[equals_index] != '=')
+							{
+							    equals_index++;
+							}
+							full->new[j++] = ft_substr(tmp->acces_args->args[k]->str, 0, equals_index);
+						}
+						k++;
 					}
-					full->new[j++] = ft_substr(tmp->acces_args->args[k]->str, 0,
-							equals_index);
-				}
-				k++;
-			}
-			full->new[j] = NULL;
-			create_env(tmp, envv, full);
-			while (env)
-			{
-				k = 0;
-				while (full->new[k])
-				{
-					if (ft_strcmp(full->new[k], env->key) == 0)
+					full->new[j] = NULL;
+					create_env(tmp, envv,full);
+					while(env)
 					{
-						env->has_equal = 1;
+						k = 0;
+						while(full->new[k])
+						{
+							if(ft_strcmp(full->new[k], env->key) == 0)
+							{
+								env->has_equal = 1;
+							}
+							k++;
+						}	
+						env = env->next;
 					}
-					k++;
-				}
-				env = env->next;
+				// }
 			}
-			// }
-		}
 		else
 		{
 			print_export_env(*envv, full->pipe_blocks);
@@ -157,18 +149,17 @@ void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *list)
 	}
 	built_in_helper_func_2(full, i, envv, list);
 	if (full->new)
-	{
-		free_split(full->new);
-		full->new = NULL;
-	}
+    {
+        free_split(full->new);
+        full->new = NULL;
+    }
 }
 
-void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe,
-		t_now *get)
+void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now *get)
 {
-	int		i;
-	t_full	full;
-
+	int	i;
+	t_full full;
+	
 	full.pipe_blocks = pipe_blocs;
 	full.node = *node;
 	full.get = get;
@@ -182,36 +173,36 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe,
 			cd_cmd(pipe_blocs->acces_args->args, *node, pipe_blocs);
 			break ;
 		}
-		else if (ft_strcmp(pipe_blocs->acces_args->args[0]->str, "$?") == 0)
+		else if (ft_strcmp(pipe_blocs->acces_args->args[0]->str,
+						"$?") == 0)
 		{
 			ft_putstr_fd(ft_itoa(pipe_blocs->dqm), 2);
-			ft_putstr_fd(": command not found\n", 2); // 1
+			ft_putstr_fd(": command not found\n", 2); //1
 			pipe_blocs->dqm = 127;
-			break ;
+			break;
 		}
 		built_in_helper_func(&full, i, node, pipe_blocs);
-		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str, "echo") == 0)
+		if (ft_strcmp(pipe_blocs->acces_args->args[i]->str,
+						"echo") == 0)
 		{
-			initalized_echo(pipe_blocs);
-			break ;
+							initalized_echo(pipe_blocs);
+							break;
 		}
 		i++;
 	}
 }
 
-void	cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks,
-		t_env *env)
+void cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks, t_env *env)
 {
-	t_env	*tmp;
-
-	tmp = env;
-	if (args[1]->str[0] == '$' && (args[1]->flag == 0 || args[1]->flag == 2))
+	t_env *tmp = env;
+	if (args[1]->str[0] == '$' && (args[1]->flag == 0
+				|| args[1]->flag == 2))
 	{
 		env_name = args[1]->str + 1; // bi sorun çıkarsa buraya bi gözat
-		chdir(get_getenv(env, env_name));
+    	chdir(get_getenv(env ,env_name));
 		return ;
 	}
-	else if (chdir(args[1]->str) == -1)
+	else if(chdir(args[1]->str)==-1)
 	{
 		perror("cd");
 		pipe_blocks->dqm = 1;
@@ -220,22 +211,22 @@ void	cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks,
 	{
 		if (ft_strcmp(tmp->key, "OLDPWD") == 0)
 		{
-			if (tmp->data)
+			if(tmp->data)
 				free(tmp->data);
-			tmp->data = ft_strdup(get_getenv(env, "PWD"));
-			break ;
+			tmp->data= ft_strdup(get_getenv(env, "PWD"));
+			break;
 		}
 		tmp = tmp->next;
 	}
-	tmp = env;
+	 tmp = env;
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->key, "PWD") == 0)
 		{
-			if (tmp->data)
+			if(tmp->data)
 				free(tmp->data);
 			tmp->data = getcwd(NULL, 0);
-			break ;
+			break;
 		}
 		tmp = tmp->next;
 	}
@@ -244,13 +235,10 @@ void	cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks,
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 {
 	char	*line;
-	char	*env_name;
-	t_env	*tmp;
-	char	*old_pwd;
-	char	*pwd;
-	char	*new_oldpwd;
-
+	char *env_name;
+	t_env *tmp;
 	tmp = env;
+	
 	env_name = NULL;
 	if (!args[1] || ft_strcmp(args[1]->str, "~") == 0)
 	{
@@ -258,39 +246,39 @@ void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 		if (line)
 			chdir(line);
 	}
-	else if (ft_strcmp(args[1]->str, "-") == 0)
+	else if(ft_strcmp(args[1]->str, "-") == 0)
 	{
-		old_pwd = ft_strdup(get_getenv(env, "OLDPWD"));
-		pwd = ft_strdup(get_getenv(env, "PWD"));
-		new_oldpwd = ft_strdup(pwd);
-		while (tmp)
+		char *old_pwd = ft_strdup(get_getenv(env, "OLDPWD"));
+		char *pwd = ft_strdup(get_getenv(env, "PWD"));
+		char *new_oldpwd = ft_strdup(pwd);
+		while(tmp)
 		{
-			if (ft_strcmp(tmp->key, "OLDPWD") == 0)
+			if(ft_strcmp(tmp->key,"OLDPWD") == 0)
 			{
-				if (tmp->data)
+				if(tmp->data)
 					free(tmp->data);
 				tmp->data = new_oldpwd;
 			}
-			else if (ft_strcmp(tmp->key, "PWD") == 0)
+			else if(ft_strcmp(tmp->key,"PWD") == 0)
 			{
-				if (tmp->data)
+				if(tmp->data)
 					free(tmp->data);
 				tmp->data = ft_strdup(old_pwd);
 			}
 			tmp = tmp->next;
 		}
-		if (pwd)
+		if(pwd)
 			free(pwd);
-		if (old_pwd)
+		if(old_pwd)
 			free(old_pwd);
 		ft_putstr_fd(new_oldpwd, 1);
-		ft_putchar_fd('\n', 1);
-		if (get_getenv(env, "OLDPWD"))
+		ft_putchar_fd('\n',1);
+		if(get_getenv(env, "OLDPWD"))
 			chdir(get_getenv(env, "OLDPWD"));
 	}
-	else if (args[2])
+	else if(args[2])
 	{
-		ft_putstr_fd("bash: cd: too many arguments\n", 2);
+		ft_putstr_fd("bash: cd: too many arguments\n",2);
 		pipe_blocks->dqm = 1;
 	}
 	else
@@ -307,8 +295,7 @@ void	pwd_cmd(char **ar, t_general *list, t_env *env)
 		list->dqm = 0;
 		if (!line)
 		{
-			printf("Error\n");
-			line = get_getenv(env, "HOME");
+			printf("Error\n");	line = get_getenv(env, "HOME");
 			free(line);
 			list->dqm = 1;
 			return ;

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 15:13:50 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 21:58:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ static int	open_input_file(char *filename, t_general *list, t_full *full)
 	if (access(filename, F_OK) != 0)
 	{
 		error_msg(2, filename, 0, list);
+		ft_putstr_fd(ft_itoa(list->dqm), 2);
 		cleanup(full);
 		free_pipe_blocks(full->pipe_blocks);
 		exit(list->dqm);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 13:18:56 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 19:55:10 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 15:15:25 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,6 @@ void	handle_redirections(t_general *pipe_blocs, t_full *full)
 			full, i);
 		i++;
 	}
-	// if (is_redirect == 1)
-	// 	renew_block2(pipe_blocs);
+	if (is_redirect == 1)
+		renew_block2(pipe_blocs);
 }

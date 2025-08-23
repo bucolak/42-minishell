@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/23 19:20:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 21:50:44 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ static void	handle_command_execute(t_general *pipe_blocs, t_full *full, t_env *e
 		if (is_built_in(pipe_blocs->acces_args->args[0]->str) == 1)
 		{
 			check_cmd_built_in(pipe_blocs, &env, pipe, full->get);
-			ft_putstr_fd("burda\n", 2);
 			clean_and_exit(full, pipe_blocs->dqm);
 		}
 		else
@@ -79,9 +78,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_pipe *pipe,
 	pid_t	pid;
 
 	if (go_to_handle_heredoc(pipe_blocs, full) == 1)
-	{
 		return ;
-	}
 	pid = fork();
 	if (pipe_blocs->next)
 	{
