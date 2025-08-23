@@ -6,11 +6,27 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/21 13:58:53 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 12:36:31 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	is_built_in(char *str)
+{
+	int		i;
+	char	*builtin[] = {"echo", "pwd", "cd", "env", "export", "unset", "exit",
+			"$?", NULL};
+
+	i = 0;
+	while (builtin[i])
+	{
+		if (ft_strcmp(builtin[i], str) == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 void	built_in_helper_func_2(t_full *full, int i, t_env **env, t_general *list)
 {

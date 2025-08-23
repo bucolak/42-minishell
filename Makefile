@@ -16,9 +16,17 @@ SRC = main.c \
 	  signals.c \
 	  parser.c	\
 	  free.c \
-	  redirection_third.c \
 	  pipe_first.c \
-	  pipe_second.c
+	  pipe_second.c \
+	  execute_first.c \
+	  execute_second.c \
+	  append.c \
+	  redirection_handle_first.c \
+	  redirection_handle_second.c \
+	  heredoc.c \
+	  heredoc_second.c \
+	  heredoc_third.c \
+	  heredoc_fourth.c
 
 CC = gcc 
 
