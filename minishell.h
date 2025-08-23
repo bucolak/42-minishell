@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 13:28:32 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 13:35:42 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,7 +251,7 @@ void					handle_heredoc(t_general *list, t_full *full);
 
 //heredoc.c
 void	remove_heredoc(t_general *list);
-
+int	go_to_handle_heredoc(t_general *list, t_full *full);
 
 //heredoc_second.c
 void	fill_limiter(t_general *list);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/23 13:20:52 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 13:34:43 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,9 +146,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_pipe *pipe,
 	while (tmp)
 	{
 		if (has_heredoc(tmp) == 1)
-		{
 			handle_heredoc(tmp, full);
-		}
 		if (tmp->a == 1)
 			return ;
 		tmp = tmp->next;
@@ -162,11 +160,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_pipe *pipe,
 	if (pid == 0)
 	{
 		if (pipe_blocs->a == 1)
-		{
-			// cleanup(full);
-			// free_pipe_blocks(full->pipe_blocks);
-			exit(130);
-		}
+			clean_and_exit(full, 130);
 		signal(SIGINT, SIG_DFL);
 		if (has_redireciton(pipe_blocs) == 1 && is_flag_6(pipe_blocs, env) == 0)
 		{

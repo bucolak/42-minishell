@@ -6,11 +6,27 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 12:26:51 by seerel            #+#    #+#             */
-/*   Updated: 2025/08/23 13:24:12 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 13:35:32 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	go_to_handle_heredoc(t_general *list, t_full *full)
+{
+	t_general	*tmp;
+
+	tmp = list;
+	while (tmp)
+	{
+		if (has_heredoc(tmp) == 1)
+			handle_heredoc(tmp, full);
+		if (tmp->a == 1)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
 
 static t_arg	**build_heredoc_clean_args(t_arg **args)
 {

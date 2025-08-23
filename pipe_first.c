@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/22 21:46:54 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 13:35:20 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,22 +61,6 @@ static void	child_process(t_pipe *pipe, t_env *env, t_full *full, int i)
 			end_block(pipe->count, i, pipe->fd);
 	}
 	direct_cmd(pipe->tmp, env, pipe, full);
-}
-
-static int	go_to_handle_heredoc(t_general *list, t_full *full)
-{
-	t_general	*tmp;
-
-	tmp = list;
-	while (tmp)
-	{
-		if (has_heredoc(tmp) == 1)
-			handle_heredoc(tmp, full);
-		if (tmp->a == 1)
-			return (1);
-		tmp = tmp->next;
-	}
-	return (0);
 }
 
 void	handle_pipe(t_general *list, t_env *env, t_pipe *pipe, t_full *full)
