@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 13:35:42 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:42:17 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,10 @@ typedef struct s_hdoc_state
 
 
 extern int signal_ec;
+
+//execute_handle_second.c
+void	expand_dollar_qmark_execute(t_general *list);
+//
 void	print_message_and_exit(int type, t_general *pipe_blocs, t_full *full,
 		int j);
 void	print_message_and_exit2(t_general *pipe_blocs, t_full *full, int j);
@@ -126,7 +130,7 @@ void	direct_and_close_fd(int count, int **fd, int i, int type);
 void	clean_and_exit(t_full *full, int ec);
 void	close_fd(int count, int **fd, int type, int i);
 void	end_block(int count, int i, int **fd);
-void	wait_child(t_pipe *pipe, t_general *list);
+void	wait_child_pipe(t_pipe *pipe, t_general *list);
 void free_for_heredoc(t_full *full);
 void	close_all_open_fds(void);
 void signal_handler_heredoc(int signo);
@@ -170,9 +174,8 @@ void					get_env_helper_func(int *i, int *j, t_env *tmp,
 							char **envp);
 void					get_env(t_env *node, char **envp);
 void					print_env(t_general *list, t_env *node, int i);
-void					ft_envadd_back(t_env **lst, char *key, char *data,
-							t_general *list);
-void					create_env(t_general *list, t_env **env);
+void	ft_envadd_back(t_env **lst, char *key, char *data, t_full *full);
+void	create_env(t_general *list, t_env **env, t_full *full);
 
 // environment_second.c
 char	*get_key(char *str);
@@ -213,8 +216,9 @@ void					handle_heredoc(t_general *list, t_full *full);
 
 // echo_first.c
 void	echo_flag_4_second(char *str, t_general *tmp, int *j);
-void	echo_cmd(t_general *tmp, char *str, int i);
+void	echo_cmd(t_general *tmp, int i);
 void	initalized_echo(t_general *list);
+int	cont_n(char *str);
 
 // echo_second.c
 void					echo_flag_0_and_2_second(char *str,
@@ -240,6 +244,8 @@ void free_env(t_env *env);
 void free_pipe_blocks(t_general *blocks);
 void free_pipe(t_pipe *pipe);
 void free_envp(t_now *get);
+void	free_acces_args(t_pipeafter *acc);
+void	free_limiter(char **limiter);
 
 //heredoc_third.c
 int	process_heredocs(t_general *tmp, t_full *full);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/23 12:36:31 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:19:25 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *list)
 						k++;
 					}
 					full->new[j] = NULL;
-					create_env(tmp, envv);
+					create_env(tmp, envv,full);
 					while(env)
 					{
 						k = 0;

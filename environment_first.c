@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:58:25 by buket             #+#    #+#             */
-/*   Updated: 2025/08/21 13:58:31 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 14:57:05 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ void	get_env_helper_func(int *i, int *j, t_env *tmp, char **envp)
 	{
 		free(tmp->key);
 	}
-        
-    if (tmp->data)
+	if (tmp->data)
 	{
 		free(tmp->data);
 	}
@@ -71,7 +70,7 @@ void	print_env(t_general *list, t_env *node, int i)
 	if (list->acces_args->args[i + 1])
 	{
 		ft_putstr_fd("env: '", 2);
-		ft_putstr_fd(list->acces_args->args[i + 1]->str,2);
+		ft_putstr_fd(list->acces_args->args[i + 1]->str, 2);
 		ft_putstr_fd("’: No such file or directory\n", 2);
 		list->dqm = 127;
 		return ;
@@ -88,11 +87,11 @@ void	print_env(t_general *list, t_env *node, int i)
 				ft_putstr_fd(tmp->data, 1);
 				ft_putchar_fd('\n', 1);
 			}
-			else if(tmp->has_equal == 1)
+			else if (tmp->has_equal == 1)
 			{
 				ft_putstr_fd(tmp->key, 1);
 				ft_putstr_fd("=\n", 1);
-			}	
+			}
 		}
 		tmp = tmp->next;
 	}
@@ -114,7 +113,7 @@ int	key_cont(char *key)
 	return (1);
 }
 
-void print_message(char *key, char *data, t_general *list)
+void	print_message(char *key, char *data, t_general *list, t_full *full)
 {
 	ft_putstr_fd("bash: export: `", 2);
 	ft_putstr_fd(key, 2);
@@ -122,96 +121,92 @@ void print_message(char *key, char *data, t_general *list)
 	ft_putstr_fd(data, 2);
 	ft_putstr_fd("' : not a valid identifier\n", 2);
 	list->dqm = 1;
+	clean_and_exit(full, list->dqm);
 }
 
-void	ft_envadd_back(t_env **lst, char *key, char *data, t_general *list)
+void	ft_envadd_back_scnd(t_env **lst, char *key, char *data, t_env *new_node)
 {
 	t_env	*last;
-	t_env	*new_node;
-	t_env	*tmp;
-	tmp = *lst;
-    while (tmp)
-    {
-		if (ft_strcmp(tmp->key, key) == 0)
-        {
-			if (tmp->data)
-			free(tmp->data);
-            tmp->data = ft_strdup(data);
-            list->dqm = 0;
-            return;
-        }
-        tmp = tmp->next;
-    }
-	
-	new_node = create_env_node();
-	if (key)
-	{
-		if(key_cont(key) == 1)
-		{
-			new_node->key = ft_strdup(key);
-			if(data)
-				new_node->data = ft_strdup(data);			
-			else
-				new_node->data = ft_strdup("");
 
-			if (*lst == NULL)
-				*lst = new_node;
-			else
-			{
-				last = *lst;
-				while (last->next)
-					last = last->next;
-				last->next = new_node;
-			}
-			list->dqm = 0;
-		}
-		else
-			print_message(key, data, list);
+	new_node->key = ft_strdup(key);
+	if (data)
+		new_node->data = ft_strdup(data);
+	else
+		new_node->data = ft_strdup("");
+	if (*lst == NULL)
+		*lst = new_node;
+	else
+	{
+		last = *lst;
+		while (last->next)
+			last = last->next;
+		last->next = new_node;
 	}
 }
 
-void create_env_2(t_general *list, t_env **env, int i)
+void	ft_envadd_back(t_env **lst, char *key, char *data, t_full *full)
+{
+	t_env	*new_node;
+	t_env	*tmp;
+
+	tmp = *lst;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->key, key) == 0)
+		{
+			if (tmp->data)
+				free(tmp->data);
+			tmp->data = ft_strdup(data);
+			full->pipe_blocks->dqm = 0;
+			return ;
+		}
+		tmp = tmp->next;
+	}
+	new_node = create_env_node();
+	if (key)
+	{
+		if (key_cont(key) == 1)
+		{
+			ft_envadd_back_scnd(lst, key, data, new_node);
+			full->pipe_blocks->dqm = 0;
+		}
+		else
+			print_message(key, data, full->pipe_blocks, full);
+	}
+}
+
+void	create_env_scnd(t_general *list, t_env **env, int i, t_full *full)
 {
 	char	*new;
 	char	*key;
-    char	*data;
-	
+	char	*data;
+
 	new = list->acces_args->args[i]->str;
 	if (list->acces_args->args[i] && new)
 	{
 		list->dqm = 0;
 		key = get_key(new);
-        data = get_data(new);
-		if ((count_dquote(new) % 2 == 0 || count_squote(new)
-		% 2 == 0)) //burda is_repeat fonksiyonu vardı kaldırdım  çünkü şuan böyle gerekti sonra lazım olursa duruma göre bakarız
-				{
-					if(key && key[0])
-					{
-						ft_envadd_back(env, key, data, list);
-					}
-					else
-					{
-						ft_putstr_fd("bash: export: `", 2);
-						ft_putstr_fd(list->acces_args->args[1]->str,2);
-						ft_putstr_fd("': not a valid identifier\n", 2);
-						list->dqm = 1;
-					}
-				}
-        free(key);
-        free(data);
-	}
-	if(list->acces_args->args[i+1] && ft_strcmp((*env)->key, " =")==0)
-	{
-		free(new);
-		ft_putstr_fd("bash: export: ", 2);
-		ft_putstr_fd("`=': not a valid identifier\n", 2);
+		data = get_data(new);
+		if ((count_dquote(new) % 2 == 0 || count_squote(new) % 2 == 0))
+		{
+			if (key && key[0])
+				ft_envadd_back(env, key, data, full);
+			else
+			{
+				ft_putstr_fd("bash: export: `", 2);
+				ft_putstr_fd(list->acces_args->args[1]->str, 2);
+				ft_putstr_fd("': not a valid identifier\n", 2);
+				list->dqm = 1;
+			}
+		}
+		free(key);
+		free(data);
 	}
 }
 
-void	create_env(t_general *list, t_env **env)
+void	create_env(t_general *list, t_env **env, t_full *full)
 {
-	int		i;
-	
+	int	i;
 
 	while (list)
 	{
@@ -222,11 +217,11 @@ void	create_env(t_general *list, t_env **env)
 			{
 				i++;
 				while (list->acces_args->args[i])
-                {
-                    create_env_2(list, env, i);
-                    i++;
-                }
-                break;
+				{
+					create_env_scnd(list, env, i, full);
+					i++;
+				}
+				break ;
 			}
 			i++;
 		}

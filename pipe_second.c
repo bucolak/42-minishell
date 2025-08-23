@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 21:19:43 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/22 21:28:39 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:12:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	direct_and_close_fd(int count, int **fd, int i, int type)
 	}
 }
 
-void	wait_child(t_pipe *pipe, t_general *list)
+void	wait_child_pipe(t_pipe *pipe, t_general *list)
 {
 	int	j;
 	int	last_status;

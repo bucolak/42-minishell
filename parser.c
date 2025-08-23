@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/13 17:08:50 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:02:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,6 +217,7 @@ void	parse_input(t_general *a)
 						free(tmp_str);
 						tmp_str = ft_substr(a->blocs, j-1, 2);
 						a->acces_args->args[k] = create_arg(tmp_str, 1, 0);
+						free(tmp_str); 
 						k++;
 					}
 					else

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:16:02 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 13:35:20 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:37:15 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,6 @@ void	handle_pipe(t_general *list, t_env *env, t_pipe *pipe, t_full *full)
 			pipe->tmp = pipe->tmp->next;
 	}
 	close_fd(pipe->count, pipe->fd, 0, i);
-	wait_child(pipe, list);
+	wait_child_pipe(pipe, list);
 	close_heredoc_fd(full->pipe_blocks);
 }
