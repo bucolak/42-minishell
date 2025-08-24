@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/24 12:37:59 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:20:23 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ static void	wait_child_execute(pid_t pid, t_general *pipe_blocs)
 		pipe_blocs->dqm = WEXITSTATUS(status);
 }
 
-static void	handle_command_execute(t_general *pipe_blocs, t_full *full, t_env *env,
-		t_pipe *pipe)
+static void	handle_command_execute(t_general *pipe_blocs, t_full *full,
+		t_env *env, t_pipe *pipe)
 {
 	if (!pipe_blocs->next || (pipe_blocs->next
 			&& has_redireciton(pipe_blocs) == 1))

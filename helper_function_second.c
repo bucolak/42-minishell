@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   helper_function_second.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 14:50:13 by seerel            #+#    #+#             */
-/*   Updated: 2025/08/24 19:19:41 by seerel           ###   ########.fr       */
+/*   Updated: 2025/08/24 20:51:45 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 static void	process_flag_6_arg(char *arg_str, t_env *env)
 {
@@ -59,4 +58,40 @@ void	control_redireciton(t_general *list, t_env *env)
 		}
 		tmp = tmp->next;
 	}
+}
+
+void	create_pipe(int count, int **fd)
+{
+	int	i;
+
+	i = 0;
+	while (i < count - 1)
+	{
+		fd[i] = malloc(sizeof(int) * 2);
+		if (pipe(fd[i]) == -1)
+		{
+			perror("pipe");
+			exit(1);
+		}
+		i++;
+	}
+}
+
+void	init_pipe(t_pipe *pipe, t_general *list)
+{
+	pipe->count = 0;
+	pipe->tmp = list;
+	while (pipe->tmp)
+	{
+		pipe->count++;
+		pipe->tmp = pipe->tmp->next;
+	}
+	pipe->fd = malloc(sizeof(int *) * (pipe->count - 1));
+	pipe->pid = malloc(sizeof(pid_t) * pipe->count);
+}
+
+void	signal_handler(void)
+{
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, SIG_IGN);
 }

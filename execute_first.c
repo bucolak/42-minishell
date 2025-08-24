@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 12:28:21 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 15:44:08 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:20:16 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,15 @@ char	*extend_env(char *str, t_env *env)
 char	**make_argv(t_pipeafter *acces_args, t_env *env)
 {
 	int		count;
+	int		i;
 	char	**argv;
 
 	count = 0;
 	while (acces_args->args[count])
 		count++;
 	argv = malloc(sizeof(char *) * (count + 1));
-	for (int i = 0; i < count; i++)
+	i = 0;
+	while (i < count)
 	{
 		if ((acces_args->args[i]->flag == 0 || acces_args->args[i]->flag == 2)
 			&& acces_args->args[i]->str[0] == '$')
@@ -38,13 +40,14 @@ char	**make_argv(t_pipeafter *acces_args, t_env *env)
 		}
 		else
 			argv[i] = acces_args->args[i]->str;
+		i++;
 	}
 	argv[count] = NULL;
 	return (argv);
 }
 
-static void	if_have_dollar_execute(char **cmd, t_general *pipe_blocs, t_env *envv,
-		t_full *full)
+static void	if_have_dollar_execute(char **cmd, t_general *pipe_blocs,
+		t_env *envv, t_full *full)
 {
 	char	*env;
 
@@ -62,7 +65,8 @@ static void	if_have_dollar_execute(char **cmd, t_general *pipe_blocs, t_env *env
 	}
 }
 
-static void	control_slash_execute(char *cmd, t_general *pipe_blocs, t_full *full)
+static void	control_slash_execute(char *cmd, t_general *pipe_blocs,
+		t_full *full)
 {
 	struct stat	sb;
 

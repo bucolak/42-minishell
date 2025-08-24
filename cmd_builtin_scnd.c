@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 14:12:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 14:13:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:09:01 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,17 @@
 int	is_built_in(char *str)
 {
 	int		i;
-	char	*builtin[] = {"echo", "pwd", "cd", "env", "export", "unset", "exit",
-			"$?", NULL};
+	char	*builtin[9];
 
+	builtin[0] = "echo";
+	builtin[1] = "pwd";
+	builtin[2] = "cd";
+	builtin[3] = "env";
+	builtin[4] = "export";
+	builtin[5] = "unset";
+	builtin[6] = "exit";
+	builtin[7] = "$?";
+	builtin[8] = NULL;
 	i = 0;
 	while (builtin[i])
 	{

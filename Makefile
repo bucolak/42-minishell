@@ -48,7 +48,8 @@ SRC = main.c \
 	  main_third.c \
 	  remove_null.c \
 	  connect_count_malloc.c \
-	  connect_count_utils.c
+	  connect_count_utils.c \
+	  utils.c
 
 CC = gcc 
 

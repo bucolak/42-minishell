@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/24 14:14:07 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:04:35 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static void	free_new_builtin_helper(t_full *full)
 	}
 }
 
-static void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *list)
+static void	built_in_helper_func(t_full *full, int i, t_env **envv,
+		t_general *list)
 {
 	t_general	*tmp;
 	int			c;
@@ -49,7 +50,7 @@ static void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *l
 	if (ft_strcmp(tmp->acces_args->args[i]->str, "export") == 0)
 	{
 		if ((list->acces_args->args[i + 1] && tmp->acces_args->args[i
-				+ 1]->str))
+					+ 1]->str))
 		{
 			if (ctrl_is_valid_identifier_builtin_helper(tmp, i) == 1)
 				return ;

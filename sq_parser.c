@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sq_parser.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 16:09:01 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 19:44:20 by seerel           ###   ########.fr       */
+/*   Updated: 2025/08/24 20:59:26 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static void	handle_single_quotes_parser_ifblock(t_general *a, int *i, int *j,
 	(*i)++;
 }
 
-// static void	handle_single_quotes_parser_elblock(t_general *a, int *i, int *j,
+// static void	handle_single_quotes_parser_elblock(t_general *a, int *i,
+// int *j,
 // 		int *k)
 // {
 // 	char	*tmp_str;
@@ -73,7 +74,7 @@ int	handle_single_quotes_parser(t_general *a, int *i, int *j, int *k)
 	else
 	{
 		ft_putstr_fd("Syntax Error: The quote did not close\n", 2);
-		return 1;
+		return (1);
 	}
-	return 0;
+	return (0);
 }

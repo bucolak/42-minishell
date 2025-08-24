@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 19:43:54 by seerel           ###   ########.fr       */
+/*   Updated: 2025/08/24 21:01:53 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ void					ctrld_free_exit(t_general **pipe_blocs);
 int						main_line_ctrl_scnd(char *line, t_general **pipe_blocs);
 
 // main_third.c
-int					apply_parser(char *line, t_general *pipe_blocs,
+int						apply_parser(char *line, t_general *pipe_blocs,
 							t_env *env, t_full *full);
 void					fill_get(t_now **get, t_env *env, t_full *full);
 void					apply_pipe(t_general *pipe_blocs, t_pipe **pipe,
@@ -155,11 +155,11 @@ int						is_redireciton2(char *str);
 int						count_args(const char *str);
 
 // dq_parser.c
-int					handle_double_quotes_parser(t_general *a, int *i,
+int						handle_double_quotes_parser(t_general *a, int *i,
 							int *j, int *k);
 
 // sq_parser.c
-int					handle_single_quotes_parser(t_general *a, int *i,
+int						handle_single_quotes_parser(t_general *a, int *i,
 							int *j, int *k);
 
 // wq_parser.c
@@ -183,8 +183,10 @@ void					print_message_and_exit2(t_general *pipe_blocs,
 char					**make_argv(t_pipeafter *acces_args, t_env *env);
 void					path_control_execute(char **args, t_general *pipe_blocs,
 							char *cmd, t_full *full);
-void					control_redirecitons_and_redirect_to_func(t_general *pipe_blocs,
+void					control_redirecitons_and_redirect_to_func(
+							t_general *pipe_blocs,
 							int *is_redirect, t_full *full, int i);
+
 void					go_to_execve_execute(char **paths, int *command_found,
 							t_full *full, t_general *pipe_blocs);
 void					if_command_not_found_execute(int command_found,
@@ -219,7 +221,7 @@ t_env					*create_env_node(void);
 
 // main.c
 void					pipe_parse(t_general **pipe_block, char *line);
-int					parse_input(t_general *a);
+int						parse_input(t_general *a);
 int						has_heredoc(t_general *list);
 void					expand_dollar(t_general *list, t_env *env);
 void					connect_count_malloc(t_general *list);
@@ -273,7 +275,6 @@ int						ft_lsttsize(t_env *lst);
 int						ft_strcmp(const char *s1, const char *s2);
 t_env					*ft_lsttlast(t_env *lst);
 int						is_numeric(char *str);
-int						is_repeated(t_env *node, char *ky, char *dt);
 
 // redirection_first.c
 int						is_redirection(char *str);
@@ -346,11 +347,10 @@ int						expand_variable_at_position(t_arg *arg, t_env *env,
 int						remove_empty_arg(t_general *node, int i);
 void					expand_args_in_node(t_general *node, t_env *env);
 
-
 // connect_count_malloc.c
-int	should_skip_redirection(t_arg **args, int i);
-char	*create_combined_string(t_arg *arg1, t_arg *arg2);
-void	update_flags(t_arg **args, int i, char *new);
-void	remove_arg_from_array(t_arg **args, int i);
-void	process_adjacent_args(t_arg **args, int i);
+int						should_skip_redirection(t_arg **args, int i);
+char					*create_combined_string(t_arg *arg1, t_arg *arg2);
+void					update_flags(t_arg **args, int i, char *new);
+void					remove_arg_from_array(t_arg **args, int i);
+void					process_adjacent_args(t_arg **args, int i);
 #endif

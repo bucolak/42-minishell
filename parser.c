@@ -3,41 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 19:40:57 by seerel           ###   ########.fr       */
+/*   Updated: 2025/08/24 20:56:33 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char	*clean_double_quotes(char *str)
-{
-	int		i;
-	int		j;
-	char	*new;
-
-	i = 0;
-	j = 0;
-	while (str[i] && str[i] != ' ')
-	{
-		if (str[i] == '"')
-			j++;
-		i++;
-	}
-	new = malloc(sizeof(char) * (i - j + 1));
-	i = 0;
-	j = 0;
-	while (str[i] && str[i] != ' ')
-	{
-		if (str[i] != '"' && str[i] != '\'')
-			new[j++] = str[i];
-		i++;
-	}
-	new[j] = '\0';
-	return (new);
-}
 
 void	free_old_block(t_general *a)
 {

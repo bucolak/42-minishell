@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 21:52:48 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:57:34 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ static void	process_args_array(t_arg **new, t_general *tmp)
 		if (is_redirection(tmp->acces_args->args[i]->str) == 1
 			&& (tmp->acces_args->args[i]->flag == 5
 				|| tmp->acces_args->args[i]->flag == 2))
-			{
-				i += 2;
-			}
+		{
+			i += 2;
+		}
 		else
 		{
 			renew_else_block(&new, tmp, &i, &j);
@@ -79,13 +79,15 @@ void	renew_block2(t_general *list)
 {
 	int		arg_count;
 	t_arg	**new;
-	int i = 0;
+	int		i;
+
+	i = 0;
 	arg_count = count_redirection_args(list);
 	new = ft_calloc(sizeof(t_arg *), (arg_count + 1));
 	process_args_array(new, list);
-	while(list->acces_args->args[i])
+	while (list->acces_args->args[i])
 	{
-		if(list->acces_args->args[i] && list->acces_args->args[i]->str)
+		if (list->acces_args->args[i] && list->acces_args->args[i]->str)
 		{
 			free(list->acces_args->args[i]->str);
 			free(list->acces_args->args[i]);

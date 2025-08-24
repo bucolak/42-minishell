@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 13:08:54 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:17:13 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void	print_export_env(t_env *env, t_general *list)
 	list->dqm = 0;
 }
 
-static void	export_cmd_helper_func(t_env *env, t_env **new_env, t_env *swap, int *j)
+static void	export_cmd_helper_func(t_env *env, t_env **new_env, t_env *swap,
+		int *j)
 {
 	int	i;
 	int	len;
@@ -77,19 +78,17 @@ static void	export_cmd_helper_func(t_env *env, t_env **new_env, t_env *swap, int
 
 t_env	**export_cmd(t_env *env)
 {
-	int i;
-	int j;
-	int len;
-	t_env **new_env;
-	t_env *tmp;
-	t_env *swap;
+	int		i;
+	int		j;
+	t_env	**new_env;
+	t_env	*tmp;
+	t_env	*swap;
 
 	swap = NULL;
-	len = ft_lsttsize(env);
 	i = 0;
-	new_env = malloc(sizeof(t_env *) * len);
+	new_env = malloc(sizeof(t_env *) * ft_lsttsize(env));
 	tmp = env;
-	while (i < len)
+	while (i < ft_lsttsize(env))
 	{
 		new_env[i] = tmp;
 		tmp = tmp->next;

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:25:16 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 14:03:17 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:03:41 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static void	cd_helper(t_arg **args, char *env_name, t_general *pipe_blocks,
 	update_cd_helper(tmp, env);
 }
 
-static	void cd_dash_control_scnd(t_env *tmp, char *new_oldpwd, char *old_pwd)
+static void	cd_dash_control_scnd(t_env *tmp, char *new_oldpwd, char *old_pwd)
 {
 	while (tmp)
 	{

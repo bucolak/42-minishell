@@ -6,13 +6,14 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 12:47:15 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 13:10:45 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:11:20 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	ft_envadd_back_scnd(t_env **lst, char *key, char *data, t_env *new_node)
+static void	ft_envadd_back_scnd(t_env **lst, char *key, char *data,
+		t_env *new_node)
 {
 	t_env	*last;
 

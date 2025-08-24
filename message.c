@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 17:56:22 by bucolak           #+#    #+#             */
-/*   Updated: 2025/07/26 13:12:06 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:54:49 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,7 @@ void	error_msg(int i, char *str, int type, t_general *list)
 	}
 	else if (type == 3)
 	{
-		ft_putstr_fd("bash: syntax error near unexpected token `newline'\n",
-						i);
+		ft_putstr_fd("bash: syntax error near unexpected token `newline'\n", i);
 		list->dqm = 2;
 	}
 }

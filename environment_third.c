@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:03:07 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 13:03:34 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:17:54 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*get_data(char *str)
 		i++;
 	if (str[i] == '=')
 		i++;
-	if (str[i] == '\0') // export a= durumu
+	if (str[i] == '\0')
 		return (ft_strdup(""));
 	if ((str[i] == '"' || str[i] == '\''))
 		i++;
