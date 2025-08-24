@@ -1,4 +1,7 @@
+""
+<
 >
+>>
 $HOME
 42_minishell_tester
 append.c
@@ -6,10 +9,16 @@ append.o
 apply_malloc.c
 apply_malloc.o
 a.txt
+cd_cmd.c
+cd_cmd.o
 cmd_built_in.c
 cmd_built_in.o
+cmd_builtin_scnd.c
+cmd_builtin_scnd.o
 count_quote.c
 count_quote.o
+create_env.c
+create_env.o
 echo
 echo_builtin.c
 echo_builtin.o
@@ -21,6 +30,8 @@ environment_first.c
 environment_first.o
 environment_second.c
 environment_second.o
+environment_third.c
+environment_third.o
 etc.c
 etc.o
 execute_first.c
@@ -33,6 +44,8 @@ execute_second.c
 execute_second.o
 exit.c
 exit.o
+export_ctrl.c
+export_ctrl.o
 fill_nowstruct.c
 fill_nowstruct.o
 free_pipe.c

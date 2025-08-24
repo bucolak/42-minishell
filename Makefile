@@ -32,7 +32,10 @@ SRC = main.c \
 	  execute_handle_second.c \
 	  echo_builtin.c \
 	  create_env.c \
-	  environment_third.c
+	  environment_third.c \
+	  cd_cmd.c \
+	  export_ctrl.c \
+	  cmd_builtin_scnd.c
 
 CC = gcc 
 
