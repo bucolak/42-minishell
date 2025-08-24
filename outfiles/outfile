@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 17:20:32 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 18:47:29 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,17 @@ typedef struct s_hdoc_state
 	int					status;
 }						t_hdoc_state;
 
-//extern int				signal_ec;
+typedef struct s_state
+{
+	t_general			*pipe_blocs;
+	t_env				*env;
+	t_now				*get;
+	t_full				full;
+	t_pipe				*pipe;
+	int					last_dqm;
+}						t_state;
+
+// extern int				signal_ec;
 
 // export_ctrl.c
 int						ctrl_is_valid_identifier_builtin_helper(t_general *tmp,
@@ -118,21 +128,43 @@ void					export_cntrl_builtin_helper_scnd(t_full *full,
 							t_general *tmp);
 void					put_flag_builtin_helper(t_full *full);
 
-//parser.c
-char	*clean_double_quotes(char *str);
+// main_scnd.c
+void					init_var(t_full *full, t_pipe **pipe, t_now **get,
+							t_general **pipe_blocs);
+void					init_env(t_env **env, char **envp, t_full *full,
+							int *first_run);
+void					ctrld_free_handler(t_now **get, t_env **env,
+							t_pipe **pipe);
+void					ctrld_free_exit(t_general **pipe_blocs);
+int						main_line_ctrl_scnd(char *line, t_general **pipe_blocs);
 
-//parser_scnd.c
-int	is_redireciton2(char *str);
-int	count_args(const char *str);
+// main_third.c
+void					apply_parser(char *line, t_general *pipe_blocs,
+							t_env *env, t_full *full);
+void					fill_get(t_now **get, t_env *env, t_full *full);
+void					apply_pipe(t_general *pipe_blocs, t_pipe **pipe,
+							t_full *full, t_env **env);
+void					cleanup_loop_end(t_now **get, t_general **pipe_blocs,
+							char **line, int *last_dqm);
+
+// parser.c
+char					*clean_double_quotes(char *str);
+
+// parser_scnd.c
+int						is_redireciton2(char *str);
+int						count_args(const char *str);
 
 // dq_parser.c
-void	handle_double_quotes_parser(t_general *a, int *i, int *j, int *k);
+void					handle_double_quotes_parser(t_general *a, int *i,
+							int *j, int *k);
 
-//sq_parser.c
-void	handle_single_quotes_parser(t_general *a, int *i, int *j, int *k);
+// sq_parser.c
+void					handle_single_quotes_parser(t_general *a, int *i,
+							int *j, int *k);
 
-//wq_parser.c
-void	handle_without_quotes_parser(t_general *a, int *i, int *j, int *k);
+// wq_parser.c
+void					handle_without_quotes_parser(t_general *a, int *i,
+							int *j, int *k);
 
 // execute_handle_second.c
 void					expand_dollar_qmark_execute(t_general *list);
@@ -189,13 +221,13 @@ t_env					*create_env_node(void);
 void					pipe_parse(t_general **pipe_block, char *line);
 void					parse_input(t_general *a);
 int						has_heredoc(t_general *list);
-void	expand_dollar(t_general *list, t_env *env);
-void	connect_count_malloc(t_general *list);
-void	remove_null(t_general *list);
-void	init_pipe(t_pipe *pipe, t_general *list);
-void	create_pipe(int count, int **fd);
-char	*get_getenv(t_env *env, char *key);
-int count_m(t_general *tmp, int i, t_env *env);
+void					expand_dollar(t_general *list, t_env *env);
+void					connect_count_malloc(t_general *list);
+void					remove_null(t_general *list);
+void					init_pipe(t_pipe *pipe, t_general *list);
+void					create_pipe(int count, int **fd);
+char					*get_getenv(t_env *env, char *key);
+int						count_m(t_general *tmp, int i, t_env *env);
 
 // execute.c
 void					check_cmd_sys_call(t_general *pipe_blocs, t_env *env,
@@ -302,14 +334,16 @@ int						go_to_handle_heredoc(t_general *list, t_full *full);
 void					fill_limiter(t_general *list);
 void					free_heredoc(t_full *full);
 void					signal_handler_heredoc(int signo);
-int skip_expansion(t_general *node, int i);
-int		process_single_arg(t_general *node, int i, t_env *env);
-char	*expand_variables_in_string(t_arg *arg, t_env *env);
-int expanded_length(t_arg *arg, t_env *env);
-char	*build_expanded_string(t_arg *arg, t_env *env, char *new_str);
-int		is_expandable_variable(t_arg *arg, int pos);
-int		expand_variable_at_position(t_arg *arg, t_env *env, char *dest, int *pos);
-int		remove_empty_arg(t_general *node, int i);
-void expand_args_in_node(t_general *node, t_env *env);
+int						skip_expansion(t_general *node, int i);
+int						process_single_arg(t_general *node, int i, t_env *env);
+char					*expand_variables_in_string(t_arg *arg, t_env *env);
+int						expanded_length(t_arg *arg, t_env *env);
+char					*build_expanded_string(t_arg *arg, t_env *env,
+							char *new_str);
+int						is_expandable_variable(t_arg *arg, int pos);
+int						expand_variable_at_position(t_arg *arg, t_env *env,
+							char *dest, int *pos);
+int						remove_empty_arg(t_general *node, int i);
+void					expand_args_in_node(t_general *node, t_env *env);
 
 #endif

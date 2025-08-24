@@ -44,7 +44,9 @@ SRC = main.c \
 	  parser_scnd.c \
 	  expand_dollar.c \
 	  expand_dollar_utils.c \
-	  expand_dollar_second.c
+	  expand_dollar_second.c \
+	  main_scnd.c \
+	  main_third.c
 
 CC = gcc 
 

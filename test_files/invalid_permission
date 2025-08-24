@@ -37,6 +37,8 @@ heredoc_second.c
 heredoc_third.c
 libft
 main.c
+main_scnd.c
+main_third.c
 Makefile
 message.c
 minishell
@@ -101,6 +103,8 @@ heredoc_second.c
 heredoc_third.c
 libft
 main.c
+main_scnd.c
+main_third.c
 Makefile
 message.c
 minishell
@@ -165,6 +169,8 @@ heredoc_second.c
 heredoc_third.c
 libft
 main.c
+main_scnd.c
+main_third.c
 Makefile
 message.c
 minishell
@@ -229,6 +235,8 @@ heredoc_second.c
 heredoc_third.c
 libft
 main.c
+main_scnd.c
+main_third.c
 Makefile
 message.c
 minishell
