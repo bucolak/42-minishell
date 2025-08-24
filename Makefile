@@ -30,7 +30,9 @@ SRC = main.c \
 	  fill_nowstruct.c \
 	  execute_handle_first.c \
 	  execute_handle_second.c \
-	  echo_builtin.c
+	  echo_builtin.c \
+	  create_env.c \
+	  environment_third.c
 
 CC = gcc 
 

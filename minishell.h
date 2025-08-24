@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 17:42:17 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 13:10:09 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,13 @@ extern int signal_ec;
 //execute_handle_second.c
 void	expand_dollar_qmark_execute(t_general *list);
 //
+// environment_first.c
+int	key_cont(char *key);
+//
+//environment_third.c
+char	*get_key(char *str);
+char	*get_data(char *str);
+//
 void	print_message_and_exit(int type, t_general *pipe_blocs, t_full *full,
 		int j);
 void	print_message_and_exit2(t_general *pipe_blocs, t_full *full, int j);
@@ -170,8 +177,6 @@ void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks);
 void	pwd_cmd(char **ar, t_general *list, t_env *env);
 
 // environment_first.c
-void					get_env_helper_func(int *i, int *j, t_env *tmp,
-							char **envp);
 void					get_env(t_env *node, char **envp);
 void					print_env(t_general *list, t_env *node, int i);
 void	ft_envadd_back(t_env **lst, char *key, char *data, t_full *full);
@@ -181,9 +186,6 @@ void	create_env(t_general *list, t_env **env, t_full *full);
 char	*get_key(char *str);
 char					*get_data(char *str);
 void					print_export_env(t_env *env, t_general *list);
-void					export_cmd_helper_func(t_env *env, t_env *
-	*new_env,
-							t_env *swap, int *j);
 t_env					**export_cmd(t_env *env);
 
 //count_quote.c

@@ -1,7 +1,6 @@
 >
 $HOME
 42_minishell_tester
-a
 append.c
 append.o
 apply_malloc.c
@@ -86,7 +85,6 @@ valgrind.supp
 >
 $HOME
 42_minishell_tester
-a
 append.c
 append.o
 apply_malloc.c
@@ -171,7 +169,6 @@ valgrind.supp
 >
 $HOME
 42_minishell_tester
-a
 append.c
 append.o
 apply_malloc.c
@@ -256,7 +253,6 @@ valgrind.supp
 >
 $HOME
 42_minishell_tester
-a
 append.c
 append.o
 apply_malloc.c
@@ -341,7 +337,6 @@ valgrind.supp
 >
 $HOME
 42_minishell_tester
-a
 append.c
 append.o
 apply_malloc.c

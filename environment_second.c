@@ -6,78 +6,22 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 16:19:44 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/12 18:20:15 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 13:08:54 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void get_key_2(int *i, int *end, char *str)
+static void	print_export_env_2(t_env *node)
 {
-	*i = 0;
-	while (str[*i] && str[*i] != '=')
-		(*i)++;
-	*end = *i;
-	// if (str[*i] == '=')
-	// 	*end = *i + 1;
-}
-
-char	*get_key(char *str)
-{
-	int		i;
-	int		start;
-	char	*key;
-	int		end;
-	char *final_key;
-
-	i = 0;
-	start = 0;
-	get_key_2(&i, &end, str);
-	key = ft_substr(str, start, end - start);
-	
-	final_key = ft_strtrim(key, "'\"");
-	free(key);
-	return (final_key);
-}
-
-char	*get_data(char *str)
-{
-	int	i;
-	int	k;
-
-	i = 0;
-	k = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	if (str[i] == '=')
-		i++;
-	if (str[i] == '\0') // export a= durumu
-        return ft_strdup("");
-	if ((str[i] == '"' || str[i] == '\''))
-		i++;
-	k = i;
-	while (str[i] && str[i])
-		i++;
-	if (str[i - 1] == '"' || str[i] == '\'')
-		i--;
-	return (ft_substr(str, k, i - k));
-}
-
-void print_export_env_2(t_env	*node)
-{
-	if(ft_strcmp(node->key, "=")!=0)
+	if (ft_strcmp(node->key, "=") != 0)
 	{
-		//   printf("%d\n" , node->has_equal);
-		if(node->data && node->data[0])
-		{
+		if (node->data && node->data[0])
 			printf("declare -x %s=\"%s\"\n", node->key, node->data);
-		}
-		else if(node->has_equal == 1)
-		{
+		else if (node->has_equal == 1)
 			printf("declare -x %s=\"\"\n", node->key);
-		}
 		else
-    		printf("declare -x %s\n", node->key);
+			printf("declare -x %s\n", node->key);
 	}
 	else
 	{
@@ -107,8 +51,7 @@ void	print_export_env(t_env *env, t_general *list)
 	list->dqm = 0;
 }
 
-void	export_cmd_helper_func(t_env *env, t_env **new_env, t_env *swap,
-		int *j)
+static void	export_cmd_helper_func(t_env *env, t_env **new_env, t_env *swap, int *j)
 {
 	int	i;
 	int	len;
@@ -134,12 +77,12 @@ void	export_cmd_helper_func(t_env *env, t_env **new_env, t_env *swap,
 
 t_env	**export_cmd(t_env *env)
 {
-	int		i;
-	int		j;
-	int		len;
-	t_env	**new_env;
-	t_env	*tmp;
-	t_env	*swap;
+	int i;
+	int j;
+	int len;
+	t_env **new_env;
+	t_env *tmp;
+	t_env *swap;
 
 	swap = NULL;
 	len = ft_lsttsize(env);
