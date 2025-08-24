@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 14:20:20 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 19:29:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,24 @@ static void	cleanup_heredoc_exit(t_full *full, int fd)
 	free_pipe_blocks(full->pipe_blocks);
 	exit(0);
 }
+
+// int expand(char *line, t_full *full)
+// {
+// 	int i = 0;
+// 	int start;
+// 	while(line[i])
+// 	{
+// 		if(line[i] == '$')
+// 		{
+// 			start = i;
+// 			if(line[i+1])
+// 				i++;
+// 			while(line[i] && line[i] != ' ')
+// 				i++;
+// 			if(get_getenv(full->node, ft_substr))
+// 		}
+// 	}
+// }
 
 static void	read_heredoc_input(t_full *full, int fd_write, char *limiter)
 {
@@ -38,6 +56,7 @@ static void	read_heredoc_input(t_full *full, int fd_write, char *limiter)
 			free(line);
 			cleanup_heredoc_exit(full, fd_write);
 		}
+		
 		ft_putstr_fd(line, fd_write);
 		ft_putstr_fd("\n", fd_write);
 		free(line);

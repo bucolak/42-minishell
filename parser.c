@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 16:26:56 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 19:16:51 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	first_control_parser(t_general *a, int *i, int *k)
 	(*k)++;
 }
 
-int	control_while_loop_parser(t_general *a, int *i, int *j, int *k)
+static int	control_while_loop_parser(t_general *a, int *i, int *j, int *k)
 {
 	if (is_redireciton2(a->blocs + *i) == 1)
 	{
@@ -85,12 +85,14 @@ int	control_while_loop_parser(t_general *a, int *i, int *j, int *k)
 	}
 	else if (a->blocs[*i] == '"')
 	{
-		handle_double_quotes_parser(a, i, j, k);
+		if (handle_double_quotes_parser(a, i, j, k) == 1)
+			return (2);
 		return (1);
 	}
 	else if (a->blocs[*i] == '\'')
 	{
-		handle_single_quotes_parser(a, i, j, k);
+		if (handle_single_quotes_parser(a, i, j, k) == 1)
+			return (2);
 		return (1);
 	}
 	else
@@ -101,30 +103,40 @@ int	control_while_loop_parser(t_general *a, int *i, int *j, int *k)
 	return (0);
 }
 
-void	parse_input(t_general *a)
+static void	parse_input_second(t_general **a, int *i, int *j, int *k)
+{
+	*k = 0;
+	*i = 0;
+	*j = 0;
+	free_old_block(*a);
+	(*a)->acces_args->args = ft_calloc(count_args((*a)->blocs) + 1,
+			sizeof(t_arg *));
+}
+
+int	parse_input(t_general *a)
 {
 	int	i;
 	int	j;
 	int	k;
+	int	result;
 
 	while (a)
 	{
-		k = 0;
-		i = 0;
-		j = 0;
-		free_old_block(a);
-		a->acces_args->args = ft_calloc(count_args(a->blocs) + 1,
-				sizeof(t_arg *));
+		parse_input_second(&a, &i, &j, &k);
 		while (a->blocs[i])
 		{
 			while (a->blocs[i] == ' ' || a->blocs[i] == '\t')
 				i++;
 			if (!a->blocs[i])
 				break ;
-			if (control_while_loop_parser(a, &i, &j, &k) == 1)
+			result = control_while_loop_parser(a, &i, &j, &k);
+			if (result == 1)
 				continue ;
+			if (result == 2)
+				return (1);
 		}
 		a->acces_args->args[k] = NULL;
 		a = a->next;
 	}
+	return (0);
 }

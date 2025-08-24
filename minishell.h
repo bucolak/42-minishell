@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 18:47:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 19:09:21 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,8 @@ void					ctrld_free_exit(t_general **pipe_blocs);
 int						main_line_ctrl_scnd(char *line, t_general **pipe_blocs);
 
 // main_third.c
-void					apply_parser(char *line, t_general *pipe_blocs,
-							t_env *env, t_full *full);
+int	apply_parser(char *line, t_general *pipe_blocs, t_env *env,
+		t_full *full);
 void					fill_get(t_now **get, t_env *env, t_full *full);
 void					apply_pipe(t_general *pipe_blocs, t_pipe **pipe,
 							t_full *full, t_env **env);
@@ -149,17 +149,18 @@ void					cleanup_loop_end(t_now **get, t_general **pipe_blocs,
 
 // parser.c
 char					*clean_double_quotes(char *str);
+int	parse_input(t_general *a);
 
 // parser_scnd.c
 int						is_redireciton2(char *str);
 int						count_args(const char *str);
 
 // dq_parser.c
-void					handle_double_quotes_parser(t_general *a, int *i,
+int					handle_double_quotes_parser(t_general *a, int *i,
 							int *j, int *k);
 
 // sq_parser.c
-void					handle_single_quotes_parser(t_general *a, int *i,
+int					handle_single_quotes_parser(t_general *a, int *i,
 							int *j, int *k);
 
 // wq_parser.c
@@ -219,7 +220,6 @@ t_env					*create_env_node(void);
 
 // main.c
 void					pipe_parse(t_general **pipe_block, char *line);
-void					parse_input(t_general *a);
 int						has_heredoc(t_general *list);
 void					expand_dollar(t_general *list, t_env *env);
 void					connect_count_malloc(t_general *list);

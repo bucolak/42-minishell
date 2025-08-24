@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 18:44:24 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 19:31:54 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	main(int argc, char *argv[], char **envp)
 {
 	t_state		st;
 	char		*line;
-	static int	first_run;
+	static int	first_run; 
 
 	(void)argc;
 	(void)argv;
@@ -82,7 +82,11 @@ int	main(int argc, char *argv[], char **envp)
 		}
 		if (main_line_ctrl_scnd(line, &st.pipe_blocs) == 1)
 			continue ;
-		apply_parser(line, st.pipe_blocs, st.env, &st.full);
+		if(apply_parser(line, st.pipe_blocs, st.env, &st.full) == 1)
+		{
+			free_pipe_blocks(st.pipe_blocs);
+			continue;
+		}
 		fill_get(&st.get, st.env, &st.full);
 		apply_pipe(st.pipe_blocs, &st.pipe, &st.full, &st.env);
 		cleanup_loop_end(&st.get, &st.pipe_blocs, &line, &st.last_dqm);
