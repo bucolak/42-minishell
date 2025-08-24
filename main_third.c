@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main_third.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 18:43:11 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 19:11:34 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 19:45:07 by seerel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	apply_parser(char *line, t_general *pipe_blocs, t_env *env, t_full *full)
+int	apply_parser(char *line, t_general *pipe_blocs, t_env *env,
+		t_full *full)
 {
 	add_history(line);
 	pipe_parse(&pipe_blocs, line);
@@ -23,7 +24,7 @@ int	apply_parser(char *line, t_general *pipe_blocs, t_env *env, t_full *full)
 	remove_null(pipe_blocs);
 	control_redireciton(pipe_blocs, env);
 	full->pipe_blocks = pipe_blocs;
-	return (0);
+	return 0;
 }
 
 void	fill_get(t_now **get, t_env *env, t_full *full)

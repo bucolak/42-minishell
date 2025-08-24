@@ -12,7 +12,6 @@ SRC = main.c \
 	  echo_second.c \
 	  exit.c \
 	  unset.c \
-	  signals.c \
 	  parser.c	\
 	  free_utils.c \
 	  free_pipe.c \
@@ -46,7 +45,10 @@ SRC = main.c \
 	  expand_dollar_utils.c \
 	  expand_dollar_second.c \
 	  main_scnd.c \
-	  main_third.c
+	  main_third.c \
+	  remove_null.c \
+	  connect_count_malloc.c \
+	  connect_count_utils.c
 
 CC = gcc 
 

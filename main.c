@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 19:31:54 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:00:42 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,21 @@ void	main_ctrlc_control(int *last_dqm, t_general *pipe_blocs)
 	}
 }
 
-void	main_loop_first(int *last_dqm, t_general **pipe_blocs, char **line)
+void	main_loop_first(t_state *st, char **line)
 {
 	signal_handler();
-	*pipe_blocs = create_general_node(*last_dqm);
+	st->pipe_blocs = create_general_node(st->last_dqm);
 	*line = readline("Our_shell% ");
 	if (signal_ec == 1)
 	{
-		*last_dqm = 130;
-		(*pipe_blocs)->dqm = 130;
+		st->last_dqm = 130;
+		st->pipe_blocs->dqm = 130;
 		signal_ec = 0;
+	}
+	if (!*line)
+	{
+		ctrld_free_handler(&st->get, &st->env, &st->pipe);
+		ctrld_free_exit(&st->pipe_blocs);
 	}
 }
 
@@ -65,7 +70,7 @@ int	main(int argc, char *argv[], char **envp)
 {
 	t_state		st;
 	char		*line;
-	static int	first_run; 
+	static int	first_run;
 
 	(void)argc;
 	(void)argv;
@@ -74,18 +79,14 @@ int	main(int argc, char *argv[], char **envp)
 	init_env(&st.env, envp, &st.full, &first_run);
 	while (1)
 	{
-		main_loop_first(&st.last_dqm, &st.pipe_blocs, &line);
-		if (!line)
-		{
-			ctrld_free_handler(&st.get, &st.env, &st.pipe);
-			ctrld_free_exit(&st.pipe_blocs);
-		}
+		main_loop_first(&st, &line);
 		if (main_line_ctrl_scnd(line, &st.pipe_blocs) == 1)
 			continue ;
-		if(apply_parser(line, st.pipe_blocs, st.env, &st.full) == 1)
+		if (apply_parser(line, st.pipe_blocs, st.env, &st.full) == 1)
 		{
+			free(line);
 			free_pipe_blocks(st.pipe_blocs);
-			continue;
+			continue ;
 		}
 		fill_get(&st.get, st.env, &st.full);
 		apply_pipe(st.pipe_blocs, &st.pipe, &st.full, &st.env);
