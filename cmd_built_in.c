@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:48:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/23 17:19:25 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 12:41:05 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,13 @@ void	built_in_helper_func(t_full *full, int i, t_env **envv, t_general *list)
 			{
 				k=i+1;
 				if(is_valid_identifier(tmp->acces_args->args[i + 1]->str) == 0)
+				{
+					ft_putstr_fd("bash: export: '",2);
+					ft_putstr_fd(tmp->acces_args->args[i + 1]->str, 2);
+					ft_putstr_fd("': not a valid identifier\n", 2);
 					tmp->dqm=1;
+					return ;
+				}
 				// else
 				// {
 					while(tmp->acces_args->args[k])
@@ -176,8 +182,7 @@ void	check_cmd_built_in(t_general *pipe_blocs, t_env **node, t_pipe *pipe, t_now
 		else if (ft_strcmp(pipe_blocs->acces_args->args[0]->str,
 						"$?") == 0)
 		{
-			ft_putstr_fd(ft_itoa(pipe_blocs->dqm), 2);
-			ft_putstr_fd(": command not found\n", 2); //1
+			ft_putstr_fd(": command not found\n", 2);
 			pipe_blocs->dqm = 127;
 			break;
 		}

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 17:24:46 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 12:38:53 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -415,9 +415,7 @@ void	connect_count_malloc(t_general *list)
 		i = 0;
 		while (tmp->acces_args->args[i])
 		{
-			if (tmp->acces_args->args[i]->s == 0 && tmp->acces_args->args[i + 1]
-				&& ft_strcmp(tmp->acces_args->args[i]->str, "''") != 0
-				&& ft_strcmp(tmp->acces_args->args[i]->str, "\"\"") != 0)
+			if (tmp->acces_args->args[i]->s == 0 && tmp->acces_args->args[i + 1])
 			{
 				if (is_redirection(tmp->acces_args->args[i]->str) == 1
 					&& tmp->acces_args->args[i]->flag != 0

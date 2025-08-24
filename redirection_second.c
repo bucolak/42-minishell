@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:51:00 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 21:58:29 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 12:36:41 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ static void	handle_file_error(char *filename, t_general *list, t_full *full)
 	ft_putstr_fd(filename, 2);
 	ft_putstr_fd(": Permission denied\n", 2);
 	list->dqm = 1;
-	cleanup(full);
-	free_pipe_blocks(full->pipe_blocks);
-	exit(list->dqm);
+	clean_and_exit(full, list->dqm);
 }
 
 static int	open_output_file(char *filename, t_general *list, t_full *full)
@@ -31,19 +29,14 @@ static int	open_output_file(char *filename, t_general *list, t_full *full)
 	if (access(filename, F_OK) != 0)
 	{
 		error_msg(2, filename, 0, list);
-		cleanup(full);
-		free_pipe_blocks(full->pipe_blocks);
-		exit(list->dqm);
+		clean_and_exit(full, list->dqm);
 	}
 	if (access(filename, W_OK) != 0)
 		handle_file_error(filename, list, full);
 	if (fd < 0)
 	{
 		error_msg(2, filename, 0, list);
-		list->dqm = 1;
-		cleanup(full);
-		free_pipe_blocks(full->pipe_blocks);
-		exit(list->dqm);
+		clean_and_exit(full, list->dqm);
 	}
 	return (fd);
 }
@@ -65,9 +58,7 @@ void	handle_output(t_general *list, int i, t_full *full)
 		else
 		{
 			error_msg(2, NULL, 3, list);
-			cleanup(full);
-			free_pipe_blocks(full->pipe_blocks);
-			exit(list->dqm);
+			clean_and_exit(full, list->dqm);
 		}
 	}
 }
@@ -80,20 +71,14 @@ static int	open_input_file(char *filename, t_general *list, t_full *full)
 	if (access(filename, F_OK) != 0)
 	{
 		error_msg(2, filename, 0, list);
-		ft_putstr_fd(ft_itoa(list->dqm), 2);
-		cleanup(full);
-		free_pipe_blocks(full->pipe_blocks);
-		exit(list->dqm);
+		clean_and_exit(full, list->dqm);
 	}
 	if (access(filename, R_OK) != 0)
 		handle_file_error(filename, list, full);
 	if (fd < 0)
 	{
 		error_msg(2, filename, 0, list);
-		list->dqm = 1;
-		cleanup(full);
-		free_pipe_blocks(full->pipe_blocks);
-		exit(list->dqm);
+		clean_and_exit(full, list->dqm);
 	}
 	return (fd);
 }
@@ -115,9 +100,7 @@ void	handle_input(t_general *list, int i, t_full *full)
 		else
 		{
 			error_msg(2, NULL, 3, list);
-			cleanup(full);
-			free_pipe_blocks(full->pipe_blocks);
-			exit(list->dqm);
+			clean_and_exit(full, list->dqm);
 		}
 	}
 }
