@@ -35,7 +35,16 @@ SRC = main.c \
 	  environment_third.c \
 	  cd_cmd.c \
 	  export_ctrl.c \
-	  cmd_builtin_scnd.c
+	  cmd_builtin_scnd.c \
+	  helper_function.c \
+	  helper_function_second.c \
+	  wq_parser.c \
+	  sq_parser.c \
+	  dq_parser.c \
+	  parser_scnd.c \
+	  expand_dollar.c \
+	  expand_dollar_utils.c \
+	  expand_dollar_second.c
 
 CC = gcc 
 

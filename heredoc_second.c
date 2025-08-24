@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 12:32:17 by seerel            #+#    #+#             */
-/*   Updated: 2025/08/23 13:24:56 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 16:45:11 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ void	signal_handler_heredoc(int signo)
 	if (signo == SIGINT)
 	{
 		write(1, "\n", 1);
-		signal_ec = 1;
 		free_heredoc(NULL);
 		exit(130);
 	}
