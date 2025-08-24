@@ -1,5 +1,4 @@
 >
-$HOME
 42_minishell_tester
 append.c
 apply_malloc.c
@@ -23,6 +22,9 @@ execute_handle_first.c
 execute_handle_second.c
 execute_second.c
 exit.c
+expand_dollar.c
+expand_dollar_second.c
+expand_dollar_utils.c
 export_ctrl.c
 fill_nowstruct.c
 free_pipe.c
@@ -61,7 +63,6 @@ unset.c
 valgrind.supp
 wq_parser.c
 >
-$HOME
 42_minishell_tester
 append.c
 apply_malloc.c
@@ -85,6 +86,9 @@ execute_handle_first.c
 execute_handle_second.c
 execute_second.c
 exit.c
+expand_dollar.c
+expand_dollar_second.c
+expand_dollar_utils.c
 export_ctrl.c
 fill_nowstruct.c
 free_pipe.c
@@ -123,7 +127,6 @@ unset.c
 valgrind.supp
 wq_parser.c
 >
-$HOME
 42_minishell_tester
 append.c
 apply_malloc.c
@@ -147,6 +150,9 @@ execute_handle_first.c
 execute_handle_second.c
 execute_second.c
 exit.c
+expand_dollar.c
+expand_dollar_second.c
+expand_dollar_utils.c
 export_ctrl.c
 fill_nowstruct.c
 free_pipe.c
@@ -185,7 +191,6 @@ unset.c
 valgrind.supp
 wq_parser.c
 >
-$HOME
 42_minishell_tester
 append.c
 apply_malloc.c
@@ -209,6 +214,9 @@ execute_handle_first.c
 execute_handle_second.c
 execute_second.c
 exit.c
+expand_dollar.c
+expand_dollar_second.c
+expand_dollar_utils.c
 export_ctrl.c
 fill_nowstruct.c
 free_pipe.c

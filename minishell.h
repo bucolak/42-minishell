@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 17:20:32 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 17:50:17 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,16 @@ typedef struct s_hdoc_state
 	int					j;
 	int					status;
 }						t_hdoc_state;
+
+typedef struct s_state
+{
+    t_general   *pipe_blocs;
+    t_env       *env;
+    t_now       *get;
+    t_full      full;
+    t_pipe      *pipe;
+    int         last_dqm;
+}   t_state;
 
 //extern int				signal_ec;
 
