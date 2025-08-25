@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 16:09:01 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/25 12:58:31 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 21:39:04 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ static void	handle_single_quotes_parser_ifblock(t_general *a, int *i, int *j,
 	{
 		free(tmp_str);
 		tmp_str = ft_substr(a->blocs, (*j) - 1, 2);
-		a->acces_args->args[*k] = create_arg(tmp_str, 1, 0);
+		a->acces_args->args[*k] = create_arg(tmp_str, 1);
 		free(tmp_str);
 		(*k)++;
 	}
 	else
 	{
-		a->acces_args->args[*k] = create_arg(tmp_str, 1, 0);
+		a->acces_args->args[*k] = create_arg(tmp_str, 1);
 		free(tmp_str);
 		if ((a->blocs[(*i) + 1] == '\'' || a->blocs[(*i) + 1] == '"'
 				|| a->blocs[(*i) + 1] != ' ') && a->acces_args->args[*k])

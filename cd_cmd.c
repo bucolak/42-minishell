@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:25:16 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/25 14:54:00 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 21:43:54 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,12 @@ void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)
 		line = get_getenv(env, "HOME");
 		if (line)
 			chdir(line);
+		else
+		{
+			ft_putstr_fd("bash: cd: HOME not set\n", 2);
+			pipe_blocks->dqm = 1;
+			return ;
+		}
 	}
 	else if (ft_strcmp(args[1]->str, "-") == 0)
 		cd_dash_control(env);

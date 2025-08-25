@@ -6,13 +6,13 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 16:22:24 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 20:56:40 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 21:37:27 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_redireciton2(char *str)
+int	is_redireciton_two(char *str)
 {
 	if (*str == '>' || *str == '<')
 		return (1);

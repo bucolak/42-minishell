@@ -1,7 +1,6 @@
 42_minishell_tester
 append.c
 apply_malloc.c
-asd
 cd_cmd.c
 cmd_built_in.c
 cmd_builtin_scnd.c
@@ -68,7 +67,6 @@ wq_parser.c
 42_minishell_tester
 append.c
 apply_malloc.c
-asd
 cd_cmd.c
 cmd_built_in.c
 cmd_builtin_scnd.c
@@ -135,7 +133,6 @@ wq_parser.c
 42_minishell_tester
 append.c
 apply_malloc.c
-asd
 cd_cmd.c
 cmd_built_in.c
 cmd_builtin_scnd.c
@@ -202,7 +199,6 @@ wq_parser.c
 42_minishell_tester
 append.c
 apply_malloc.c
-asd
 cd_cmd.c
 cmd_built_in.c
 cmd_builtin_scnd.c
@@ -269,7 +265,6 @@ wq_parser.c
 42_minishell_tester
 append.c
 apply_malloc.c
-asd
 cd_cmd.c
 cmd_built_in.c
 cmd_builtin_scnd.c

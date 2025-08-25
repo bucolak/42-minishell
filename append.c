@@ -6,22 +6,13 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 12:43:12 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 12:44:10 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 16:48:30 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	last_fd_control_append(int last_fd)
-{
-	if (last_fd != -1)
-	{
-		dup2(last_fd, 1);
-		close(last_fd);
-	}
-}
-
-static void	handle_append_2(t_full *full, t_general *list, int *fd, int i)
+static int	handle_append_2(t_full *full, t_general *list, int *fd, int i)
 {
 	*fd = open(list->acces_args->args[i]->str, O_CREAT | O_WRONLY | O_APPEND,
 			0644);
@@ -40,28 +31,25 @@ static void	handle_append_2(t_full *full, t_general *list, int *fd, int i)
 	}
 	if (*fd < 0)
 	{
-		error_msg(i, list->acces_args->args[i]->str, 0, list);
+		error_msg(2, list->acces_args->args[i]->str, 0, list);
 		list->dqm = 1;
 		clean_and_exit(full, list->dqm);
 	}
+	return (*fd);
 }
 
 void	handle_append(t_general *list, int i, t_full *full)
 {
 	int	fd;
-	int	last_fd;
 
-	last_fd = -1;
-	fd = -1;
 	if (ft_strcmp(list->acces_args->args[i]->str, ">>") == 0)
 	{
 		if (list->acces_args->args[i + 1])
 		{
 			i++;
-			handle_append_2(full, list, &fd, i);
-			if (last_fd != -1)
-				close(last_fd);
-			last_fd = fd;
+			fd = handle_append_2(full, list, &fd, i);
+			dup2(fd, 1);
+			close(fd);
 		}
 		else
 		{
@@ -69,5 +57,4 @@ void	handle_append(t_general *list, int i, t_full *full)
 			clean_and_exit(full, list->dqm);
 		}
 	}
-	last_fd_control_append(last_fd);
 }

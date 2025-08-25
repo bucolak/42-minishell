@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:29:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 20:03:16 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 21:38:27 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,10 @@ void	complete_create_arg(char *str, char *new)
 	new[i] = '\0';
 }
 
-t_arg	*create_arg(char *str, int flag, int type)
+t_arg	*create_arg(char *str, int flag)
 {
 	t_arg	*arg;
 
-	(void)type;
 	arg = malloc(sizeof(t_arg));
 	if (!arg)
 		return (NULL);

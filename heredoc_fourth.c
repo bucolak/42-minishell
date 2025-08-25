@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/25 15:00:37 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 21:44:50 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	handle_heredoc(t_general *list, t_full *full)
 	int	result;
 
 	if (!list || !list->acces_args || !list->acces_args->args)
-		return (1); // BAK: emin değilim
+		return (1);
 	fill_limiter(list);
 	result = process_heredocs(list, full);
 	if (result == 1)

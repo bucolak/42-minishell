@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/25 15:02:01 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 21:38:21 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void					cleanup_loop_end(t_now **get, t_general **pipe_blocs,
 char					*clean_double_quotes(char *str);
 
 // parser_scnd.c
-int						is_redireciton2(char *str);
+int						is_redireciton_two(char *str);
 int						count_args(const char *str);
 
 // dq_parser.c
@@ -213,8 +213,7 @@ void					print_pipes(t_general *pipe_block);
 char					*get_getenv(t_env *env, char *key);
 void					free_split(char **str);
 // apply_malloc.c
-// t_arg *create_arg(const char *str, int flag);
-t_arg					*create_arg(char *str, int flag, int type);
+t_arg					*create_arg(char *str, int flag);
 t_pipeafter				*create_pipeafter(void);
 t_general				*create_general_node(int dqm);
 t_env					*create_env_node(void);

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 17:12:55 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/25 15:28:16 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 21:38:57 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	first_control_parser(t_general *a, int *i, int *k)
 			|| a->blocs[*i] == '>'))
 		len = 2;
 	tmp_str = ft_substr(a->blocs, *i, len);
-	a->acces_args->args[*k] = create_arg(tmp_str, 5, 0);
+	a->acces_args->args[*k] = create_arg(tmp_str, 5);
 	free(tmp_str);
 	(*i) += len;
 	if (a->blocs[*i] == '\'' || a->blocs[*i] == '"')
@@ -51,7 +51,7 @@ void	first_control_parser(t_general *a, int *i, int *k)
 
 static int	control_while_loop_parser(t_general *a, int *i, int *j, int *k)
 {
-	if (is_redireciton2(a->blocs + *i) == 1)
+	if (is_redireciton_two(a->blocs + *i) == 1)
 	{
 		first_control_parser(a, i, k);
 		return (1);
