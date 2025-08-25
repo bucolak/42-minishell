@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 21:01:53 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 15:02:01 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,7 @@ void					check_cmd_built_in(t_general *pipe_blocs, t_env **node,
 void					cd_cmd(t_arg **args, t_env *env,
 							t_general *pipe_blocks);
 void					pwd_cmd(char **ar, t_general *list, t_env *env);
+void					update_cd_helper_scnd(char *cwd, t_env *tmp);
 
 // environment_first.c
 void					get_env(t_env *node, char **envp);
@@ -286,9 +287,6 @@ void					handle_input(t_general *list, int i, t_full *full);
 void					handle_output(t_general *list, int i, t_full *full);
 void					handle_append(t_general *list, int i, t_full *full);
 
-// redirection_second.c
-void					handle_heredoc(t_general *list, t_full *full);
-
 // echo_first.c
 void					echo_flag_4_second(char *str, t_general *tmp, int *j);
 void					echo_cmd(t_general *tmp, int i);
@@ -325,7 +323,7 @@ int						process_heredocs(t_general *tmp, t_full *full);
 // heredoc_fourth.c
 int						handle_heredoc_process(t_general *tmp, t_full *full,
 							int *j, int *status);
-void					handle_heredoc(t_general *list, t_full *full);
+int						handle_heredoc(t_general *list, t_full *full);
 
 // heredoc.c
 void					remove_heredoc(t_general *list);

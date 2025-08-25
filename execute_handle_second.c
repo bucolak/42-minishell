@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 14:09:26 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 14:34:15 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 15:00:09 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	count_malloc_execute(t_general *list, int j)
 		str = list->acces_args->args[j]->str;
 		while (str[i])
 		{
-			if (str[i] == '$' && str[i] && str[i] == '?')
+			if (str[i] == '$' && str[i + 1] && str[i + 1] == '?')
 			{
 				itoa = ft_itoa(list->dqm);
 				c += ft_strlen(itoa);

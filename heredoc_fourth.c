@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 14:20:20 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 15:00:37 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,21 @@ int	handle_heredoc_process(t_general *tmp, t_full *full, int *j, int *status)
 		tmp->dqm = 130;
 		return (1);
 	}
+	else if (WIFEXITED(*status))
+		return (2);
 	tmp->heredoc_fd = fd[0];
 	return (0);
 }
 
-void	handle_heredoc(t_general *list, t_full *full)
+int	handle_heredoc(t_general *list, t_full *full)
 {
+	int	result;
+
 	if (!list || !list->acces_args || !list->acces_args->args)
-		return ;
+		return (1); // BAK: emin değilim
 	fill_limiter(list);
-	process_heredocs(list, full);
+	result = process_heredocs(list, full);
+	if (result == 1)
+		return (1);
+	return (0);
 }

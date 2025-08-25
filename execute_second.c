@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 12:29:09 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/23 15:42:16 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 14:38:36 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	path_control_execute(char **args, t_general *pipe_blocs, char *cmd,
 		t_full *full)
 {
 	*args = get_getenv(full->node, "PATH");
-	if (!args)
+	if (!*args)
 	{
 		if (ft_strchr(cmd, '/') == NULL && !ft_strstr(get_getenv(full->node,
 					"PWD"), "/bin"))

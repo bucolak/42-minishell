@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 12:26:51 by seerel            #+#    #+#             */
-/*   Updated: 2025/08/24 20:53:33 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 15:00:23 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ int	go_to_handle_heredoc(t_general *list, t_full *full)
 	while (tmp)
 	{
 		if (has_heredoc(tmp) == 1)
-			handle_heredoc(tmp, full);
+		{
+			if (handle_heredoc(tmp, full) == 1)
+				return (1);
+		}
 		if (tmp->a == 1)
 			return (1);
 		tmp = tmp->next;

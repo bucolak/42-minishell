@@ -6,19 +6,19 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:22:33 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 20:00:42 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/24 21:22:14 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-volatile int	signal_ec = 0;
+volatile int	g_signal_ec = 0;
 
 void	handle_signal(int signo)
 {
 	if (signo == SIGINT)
 	{
-		signal_ec = 1;
+		g_signal_ec = 1;
 		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -40,11 +40,11 @@ void	end_loop_main(t_now *get, t_general **pipe_blocs, char *line,
 
 void	main_ctrlc_control(int *last_dqm, t_general *pipe_blocs)
 {
-	if (signal_ec == 1)
+	if (g_signal_ec == 1)
 	{
 		*last_dqm = 130;
 		pipe_blocs->dqm = 130;
-		signal_ec = 0;
+		g_signal_ec = 0;
 	}
 }
 
@@ -53,11 +53,11 @@ void	main_loop_first(t_state *st, char **line)
 	signal_handler();
 	st->pipe_blocs = create_general_node(st->last_dqm);
 	*line = readline("Our_shell% ");
-	if (signal_ec == 1)
+	if (g_signal_ec == 1)
 	{
 		st->last_dqm = 130;
 		st->pipe_blocs->dqm = 130;
-		signal_ec = 0;
+		g_signal_ec = 0;
 	}
 	if (!*line)
 	{

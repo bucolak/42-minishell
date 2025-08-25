@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:25:16 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 20:03:41 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/25 14:54:00 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 static void	update_cd_helper(t_env *tmp, t_env *env)
 {
+	char	*cwd;
+
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->key, "OLDPWD") == 0)
@@ -30,9 +32,8 @@ static void	update_cd_helper(t_env *tmp, t_env *env)
 	{
 		if (ft_strcmp(tmp->key, "PWD") == 0)
 		{
-			if (tmp->data)
-				free(tmp->data);
-			tmp->data = getcwd(NULL, 0);
+			cwd = getcwd(NULL, 0);
+			update_cd_helper_scnd(cwd, tmp);
 			break ;
 		}
 		tmp = tmp->next;
