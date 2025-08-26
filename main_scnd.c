@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 18:00:49 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 18:42:47 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 20:51:21 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,14 @@ void	ctrld_free_exit(t_general **pipe_blocs)
 
 	if ((*pipe_blocs)->heredoc_fd != -1)
 		close((*pipe_blocs)->heredoc_fd);
-	if (pipe_blocs)
+	if (*pipe_blocs)
 	{
 		exit_code = (*pipe_blocs)->dqm;
 		free_pipe_blocks(*pipe_blocs);
 		*pipe_blocs = NULL;
 	}
 	close_all_open_fds();
-	exit(exit_code);
+	exit(0);
 }
 
 int	main_line_ctrl_scnd(char *line, t_general **pipe_blocs)

@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/26 20:31:37 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 20:48:55 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,6 @@ int						count_squote(char *str);
 int						count_dquote(char *str);
 
 // message.c
-int						message(int i);
 void					error_msg(int i, char *str, int type, t_general *list);
 
 // etc.c
