@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 22:47:09 by buket             #+#    #+#             */
-/*   Updated: 2025/08/25 14:57:10 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 20:25:59 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,14 @@ static void	wait_child_execute(pid_t pid, t_general *pipe_blocs)
 	signal(SIGINT, signal_handler_child);
 	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+	if (WIFSIGNALED(status))
 	{
-		write(1, "\n", 1);
 		pipe_blocs->dqm = 130;
 	}
+	else if (WIFEXITED(status))
+		pipe_blocs->dqm = WEXITSTATUS(status);
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
-	if (WIFEXITED(status))
-		pipe_blocs->dqm = WEXITSTATUS(status);
 }
 
 static void	handle_command_execute(t_general *pipe_blocs, t_full *full,
@@ -76,8 +75,10 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_pipe *pipe,
 		t_full *full)
 {
 	pid_t	pid;
+	int		a;
 
-	if (go_to_handle_heredoc(pipe_blocs, full) == 1)
+	a = go_to_handle_heredoc(pipe_blocs, full);
+	if (a == 1 || a == 3)
 		return ;
 	pid = fork();
 	if (pipe_blocs->next)
@@ -90,7 +91,7 @@ void	check_cmd_sys_call(t_general *pipe_blocs, t_env *env, t_pipe *pipe,
 		if (pipe_blocs->a == 1)
 			clean_and_exit(full, 130);
 		signal(SIGINT, SIG_DFL);
-		if (has_redireciton(pipe_blocs) == 1 && is_flag_6(pipe_blocs, env) == 0)
+		if (has_redireciton(pipe_blocs) == 1)
 			handle_redirections(pipe_blocs, full);
 		heredoc_fd_dup(pipe_blocs);
 		handle_command_execute(pipe_blocs, full, env, pipe);

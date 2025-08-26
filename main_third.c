@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 18:43:11 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 20:54:05 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 19:37:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	apply_parser(char *line, t_general *pipe_blocs, t_env *env, t_full *full)
 	expand_dollar(pipe_blocs, env);
 	connect_count_malloc(pipe_blocs);
 	remove_null(pipe_blocs);
-	control_redireciton(pipe_blocs, env);
 	full->pipe_blocks = pipe_blocs;
 	return (0);
 }

@@ -51,7 +51,7 @@ SRC = main.c \
 	  connect_count_utils.c \
 	  utils.c
 
-CC = gcc 
+CC = cc 
 
 LIBFT = libft/libft.a
 
@@ -59,7 +59,7 @@ MINISHELL = minishell
 
 OBJ = $(SRC:.c=.o)
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 
 LDFLAGS = -lreadline
 
@@ -84,16 +84,5 @@ fclean: clean
 
 re: fclean all
 	@echo "Compiled!"
-
-leaks:
-	@echo "Running walgrind..."
-	@valgrind --leak-check=full			\
-			--show-leak-kinds=all 		\
-			--track-origins=yes			\
-			--track-fds=yes				\
-			--verbose 					\
-			--suppressions=valgrind.supp	\
-			./$(MINISHELL)
-
 
 .PHONY: all clean fclean re

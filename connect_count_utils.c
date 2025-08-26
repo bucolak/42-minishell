@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   connect_count_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seerel <seerel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 19:14:09 by seerel            #+#    #+#             */
-/*   Updated: 2025/08/24 19:30:21 by seerel           ###   ########.fr       */
+/*   Updated: 2025/08/26 19:37:18 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,6 @@ void	update_flags(t_arg **args, int i, char *new)
 		&& ((args[i]->flag != 5 && args[i]->flag != 2)
 			|| (args[i + 1]->flag != 5 && args[i + 1]->flag != 2)))
 		args[i]->flag = 0;
-	if (args[i + 1] && is_redirection(args[i + 1]->str) == 1
-		&& args[i + 1]->flag != 5 && args[i + 1]->s == 0)
-		args[i]->flag = 6;
 }
 
 void	remove_arg_from_array(t_arg **args, int i)

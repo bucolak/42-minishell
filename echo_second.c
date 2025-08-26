@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:24:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 20:14:15 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 20:25:24 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,27 +23,6 @@ static void	handle_exit_code(t_general *tmp, int *j)
 	(*j) += 2;
 }
 
-static void	handle_env_variable(char *str, int *j)
-{
-	int		start;
-	char	*new;
-
-	start = ++(*j);
-	while (str[*j] && (ft_isalnum(str[*j]) || str[*j] == '_'))
-		(*j)++;
-	if (start == *j)
-	{
-		(*j)--;
-		ft_putchar_fd(str[*j], 1);
-		(*j)++;
-		return ;
-	}
-	new = ft_substr(str, start, (*j) - start);
-	if (!new)
-		ft_putchar_fd(' ', 1);
-	free(new);
-}
-
 static void	handle_quotes_and_chars(char *str, t_general *tmp, int *j, int i)
 {
 	if (str[*j] == '"' && str[*j + 1] == '"' && tmp->acces_args->args[i + 1])
@@ -51,8 +30,8 @@ static void	handle_quotes_and_chars(char *str, t_general *tmp, int *j, int i)
 		ft_putchar_fd(' ', 1);
 		(*j) += 2;
 	}
-	else if (str[*j] == '"' && str[*j + 1] == '"'
-		&& !tmp->acces_args->args[i + 1])
+	else if (str[*j] == '"' && str[*j + 1] == '"' && !tmp->acces_args->args[i
+			+ 1])
 		(*j) += 2;
 	else if (str[*j] != '"')
 	{
@@ -63,12 +42,9 @@ static void	handle_quotes_and_chars(char *str, t_general *tmp, int *j, int i)
 
 static void	echo_flag_0_and_2_second(char *str, t_general *tmp, int *j, int i)
 {
-	if (str[*j] == '$' && str[*j + 1])
+	if (str[*j] == '$' && str[*j + 1] && str[*j + 1] == '?')
 	{
-		if (str[*j + 1] == '?')
-			handle_exit_code(tmp, j);
-		else
-			handle_env_variable(str, j);
+		handle_exit_code(tmp, j);
 	}
 	else
 		handle_quotes_and_chars(str, tmp, j, i);

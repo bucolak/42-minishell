@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:05:46 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/25 21:38:21 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 20:31:37 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,16 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-
-// temel giriş/çıkış
-# include <stdio.h>  // printf, perror
-# include <stdlib.h> // malloc, free, exit, getenv
-# include <unistd.h> // write, access, read, close, fork, getcwd, chdir, execve,
-					// isatty, ttyname, ttyslot
-
-// dosya işlemleri
-# include <dirent.h>   // opendir, readdir, closedir
-# include <fcntl.h>    // open, O_RDONLY, O_WRONLY, vs.
-# include <sys/stat.h> // stat, lstat, fstat
-
-// sinyal işlemleri
-# include <signal.h> // signal, sigaction, sigemptyset, sigaddset, kill
-
-// işlem kontrolü
-# include <sys/wait.h> // wait, waitpid, wait3, wait4
-
-// hata işlemleri
-# include <string.h> // strerror
-
-// terminal özellikleri
-//# include <sys/ioctl.h> // ioctl
-// # include <termcap.h>   // tgetent, tgetflag, tgetnum, tgetstr, tgoto, tputs
-// # include <termios.h>   // tcsetattr, tcgetattr
-
-// readline
+# include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/stat.h>
+# include <sys/wait.h>
+# include <unistd.h>
 
 typedef struct s_env
 {
@@ -117,8 +98,6 @@ typedef struct s_state
 	int					last_dqm;
 }						t_state;
 
-// extern int				signal_ec;
-
 // export_ctrl.c
 int						ctrl_is_valid_identifier_builtin_helper(t_general *tmp,
 							int i);
@@ -183,8 +162,7 @@ void					print_message_and_exit2(t_general *pipe_blocs,
 char					**make_argv(t_pipeafter *acces_args, t_env *env);
 void					path_control_execute(char **args, t_general *pipe_blocs,
 							char *cmd, t_full *full);
-void					control_redirecitons_and_redirect_to_func(
-							t_general *pipe_blocs,
+void					control_redirecitons_and_redirect_to_func(t_general *pipe_blocs,
 							int *is_redirect, t_full *full, int i);
 
 void					go_to_execve_execute(char **paths, int *command_found,
@@ -204,7 +182,6 @@ void					signal_handler_heredoc(int signo);
 void					close_heredoc_fd(t_general *list);
 void					cleanup(t_full *full);
 void					control_redireciton(t_general *list, t_env *env);
-int						is_flag_6(t_general *list, t_env *env);
 int						has_redireciton(t_general *pipe_blocks);
 char					*ft_strstr(const char *haystack, const char *needle);
 void					remove_env_var(t_env **env, char *var_name);

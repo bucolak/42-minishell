@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 20:38:25 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/24 20:59:53 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 19:38:05 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,40 +79,4 @@ int	count_m(t_general *tmp, int i, t_env *env)
 		j++;
 	}
 	return (c);
-}
-
-static int	check_env_flag(t_env *env, char *str)
-{
-	while (env)
-	{
-		if (ft_strcmp(env->data, str) == 0 && env->f == 3)
-			return (1);
-		env = env->next;
-	}
-	return (0);
-}
-
-int	is_flag_6(t_general *list, t_env *env)
-{
-	int			i;
-	t_general	*tmp;
-
-	tmp = list;
-	while (tmp)
-	{
-		i = 0;
-		while (tmp->acces_args->args[i])
-		{
-			if (is_redirection(tmp->acces_args->args[i]->str) == 1
-				&& (tmp->acces_args->args[i]->flag == 5
-					|| tmp->acces_args->args[i]->flag == 2))
-			{
-				if (check_env_flag(env, tmp->acces_args->args[i]->str))
-					return (1);
-			}
-			i++;
-		}
-		tmp = tmp->next;
-	}
-	return (0);
 }

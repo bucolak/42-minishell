@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 15:16:36 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/25 21:44:50 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 20:30:10 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ static void	read_heredoc_input(t_full *full, int fd_write, char *limiter)
 	}
 }
 
+static void	set_up(t_general *tmp)
+{
+	tmp->heredoc_fd = -1;
+	tmp->dqm = 130;
+}
+
 int	handle_heredoc_process(t_general *tmp, t_full *full, int *j, int *status)
 {
 	int		fd[2];
@@ -56,20 +62,20 @@ int	handle_heredoc_process(t_general *tmp, t_full *full, int *j, int *status)
 		read_heredoc_input(full, fd[1], tmp->limiter[*j]);
 	close(fd[1]);
 	waitpid(pid, status, 0);
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, SIG_IGN);
+	signal_handler();
 	if (WIFEXITED(*status) && WEXITSTATUS(*status) == 130)
 	{
 		tmp->a = 1;
 		close(fd[0]);
 		remove_heredoc(tmp);
-		tmp->heredoc_fd = -1;
-		tmp->dqm = 130;
+		set_up(tmp);
 		return (1);
 	}
 	else if (WIFEXITED(*status))
+	{
+		tmp->heredoc_fd = fd[0];
 		return (2);
-	tmp->heredoc_fd = fd[0];
+	}
 	return (0);
 }
 

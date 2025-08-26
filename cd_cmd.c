@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:25:16 by bucolak           #+#    #+#             */
-/*   Updated: 2025/08/25 21:43:54 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 20:22:46 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,15 @@ static void	cd_dash_control(t_env *env)
 	pwd = ft_strdup(get_getenv(env, "PWD"));
 	new_oldpwd = ft_strdup(pwd);
 	tmp = env;
+	ft_putstr_fd(old_pwd, 1);
+	ft_putchar_fd('\n', 1);
+	if (get_getenv(env, "OLDPWD"))
+		chdir(get_getenv(env, "OLDPWD"));
 	cd_dash_control_scnd(tmp, new_oldpwd, old_pwd);
 	if (pwd)
 		free(pwd);
 	if (old_pwd)
 		free(old_pwd);
-	ft_putstr_fd(new_oldpwd, 1);
-	ft_putchar_fd('\n', 1);
-	if (get_getenv(env, "OLDPWD"))
-		chdir(get_getenv(env, "OLDPWD"));
 }
 
 void	cd_cmd(t_arg **args, t_env *env, t_general *pipe_blocks)

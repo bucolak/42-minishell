@@ -6,7 +6,7 @@
 /*   By: bucolak <bucolak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 12:41:22 by seerel            #+#    #+#             */
-/*   Updated: 2025/08/25 15:01:18 by bucolak          ###   ########.fr       */
+/*   Updated: 2025/08/26 20:30:25 by bucolak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,14 @@ int	process_heredocs(t_general *tmp, t_full *full)
 		if (ft_strcmp(tmp->acces_args->args[st.i]->str, "<<") == 0)
 		{
 			result = handle_heredoc_token(tmp, full, &st);
-			if (result == 1 || result == 2)
+			if (result == 1)
 				return (1);
+			if (result == 2)
+			{
+				st.i++;
+				st.j++;
+				continue ;
+			}
 		}
 		else
 			st.i++;
