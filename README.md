@@ -47,4 +47,4 @@ Processes (`fork`, `execve`, `waitpid`) · file descriptors and `dup2` · pipes 
 ## Authors
 
 - **bucolak** — Buket Çolak
-- **seerel**
+- **seerel**  — Şevval Erel
